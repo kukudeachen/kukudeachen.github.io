@@ -43,6 +43,32 @@
             opacity: 0.9;
         }
 
+        .warehouse-selector {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .warehouse-selector label {
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+
+        .warehouse-selector select {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            background: white;
+            cursor: pointer;
+            min-width: 200px;
+        }
+
         .tabs {
             display: flex;
             background: #f8f9fa;
@@ -170,6 +196,16 @@
             transform: translateY(-2px);
         }
 
+        .btn-info {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .btn-info:hover {
+            background: #138496;
+            transform: translateY(-2px);
+        }
+
         .btn-sm {
             padding: 6px 15px;
             font-size: 0.875rem;
@@ -232,6 +268,11 @@
         .badge-info {
             background: #d1ecf1;
             color: #0c5460;
+        }
+
+        .badge-primary {
+            background: #cce5ff;
+            color: #004085;
         }
 
         .stats-grid {
@@ -352,6 +393,62 @@
             gap: 5px;
         }
 
+        .warehouse-card {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+        }
+
+        .warehouse-card:hover {
+            border-color: #667eea;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+        }
+
+        .warehouse-card.active {
+            border-color: #667eea;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+        }
+
+        .warehouse-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .warehouse-card-header h4 {
+            color: #667eea;
+            font-size: 1.2rem;
+        }
+
+        .warehouse-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .warehouse-info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px;
+            background: white;
+            border-radius: 5px;
+        }
+
+        .warehouse-info-item span:first-child {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .warehouse-info-item span:last-child {
+            font-weight: 600;
+            color: #333;
+        }
+
         @media (max-width: 768px) {
             .form-row {
                 grid-template-columns: 1fr;
@@ -364,6 +461,10 @@
             .action-buttons {
                 flex-direction: column;
             }
+
+            .warehouse-selector {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
@@ -372,17 +473,54 @@
         <header>
             <h1>📦 仓储管理系统</h1>
             <p>纯前端仓储管理解决方案 | 数据本地存储</p>
+            <div class="warehouse-selector">
+                <label>当前仓库：</label>
+                <select id="currentWarehouse" onchange="switchWarehouse()">
+                    <option value="">全部仓库</option>
+                </select>
+            </div>
         </header>
 
         <div class="tabs">
-            <button class="tab active" data-tab="products">商品管理</button>
+            <button class="tab active" data-tab="warehouses">仓库管理</button>
+            <button class="tab" data-tab="products">商品管理</button>
             <button class="tab" data-tab="inventory">库存管理</button>
             <button class="tab" data-tab="inbound">入库记录</button>
             <button class="tab" data-tab="outbound">出库记录</button>
             <button class="tab" data-tab="statistics">统计分析</button>
         </div>
 
-        <div id="products" class="tab-content active">
+        <div id="warehouses" class="tab-content active">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>仓库名称</label>
+                    <input type="text" id="warehouseName" placeholder="请输入仓库名称">
+                </div>
+                <div class="form-group">
+                    <label>仓库编码</label>
+                    <input type="text" id="warehouseCode" placeholder="请输入仓库编码">
+                </div>
+                <div class="form-group">
+                    <label>仓库地址</label>
+                    <input type="text" id="warehouseAddress" placeholder="请输入仓库地址">
+                </div>
+                <div class="form-group">
+                    <label>负责人</label>
+                    <input type="text" id="warehouseManager" placeholder="请输入负责人">
+                </div>
+                <div class="form-group">
+                    <label>联系电话</label>
+                    <input type="text" id="warehousePhone" placeholder="请输入联系电话">
+                </div>
+                <div class="form-group" style="display: flex; align-items: flex-end;">
+                    <button class="btn btn-primary" onclick="addWarehouse()">➕ 添加仓库</button>
+                </div>
+            </div>
+
+            <div id="warehousesList"></div>
+        </div>
+
+        <div id="products" class="tab-content">
             <div class="form-row">
                 <div class="form-group">
                     <label>商品名称</label>
@@ -401,6 +539,12 @@
                         <option value="食品饮料">食品饮料</option>
                         <option value="家居用品">家居用品</option>
                         <option value="其他">其他</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>所属仓库</label>
+                    <select id="productWarehouse">
+                        <option value="">请选择仓库</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -445,6 +589,7 @@
                             <th>编码</th>
                             <th>名称</th>
                             <th>分类</th>
+                            <th>仓库</th>
                             <th>单价</th>
                             <th>库存</th>
                             <th>单位</th>
@@ -489,6 +634,7 @@
                             <th>编码</th>
                             <th>名称</th>
                             <th>分类</th>
+                            <th>仓库</th>
                             <th>当前库存</th>
                             <th>单位</th>
                             <th>单价</th>
@@ -539,6 +685,7 @@
                         <tr>
                             <th>时间</th>
                             <th>商品</th>
+                            <th>仓库</th>
                             <th>数量</th>
                             <th>类型</th>
                             <th>备注</th>
@@ -587,6 +734,7 @@
                         <tr>
                             <th>时间</th>
                             <th>商品</th>
+                            <th>仓库</th>
                             <th>数量</th>
                             <th>类型</th>
                             <th>备注</th>
@@ -683,6 +831,12 @@
                 </select>
             </div>
             <div class="form-group">
+                <label>所属仓库</label>
+                <select id="editProductWarehouse">
+                    <option value="">请选择仓库</option>
+                </select>
+            </div>
+            <div class="form-group">
                 <label>单位</label>
                 <select id="editProductUnit">
                     <option value="件">件</option>
@@ -709,11 +863,47 @@
         </div>
     </div>
 
+    <div class="modal" id="editWarehouseModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>编辑仓库</h2>
+                <button class="close-btn" onclick="closeWarehouseModal()">&times;</button>
+            </div>
+            <div class="form-group">
+                <label>仓库名称</label>
+                <input type="text" id="editWarehouseName">
+            </div>
+            <div class="form-group">
+                <label>仓库编码</label>
+                <input type="text" id="editWarehouseCode">
+            </div>
+            <div class="form-group">
+                <label>仓库地址</label>
+                <input type="text" id="editWarehouseAddress">
+            </div>
+            <div class="form-group">
+                <label>负责人</label>
+                <input type="text" id="editWarehouseManager">
+            </div>
+            <div class="form-group">
+                <label>联系电话</label>
+                <input type="text" id="editWarehousePhone">
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-warning" onclick="closeWarehouseModal()">取消</button>
+                <button class="btn btn-primary" onclick="saveWarehouse()">保存</button>
+            </div>
+        </div>
+    </div>
+
     <script>
+        let warehouses = [];
         let products = [];
         let inboundRecords = [];
         let outboundRecords = [];
+        let currentWarehouseId = '';
         let editingProductId = null;
+        let editingWarehouseId = null;
 
         const STORAGE_KEY = 'warehouseData';
 
@@ -721,6 +911,7 @@
             const data = localStorage.getItem(STORAGE_KEY);
             if (data) {
                 const parsed = JSON.parse(data);
+                warehouses = parsed.warehouses || [];
                 products = parsed.products || [];
                 inboundRecords = parsed.inboundRecords || [];
                 outboundRecords = parsed.outboundRecords || [];
@@ -729,6 +920,7 @@
 
         function saveData() {
             const data = {
+                warehouses,
                 products,
                 inboundRecords,
                 outboundRecords
@@ -758,22 +950,231 @@
             }
         }
 
+        function getWarehouseById(id) {
+            return warehouses.find(w => w.id === id);
+        }
+
+        function getWarehouseName(id) {
+            const warehouse = getWarehouseById(id);
+            return warehouse ? warehouse.name : '未知';
+        }
+
+        function switchWarehouse() {
+            currentWarehouseId = document.getElementById('currentWarehouse').value;
+            renderProducts();
+            renderInventory();
+            renderInbound();
+            renderOutbound();
+            updateStatistics();
+        }
+
+        function addWarehouse() {
+            const name = document.getElementById('warehouseName').value.trim();
+            const code = document.getElementById('warehouseCode').value.trim();
+            const address = document.getElementById('warehouseAddress').value.trim();
+            const manager = document.getElementById('warehouseManager').value.trim();
+            const phone = document.getElementById('warehousePhone').value.trim();
+
+            if (!name || !code) {
+                alert('请填写仓库名称和编码！');
+                return;
+            }
+
+            if (warehouses.find(w => w.code === code)) {
+                alert('仓库编码已存在！');
+                return;
+            }
+
+            const warehouse = {
+                id: generateId(),
+                name,
+                code,
+                address,
+                manager,
+                phone,
+                createdAt: new Date().toISOString()
+            };
+
+            warehouses.push(warehouse);
+            saveData();
+            renderWarehouses();
+            updateWarehouseSelects();
+            clearWarehouseForm();
+        }
+
+        function clearWarehouseForm() {
+            document.getElementById('warehouseName').value = '';
+            document.getElementById('warehouseCode').value = '';
+            document.getElementById('warehouseAddress').value = '';
+            document.getElementById('warehouseManager').value = '';
+            document.getElementById('warehousePhone').value = '';
+        }
+
+        function editWarehouse(id) {
+            const warehouse = warehouses.find(w => w.id === id);
+            if (!warehouse) return;
+
+            editingWarehouseId = id;
+            document.getElementById('editWarehouseName').value = warehouse.name;
+            document.getElementById('editWarehouseCode').value = warehouse.code;
+            document.getElementById('editWarehouseAddress').value = warehouse.address || '';
+            document.getElementById('editWarehouseManager').value = warehouse.manager || '';
+            document.getElementById('editWarehousePhone').value = warehouse.phone || '';
+
+            document.getElementById('editWarehouseModal').classList.add('active');
+        }
+
+        function saveWarehouse() {
+            const warehouse = warehouses.find(w => w.id === editingWarehouseId);
+            if (!warehouse) return;
+
+            const name = document.getElementById('editWarehouseName').value.trim();
+            const code = document.getElementById('editWarehouseCode').value.trim();
+            const address = document.getElementById('editWarehouseAddress').value.trim();
+            const manager = document.getElementById('editWarehouseManager').value.trim();
+            const phone = document.getElementById('editWarehousePhone').value.trim();
+
+            if (!name || !code) {
+                alert('请填写仓库名称和编码！');
+                return;
+            }
+
+            const existingWarehouse = warehouses.find(w => w.code === code && w.id !== editingWarehouseId);
+            if (existingWarehouse) {
+                alert('仓库编码已存在！');
+                return;
+            }
+
+            warehouse.name = name;
+            warehouse.code = code;
+            warehouse.address = address;
+            warehouse.manager = manager;
+            warehouse.phone = phone;
+
+            saveData();
+            renderWarehouses();
+            updateWarehouseSelects();
+            closeWarehouseModal();
+        }
+
+        function closeWarehouseModal() {
+            document.getElementById('editWarehouseModal').classList.remove('active');
+            editingWarehouseId = null;
+        }
+
+        function deleteWarehouse(id) {
+            const warehouseProducts = products.filter(p => p.warehouseId === id);
+            if (warehouseProducts.length > 0) {
+                alert('该仓库下还有商品，无法删除！');
+                return;
+            }
+
+            if (!confirm('确定要删除这个仓库吗？')) return;
+
+            warehouses = warehouses.filter(w => w.id !== id);
+            if (currentWarehouseId === id) {
+                currentWarehouseId = '';
+                document.getElementById('currentWarehouse').value = '';
+            }
+            saveData();
+            renderWarehouses();
+            updateWarehouseSelects();
+        }
+
+        function renderWarehouses() {
+            const container = document.getElementById('warehousesList');
+            
+            if (warehouses.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i>🏭</i>
+                        <p>暂无仓库数据</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = warehouses.map(warehouse => {
+                const warehouseProducts = products.filter(p => p.warehouseId === warehouse.id);
+                const totalStock = warehouseProducts.reduce((sum, p) => sum + p.stock, 0);
+                const totalValue = warehouseProducts.reduce((sum, p) => sum + p.stock * p.price, 0);
+                const isActive = warehouse.id === currentWarehouseId;
+
+                return `
+                    <div class="warehouse-card ${isActive ? 'active' : ''}">
+                        <div class="warehouse-card-header">
+                            <h4>🏭 ${warehouse.name}</h4>
+                            <div class="action-buttons">
+                                <button class="btn btn-sm btn-info" onclick="editWarehouse('${warehouse.id}')">编辑</button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteWarehouse('${warehouse.id}')">删除</button>
+                            </div>
+                        </div>
+                        <div class="warehouse-info">
+                            <div class="warehouse-info-item">
+                                <span>编码</span>
+                                <span>${warehouse.code}</span>
+                            </div>
+                            <div class="warehouse-info-item">
+                                <span>地址</span>
+                                <span>${warehouse.address || '-'}</span>
+                            </div>
+                            <div class="warehouse-info-item">
+                                <span>负责人</span>
+                                <span>${warehouse.manager || '-'}</span>
+                            </div>
+                            <div class="warehouse-info-item">
+                                <span>联系电话</span>
+                                <span>${warehouse.phone || '-'}</span>
+                            </div>
+                            <div class="warehouse-info-item">
+                                <span>商品数量</span>
+                                <span>${warehouseProducts.length}</span>
+                            </div>
+                            <div class="warehouse-info-item">
+                                <span>库存总量</span>
+                                <span>${totalStock}</span>
+                            </div>
+                            <div class="warehouse-info-item">
+                                <span>库存价值</span>
+                                <span>${formatPrice(totalValue)}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateWarehouseSelects() {
+            const currentSelect = document.getElementById('currentWarehouse');
+            const productSelect = document.getElementById('productWarehouse');
+            const editProductSelect = document.getElementById('editProductWarehouse');
+
+            const options = '<option value="">全部仓库</option>' + 
+                warehouses.map(w => `<option value="${w.id}">${w.code} - ${w.name}</option>`).join('');
+
+            const productOptions = '<option value="">请选择仓库</option>' + 
+                warehouses.map(w => `<option value="${w.id}">${w.code} - ${w.name}</option>`).join('');
+
+            const currentSelection = currentSelect.value;
+            currentSelect.innerHTML = options;
+            currentSelect.value = currentSelection;
+
+            productSelect.innerHTML = productOptions;
+            editProductSelect.innerHTML = productOptions;
+        }
+
         function addProduct() {
             const name = document.getElementById('productName').value.trim();
             const code = document.getElementById('productCode').value.trim();
             const category = document.getElementById('productCategory').value;
+            const warehouseId = document.getElementById('productWarehouse').value;
             const unit = document.getElementById('productUnit').value;
             const price = parseFloat(document.getElementById('productPrice').value);
             const stock = parseInt(document.getElementById('productStock').value) || 0;
             const minStock = parseInt(document.getElementById('productMinStock').value) || 0;
 
-            if (!name || !code || !category || !price) {
+            if (!name || !code || !category || !warehouseId || !price) {
                 alert('请填写完整信息！');
-                return;
-            }
-
-            if (products.find(p => p.code === code)) {
-                alert('商品编码已存在！');
                 return;
             }
 
@@ -782,6 +1183,7 @@
                 name,
                 code,
                 category,
+                warehouseId,
                 unit,
                 price,
                 stock,
@@ -793,6 +1195,7 @@
             saveData();
             renderProducts();
             renderInventory();
+            renderWarehouses();
             updateStatistics();
             clearProductForm();
         }
@@ -801,6 +1204,7 @@
             document.getElementById('productName').value = '';
             document.getElementById('productCode').value = '';
             document.getElementById('productCategory').value = '';
+            document.getElementById('productWarehouse').value = '';
             document.getElementById('productPrice').value = '';
             document.getElementById('productStock').value = '';
             document.getElementById('productMinStock').value = '';
@@ -814,6 +1218,7 @@
             document.getElementById('editProductName').value = product.name;
             document.getElementById('editProductCode').value = product.code;
             document.getElementById('editProductCategory').value = product.category;
+            document.getElementById('editProductWarehouse').value = product.warehouseId;
             document.getElementById('editProductUnit').value = product.unit;
             document.getElementById('editProductPrice').value = product.price;
             document.getElementById('editProductMinStock').value = product.minStock;
@@ -828,11 +1233,12 @@
             const name = document.getElementById('editProductName').value.trim();
             const code = document.getElementById('editProductCode').value.trim();
             const category = document.getElementById('editProductCategory').value;
+            const warehouseId = document.getElementById('editProductWarehouse').value;
             const unit = document.getElementById('editProductUnit').value;
             const price = parseFloat(document.getElementById('editProductPrice').value);
             const minStock = parseInt(document.getElementById('editProductMinStock').value) || 0;
 
-            if (!name || !code || !category || !price) {
+            if (!name || !code || !category || !warehouseId || !price) {
                 alert('请填写完整信息！');
                 return;
             }
@@ -846,6 +1252,7 @@
             product.name = name;
             product.code = code;
             product.category = category;
+            product.warehouseId = warehouseId;
             product.unit = unit;
             product.price = price;
             product.minStock = minStock;
@@ -853,6 +1260,7 @@
             saveData();
             renderProducts();
             renderInventory();
+            renderWarehouses();
             updateStatistics();
             closeModal();
         }
@@ -873,12 +1281,19 @@
             renderInventory();
             renderInbound();
             renderOutbound();
+            renderWarehouses();
             updateStatistics();
         }
 
         function filterProducts() {
             const search = document.getElementById('productSearch').value.toLowerCase();
-            const filtered = products.filter(p => 
+            let filtered = products;
+            
+            if (currentWarehouseId) {
+                filtered = filtered.filter(p => p.warehouseId === currentWarehouseId);
+            }
+            
+            filtered = filtered.filter(p => 
                 p.name.toLowerCase().includes(search) || 
                 p.code.toLowerCase().includes(search)
             );
@@ -886,7 +1301,11 @@
         }
 
         function renderProducts() {
-            renderProductsTable(products);
+            let filtered = products;
+            if (currentWarehouseId) {
+                filtered = filtered.filter(p => p.warehouseId === currentWarehouseId);
+            }
+            renderProductsTable(filtered);
             updateProductSelects();
         }
 
@@ -896,7 +1315,7 @@
             if (productList.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="8" class="empty-state">
+                        <td colspan="9" class="empty-state">
                             <i>📦</i>
                             <p>暂无商品数据</p>
                         </td>
@@ -910,6 +1329,7 @@
                     <td>${product.code}</td>
                     <td>${product.name}</td>
                     <td>${product.category}</td>
+                    <td>${getWarehouseName(product.warehouseId)}</td>
                     <td>${formatPrice(product.price)}</td>
                     <td>${product.stock}</td>
                     <td>${product.unit}</td>
@@ -926,7 +1346,13 @@
 
         function filterInventory() {
             const search = document.getElementById('inventorySearch').value.toLowerCase();
-            const filtered = products.filter(p => 
+            let filtered = products;
+            
+            if (currentWarehouseId) {
+                filtered = filtered.filter(p => p.warehouseId === currentWarehouseId);
+            }
+            
+            filtered = filtered.filter(p => 
                 p.name.toLowerCase().includes(search) || 
                 p.code.toLowerCase().includes(search)
             );
@@ -934,7 +1360,11 @@
         }
 
         function renderInventory() {
-            renderInventoryTable(products);
+            let filtered = products;
+            if (currentWarehouseId) {
+                filtered = filtered.filter(p => p.warehouseId === currentWarehouseId);
+            }
+            renderInventoryTable(filtered);
             updateInventoryStats();
         }
 
@@ -944,7 +1374,7 @@
             if (productList.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="9" class="empty-state">
+                        <td colspan="10" class="empty-state">
                             <i>📊</i>
                             <p>暂无库存数据</p>
                         </td>
@@ -958,6 +1388,7 @@
                     <td>${product.code}</td>
                     <td>${product.name}</td>
                     <td>${product.category}</td>
+                    <td>${getWarehouseName(product.warehouseId)}</td>
                     <td>${product.stock}</td>
                     <td>${product.unit}</td>
                     <td>${formatPrice(product.price)}</td>
@@ -972,10 +1403,15 @@
         }
 
         function updateInventoryStats() {
-            const totalProducts = products.length;
-            const totalStock = products.reduce((sum, p) => sum + p.stock, 0);
-            const totalValue = products.reduce((sum, p) => sum + p.stock * p.price, 0);
-            const lowStockCount = products.filter(p => p.stock <= p.minStock).length;
+            let filtered = products;
+            if (currentWarehouseId) {
+                filtered = filtered.filter(p => p.warehouseId === currentWarehouseId);
+            }
+
+            const totalProducts = filtered.length;
+            const totalStock = filtered.reduce((sum, p) => sum + p.stock, 0);
+            const totalValue = filtered.reduce((sum, p) => sum + p.stock * p.price, 0);
+            const lowStockCount = filtered.filter(p => p.stock <= p.minStock).length;
 
             document.getElementById('totalProducts').textContent = totalProducts;
             document.getElementById('totalStock').textContent = totalStock;
@@ -987,8 +1423,13 @@
             const inboundSelect = document.getElementById('inboundProduct');
             const outboundSelect = document.getElementById('outboundProduct');
 
+            let filtered = products;
+            if (currentWarehouseId) {
+                filtered = filtered.filter(p => p.warehouseId === currentWarehouseId);
+            }
+
             const options = '<option value="">请选择商品</option>' + 
-                products.map(p => `<option value="${p.id}">${p.code} - ${p.name} (库存: ${p.stock})</option>`).join('');
+                filtered.map(p => `<option value="${p.id}">${p.code} - ${p.name} (库存: ${p.stock})</option>`).join('');
 
             inboundSelect.innerHTML = options;
             outboundSelect.innerHTML = options;
@@ -1015,6 +1456,8 @@
                 productId,
                 productName: product.name,
                 productCode: product.code,
+                warehouseId: product.warehouseId,
+                warehouseName: getWarehouseName(product.warehouseId),
                 quantity,
                 type,
                 note,
@@ -1026,6 +1469,7 @@
             renderProducts();
             renderInventory();
             renderInbound();
+            renderWarehouses();
             updateStatistics();
             clearInboundForm();
         }
@@ -1052,16 +1496,22 @@
             renderProducts();
             renderInventory();
             renderInbound();
+            renderWarehouses();
             updateStatistics();
         }
 
         function renderInbound() {
+            let filtered = inboundRecords;
+            if (currentWarehouseId) {
+                filtered = filtered.filter(r => r.warehouseId === currentWarehouseId);
+            }
+
             const tbody = document.getElementById('inboundTableBody');
             
-            if (inboundRecords.length === 0) {
+            if (filtered.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="6" class="empty-state">
+                        <td colspan="7" class="empty-state">
                             <i>📥</i>
                             <p>暂无入库记录</p>
                         </td>
@@ -1070,10 +1520,11 @@
                 return;
             }
 
-            tbody.innerHTML = inboundRecords.map(record => `
+            tbody.innerHTML = filtered.map(record => `
                 <tr>
                     <td>${formatDate(record.createdAt)}</td>
                     <td>${record.productCode} - ${record.productName}</td>
+                    <td>${record.warehouseName}</td>
                     <td class="badge badge-success">+${record.quantity}</td>
                     <td>${record.type}</td>
                     <td>${record.note || '-'}</td>
@@ -1110,6 +1561,8 @@
                 productId,
                 productName: product.name,
                 productCode: product.code,
+                warehouseId: product.warehouseId,
+                warehouseName: getWarehouseName(product.warehouseId),
                 quantity,
                 type,
                 note,
@@ -1121,6 +1574,7 @@
             renderProducts();
             renderInventory();
             renderOutbound();
+            renderWarehouses();
             updateStatistics();
             clearOutboundForm();
         }
@@ -1147,16 +1601,22 @@
             renderProducts();
             renderInventory();
             renderOutbound();
+            renderWarehouses();
             updateStatistics();
         }
 
         function renderOutbound() {
+            let filtered = outboundRecords;
+            if (currentWarehouseId) {
+                filtered = filtered.filter(r => r.warehouseId === currentWarehouseId);
+            }
+
             const tbody = document.getElementById('outboundTableBody');
             
-            if (outboundRecords.length === 0) {
+            if (filtered.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="6" class="empty-state">
+                        <td colspan="7" class="empty-state">
                             <i>📤</i>
                             <p>暂无出库记录</p>
                         </td>
@@ -1165,10 +1625,11 @@
                 return;
             }
 
-            tbody.innerHTML = outboundRecords.map(record => `
+            tbody.innerHTML = filtered.map(record => `
                 <tr>
                     <td>${formatDate(record.createdAt)}</td>
                     <td>${record.productCode} - ${record.productName}</td>
+                    <td>${record.warehouseName}</td>
                     <td class="badge badge-danger">-${record.quantity}</td>
                     <td>${record.type}</td>
                     <td>${record.note || '-'}</td>
@@ -1192,12 +1653,24 @@
         }
 
         function updateStatistics() {
-            const totalProducts = products.length;
-            const totalStock = products.reduce((sum, p) => sum + p.stock, 0);
-            const totalValue = products.reduce((sum, p) => sum + p.stock * p.price, 0);
-            const inboundCount = inboundRecords.length;
-            const outboundCount = outboundRecords.length;
-            const lowStock = products.filter(p => p.stock <= p.minStock).length;
+            let filtered = products;
+            if (currentWarehouseId) {
+                filtered = filtered.filter(p => p.warehouseId === currentWarehouseId);
+            }
+
+            let filteredInbound = inboundRecords;
+            let filteredOutbound = outboundRecords;
+            if (currentWarehouseId) {
+                filteredInbound = filteredInbound.filter(r => r.warehouseId === currentWarehouseId);
+                filteredOutbound = filteredOutbound.filter(r => r.warehouseId === currentWarehouseId);
+            }
+
+            const totalProducts = filtered.length;
+            const totalStock = filtered.reduce((sum, p) => sum + p.stock, 0);
+            const totalValue = filtered.reduce((sum, p) => sum + p.stock * p.price, 0);
+            const inboundCount = filteredInbound.length;
+            const outboundCount = filteredOutbound.length;
+            const lowStock = filtered.filter(p => p.stock <= p.minStock).length;
 
             document.getElementById('statTotalProducts').textContent = totalProducts;
             document.getElementById('statTotalStock').textContent = totalStock;
@@ -1211,14 +1684,18 @@
 
         function updateCategoryStats() {
             const categoryFilter = document.getElementById('categoryFilter').value;
-            let filteredProducts = products;
+            let filtered = products;
+            
+            if (currentWarehouseId) {
+                filtered = filtered.filter(p => p.warehouseId === currentWarehouseId);
+            }
 
             if (categoryFilter) {
-                filteredProducts = products.filter(p => p.category === categoryFilter);
+                filtered = filtered.filter(p => p.category === categoryFilter);
             }
 
             const categories = {};
-            filteredProducts.forEach(product => {
+            filtered.forEach(product => {
                 if (!categories[product.category]) {
                     categories[product.category] = {
                         count: 0,
@@ -1266,6 +1743,8 @@
         });
 
         loadData();
+        renderWarehouses();
+        updateWarehouseSelects();
         renderProducts();
         renderInventory();
         renderInbound();
