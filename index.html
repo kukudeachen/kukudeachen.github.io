@@ -574,6 +574,9 @@
                 <div class="form-group">
                     <button class="btn btn-danger" onclick="batchDeleteProducts()">🗑️ 批量删除产品</button>
                 </div>
+                <div class="form-group">
+                    <button class="btn btn-info" onclick="exportAndUpdateDataJson()">💾 导出并更新data.json</button>
+                </div>
             </div>
 
             <div class="table-container">
@@ -827,7 +830,9 @@
                 const data = await response.json();
                 products = data.products || [];
                 monthlyRecords = data.monthlyRecords || [];
+                console.log('从 data.json 加载数据成功');
             } catch (error) {
+                console.log('从 data.json 加载失败，降级到 localStorage:', error);
                 const localData = localStorage.getItem(STORAGE_KEY);
                 if (localData) {
                     const parsed = JSON.parse(localData);
@@ -844,6 +849,7 @@
                 monthlyRecords
             };
             localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+            console.log('数据已保存到 localStorage，请使用导出功能更新 data.json');
         }
 
         function generateId() {
@@ -1484,6 +1490,27 @@
             const productOptions = '<option value="">请选择物料</option>' + 
                 products.map(p => `<option value="${p.code}">${p.code} - ${p.specModelColor || '-'}</option>`).join('');
             productSelect.innerHTML = productOptions;
+        }
+
+        function exportAndUpdateDataJson() {
+            const allData = {
+                exportTime: new Date().toISOString(),
+                products,
+                monthlyRecords
+            };
+
+            const dataStr = JSON.stringify(allData, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'data.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            alert('data.json 已下载！\n\n请将下载的文件替换项目中的 data.json 文件。\n\n替换后刷新页面即可看到最新数据。');
         }
 
         (async function init() {
