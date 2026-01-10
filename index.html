@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>仓储管理系统</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -41,32 +42,6 @@
 
         header p {
             opacity: 0.9;
-        }
-
-        .warehouse-selector {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 15px;
-            border-radius: 10px;
-            margin-top: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-        }
-
-        .warehouse-selector label {
-            font-weight: 500;
-            font-size: 1.1rem;
-        }
-
-        .warehouse-selector select {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            background: white;
-            cursor: pointer;
-            min-width: 200px;
         }
 
         .tabs {
@@ -270,37 +245,6 @@
             color: #0c5460;
         }
 
-        .badge-primary {
-            background: #cce5ff;
-            color: #004085;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .stat-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 25px;
-            border-radius: 10px;
-            text-align: center;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .stat-card h3 {
-            font-size: 3rem;
-            margin-bottom: 10px;
-        }
-
-        .stat-card p {
-            opacity: 0.9;
-            font-size: 1.1rem;
-        }
-
         .search-box {
             margin-bottom: 20px;
         }
@@ -393,60 +337,99 @@
             gap: 5px;
         }
 
-        .warehouse-card {
+        .upload-section {
             background: #f8f9fa;
-            border: 2px solid #e9ecef;
+            border: 2px dashed #667eea;
             border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 15px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .upload-section:hover {
+            background: #f0f4ff;
+        }
+
+        .upload-section input[type="file"] {
+            display: none;
+        }
+
+        .upload-label {
+            display: inline-block;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
             transition: all 0.3s;
         }
 
-        .warehouse-card:hover {
-            border-color: #667eea;
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+        .upload-label:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
         }
 
-        .warehouse-card.active {
-            border-color: #667eea;
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
-        }
-
-        .warehouse-card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .warehouse-card-header h4 {
-            color: #667eea;
-            font-size: 1.2rem;
-        }
-
-        .warehouse-info {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        .warehouse-info-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px;
-            background: white;
-            border-radius: 5px;
-        }
-
-        .warehouse-info-item span:first-child {
+        .upload-hint {
+            margin-top: 10px;
             color: #666;
             font-size: 0.9rem;
         }
 
-        .warehouse-info-item span:last-child {
-            font-weight: 600;
-            color: #333;
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .pagination button {
+            padding: 8px 16px;
+            border: 1px solid #e9ecef;
+            background: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .pagination button:hover:not(:disabled) {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .pagination button.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .pagination-info {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .page-size-selector {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .page-size-selector select {
+            padding: 8px 12px;
+            border: 1px solid #e9ecef;
+            border-radius: 5px;
+            font-size: 0.9rem;
         }
 
         @media (max-width: 768px) {
@@ -462,8 +445,8 @@
                 flex-direction: column;
             }
 
-            .warehouse-selector {
-                flex-direction: column;
+            .pagination {
+                flex-wrap: wrap;
             }
         }
     </style>
@@ -473,127 +456,140 @@
         <header>
             <h1>📦 仓储管理系统</h1>
             <p>纯前端仓储管理解决方案 | 数据本地存储</p>
-            <div class="warehouse-selector">
-                <label>当前仓库：</label>
-                <select id="currentWarehouse" onchange="switchWarehouse()">
-                    <option value="">全部仓库</option>
-                </select>
-            </div>
         </header>
 
         <div class="tabs">
-            <button class="tab active" data-tab="warehouses">仓库管理</button>
-            <button class="tab" data-tab="products">商品管理</button>
-            <button class="tab" data-tab="inventory">库存管理</button>
-            <button class="tab" data-tab="inbound">入库记录</button>
-            <button class="tab" data-tab="outbound">出库记录</button>
-            <button class="tab" data-tab="statistics">统计分析</button>
+            <button class="tab active" data-tab="products">产品管理</button>
         </div>
 
-        <div id="warehouses" class="tab-content active">
-            <div class="form-row">
-                <div class="form-group">
-                    <label>仓库名称</label>
-                    <input type="text" id="warehouseName" placeholder="请输入仓库名称">
-                </div>
-                <div class="form-group">
-                    <label>仓库编码</label>
-                    <input type="text" id="warehouseCode" placeholder="请输入仓库编码">
-                </div>
-                <div class="form-group">
-                    <label>仓库地址</label>
-                    <input type="text" id="warehouseAddress" placeholder="请输入仓库地址">
-                </div>
-                <div class="form-group">
-                    <label>负责人</label>
-                    <input type="text" id="warehouseManager" placeholder="请输入负责人">
-                </div>
-                <div class="form-group">
-                    <label>联系电话</label>
-                    <input type="text" id="warehousePhone" placeholder="请输入联系电话">
-                </div>
-                <div class="form-group" style="display: flex; align-items: flex-end;">
-                    <button class="btn btn-primary" onclick="addWarehouse()">➕ 添加仓库</button>
+        <div id="products" class="tab-content active">
+            <div class="upload-section">
+                <label class="upload-label" for="excelUpload">
+                    📤 上传Excel文件
+                </label>
+                <input type="file" id="excelUpload" accept=".xlsx,.xls" onchange="handleExcelUpload(event)">
+                <p class="upload-hint">支持 .xlsx 和 .xls 格式</p>
+                <div style="margin-top: 15px;">
+                    <button class="btn btn-info btn-sm" onclick="downloadTemplate()">📥 下载Excel模板</button>
                 </div>
             </div>
 
-            <div id="warehousesList"></div>
-        </div>
-
-        <div id="products" class="tab-content">
             <div class="form-row">
                 <div class="form-group">
-                    <label>商品名称</label>
-                    <input type="text" id="productName" placeholder="请输入商品名称">
+                    <label>物料编码</label>
+                    <input type="text" id="productCode" placeholder="请输入物料编码">
                 </div>
                 <div class="form-group">
-                    <label>商品编码</label>
-                    <input type="text" id="productCode" placeholder="请输入商品编码">
-                </div>
-                <div class="form-group">
-                    <label>商品分类</label>
-                    <select id="productCategory">
-                        <option value="">请选择分类</option>
-                        <option value="电子产品">电子产品</option>
-                        <option value="服装鞋帽">服装鞋帽</option>
-                        <option value="食品饮料">食品饮料</option>
-                        <option value="家居用品">家居用品</option>
-                        <option value="其他">其他</option>
+                    <label>规格</label>
+                    <select id="productSpec">
+                        <option value="">请选择规格</option>
+                        <option value="ZC-BV(3C)">ZC-BV(3C)</option>
+                        <option value="BV(3C)">BV(3C)</option>
+                        <option value="ZC-BVR(3C)">ZC-BVR(3C)</option>
+                        <option value="BVR">BVR</option>
+                        <option value="DDZ-BV">DDZ-BV</option>
+                        <option value="N-BV">N-BV</option>
+                        <option value="NH-BV">NH-BV</option>
+                        <option value="WDZA-BYJ">WDZA-BYJ</option>
+                        <option value="WDZAN-BYJ">WDZAN-BYJ</option>
+                        <option value="WDZB1N-BYJ">WDZB1N-BYJ</option>
+                        <option value="WDZB-BYJ">WDZB-BYJ</option>
+                        <option value="WDZB-BYJ(F)">WDZB-BYJ(F)</option>
+                        <option value="WDZB-BYJSS">WDZB-BYJSS</option>
+                        <option value="WDZBN-BYJ">WDZBN-BYJ</option>
+                        <option value="WDZ-BYJ">WDZ-BYJ</option>
+                        <option value="WDZ-BYJR">WDZ-BYJR</option>
+                        <option value="WDZ-BYJSS">WDZ-BYJSS</option>
+                        <option value="WDZC-BYJ">WDZC-BYJ</option>
+                        <option value="WDZN-BYJ">WDZN-BYJ</option>
+                        <option value="WDZN-BYJSS">WDZN-BYJSS</option>
+                        <option value="ZC-BV">ZC-BV</option>
+                        <option value="ZC-BVR">ZC-BVR</option>
+                        <option value="ZC-BVSS">ZC-BVSS</option>
+                        <option value="ZCN-BV">ZCN-BV</option>
+                        <option value="ZC-NBV">ZC-NBV</option>
+                        <option value="ZN-BV">ZN-BV</option>
+                        <option value="ZR-BV">ZR-BV</option>
+                        <option value="WDZCN-BYJ">WDZCN-BYJ</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>所属仓库</label>
-                    <select id="productWarehouse">
-                        <option value="">请选择仓库</option>
+                    <label>型号</label>
+                    <select id="productModel">
+                        <option value="">请选择型号</option>
+                        <option value="0.75">0.75</option>
+                        <option value="1">1</option>
+                        <option value="1.5">1.5</option>
+                        <option value="2.5">2.5</option>
+                        <option value="4">4</option>
+                        <option value="6">6</option>
+                        <option value="10">10</option>
+                        <option value="16">16</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>单位</label>
-                    <select id="productUnit">
-                        <option value="件">件</option>
-                        <option value="箱">箱</option>
-                        <option value="个">个</option>
-                        <option value="kg">kg</option>
-                        <option value="g">g</option>
-                        <option value="L">L</option>
-                        <option value="ml">ml</option>
+                    <label>颜色</label>
+                    <select id="productColor">
+                        <option value="">请选择颜色</option>
+                        <option value="红">红</option>
+                        <option value="蓝">蓝</option>
+                        <option value="黄">黄</option>
+                        <option value="绿">绿</option>
+                        <option value="双">双</option>
+                        <option value="黑">黑</option>
+                        <option value="白">白</option>
+                        <option value="棕">棕</option>
                     </select>
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group">
-                    <label>单价 (元)</label>
-                    <input type="number" id="productPrice" placeholder="请输入单价" step="0.01">
+                    <label>规格型号颜色</label>
+                    <input type="text" id="productSpecModelColor" placeholder="自动生成：规格型号颜色" readonly>
                 </div>
                 <div class="form-group">
-                    <label>初始库存</label>
-                    <input type="number" id="productStock" placeholder="请输入初始库存" min="0">
+                    <label>版本</label>
+                    <input type="text" id="productVersion" placeholder="请输入版本">
                 </div>
                 <div class="form-group">
-                    <label>最小库存预警</label>
-                    <input type="number" id="productMinStock" placeholder="请输入最小库存" min="0">
+                    <label>备注</label>
+                    <input type="text" id="productRemark" placeholder="请输入备注">
                 </div>
                 <div class="form-group" style="display: flex; align-items: flex-end;">
-                    <button class="btn btn-primary" onclick="addProduct()">➕ 添加商品</button>
+                    <button class="btn btn-primary" onclick="addProduct()">➕ 添加产品</button>
                 </div>
             </div>
 
             <div class="search-box">
-                <input type="text" id="productSearch" placeholder="🔍 搜索商品名称或编码..." oninput="filterProducts()">
+                <input type="text" id="productSearch" placeholder="🔍 搜索物料编码、规格型号颜色..." oninput="filterProducts()">
+            </div>
+
+            <div class="form-row" style="margin-bottom: 20px;">
+                <div class="form-group">
+                    <button class="btn btn-success" onclick="exportProducts()">📤 导出产品明细</button>
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-danger" onclick="batchDeleteProducts()">🗑️ 批量删除产品</button>
+                </div>
             </div>
 
             <div class="table-container">
                 <table id="productsTable">
                     <thead>
                         <tr>
-                            <th>编码</th>
-                            <th>名称</th>
-                            <th>分类</th>
-                            <th>仓库</th>
-                            <th>单价</th>
-                            <th>库存</th>
-                            <th>单位</th>
-                            <th>状态</th>
+                            <th style="width: 50px;">
+                                <input type="checkbox" id="selectAll" onchange="toggleSelectAll()">
+                            </th>
+                            <th>物料编码</th>
+                            <th>规格型号颜色</th>
+                            <th>规格</th>
+                            <th>型号</th>
+                            <th>颜色</th>
+                            <th>版本</th>
+                            <th>备注</th>
+                            <th>创建日期</th>
                             <th>操作</th>
                         </tr>
                     </thead>
@@ -601,207 +597,25 @@
                     </tbody>
                 </table>
             </div>
-        </div>
 
-        <div id="inventory" class="tab-content">
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <h3 id="totalProducts">0</h3>
-                    <p>商品总数</p>
-                </div>
-                <div class="stat-card">
-                    <h3 id="totalStock">0</h3>
-                    <p>库存总量</p>
-                </div>
-                <div class="stat-card">
-                    <h3 id="totalValue">¥0</h3>
-                    <p>库存总值</p>
-                </div>
-                <div class="stat-card">
-                    <h3 id="lowStockCount">0</h3>
-                    <p>低库存商品</p>
-                </div>
-            </div>
-
-            <div class="search-box">
-                <input type="text" id="inventorySearch" placeholder="🔍 搜索库存..." oninput="filterInventory()">
-            </div>
-
-            <div class="table-container">
-                <table id="inventoryTable">
-                    <thead>
-                        <tr>
-                            <th>编码</th>
-                            <th>名称</th>
-                            <th>分类</th>
-                            <th>仓库</th>
-                            <th>当前库存</th>
-                            <th>单位</th>
-                            <th>单价</th>
-                            <th>库存价值</th>
-                            <th>状态</th>
-                            <th>操作</th>
-                        </tr>
-                    </thead>
-                    <tbody id="inventoryTableBody">
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div id="inbound" class="tab-content">
-            <div class="form-row">
-                <div class="form-group">
-                    <label>选择商品</label>
-                    <select id="inboundProduct">
-                        <option value="">请选择商品</option>
+            <div class="pagination">
+                <div class="page-size-selector">
+                    <label>每页显示：</label>
+                    <select id="pageSize" onchange="changePageSize()">
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
                     </select>
                 </div>
-                <div class="form-group">
-                    <label>入库数量</label>
-                    <input type="number" id="inboundQuantity" placeholder="请输入入库数量" min="1">
+                <div class="pagination-info">
+                    共 <span id="totalCount">0</span> 条，第 <span id="currentPage">1</span> / <span id="totalPages">1</span> 页
                 </div>
-                <div class="form-group">
-                    <label>入库类型</label>
-                    <select id="inboundType">
-                        <option value="采购入库">采购入库</option>
-                        <option value="退货入库">退货入库</option>
-                        <option value="生产入库">生产入库</option>
-                        <option value="其他入库">其他入库</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>备注</label>
-                    <input type="text" id="inboundNote" placeholder="请输入备注">
-                </div>
-                <div class="form-group" style="display: flex; align-items: flex-end;">
-                    <button class="btn btn-success" onclick="addInbound()">📥 确认入库</button>
-                </div>
-            </div>
-
-            <div class="table-container">
-                <table id="inboundTable">
-                    <thead>
-                        <tr>
-                            <th>时间</th>
-                            <th>商品</th>
-                            <th>仓库</th>
-                            <th>数量</th>
-                            <th>类型</th>
-                            <th>备注</th>
-                            <th>操作</th>
-                        </tr>
-                    </thead>
-                    <tbody id="inboundTableBody">
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div id="outbound" class="tab-content">
-            <div class="form-row">
-                <div class="form-group">
-                    <label>选择商品</label>
-                    <select id="outboundProduct">
-                        <option value="">请选择商品</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>出库数量</label>
-                    <input type="number" id="outboundQuantity" placeholder="请输入出库数量" min="1">
-                </div>
-                <div class="form-group">
-                    <label>出库类型</label>
-                    <select id="outboundType">
-                        <option value="销售出库">销售出库</option>
-                        <option value="领用出库">领用出库</option>
-                        <option value="报废出库">报废出库</option>
-                        <option value="其他出库">其他出库</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>备注</label>
-                    <input type="text" id="outboundNote" placeholder="请输入备注">
-                </div>
-                <div class="form-group" style="display: flex; align-items: flex-end;">
-                    <button class="btn btn-danger" onclick="addOutbound()">📤 确认出库</button>
-                </div>
-            </div>
-
-            <div class="table-container">
-                <table id="outboundTable">
-                    <thead>
-                        <tr>
-                            <th>时间</th>
-                            <th>商品</th>
-                            <th>仓库</th>
-                            <th>数量</th>
-                            <th>类型</th>
-                            <th>备注</th>
-                            <th>操作</th>
-                        </tr>
-                    </thead>
-                    <tbody id="outboundTableBody">
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div id="statistics" class="tab-content">
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <h3 id="statTotalProducts">0</h3>
-                    <p>商品总数</p>
-                </div>
-                <div class="stat-card">
-                    <h3 id="statTotalStock">0</h3>
-                    <p>库存总量</p>
-                </div>
-                <div class="stat-card">
-                    <h3 id="statTotalValue">¥0</h3>
-                    <p>库存总值</p>
-                </div>
-                <div class="stat-card">
-                    <h3 id="statInboundCount">0</h3>
-                    <p>入库次数</p>
-                </div>
-                <div class="stat-card">
-                    <h3 id="statOutboundCount">0</h3>
-                    <p>出库次数</p>
-                </div>
-                <div class="stat-card">
-                    <h3 id="statLowStock">0</h3>
-                    <p>低库存商品</p>
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label>按分类统计</label>
-                    <select id="categoryFilter" onchange="updateCategoryStats()">
-                        <option value="">全部分类</option>
-                        <option value="电子产品">电子产品</option>
-                        <option value="服装鞋帽">服装鞋帽</option>
-                        <option value="食品饮料">食品饮料</option>
-                        <option value="家居用品">家居用品</option>
-                        <option value="其他">其他</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="table-container">
-                <table id="categoryStatsTable">
-                    <thead>
-                        <tr>
-                            <th>分类</th>
-                            <th>商品数量</th>
-                            <th>库存总量</th>
-                            <th>库存价值</th>
-                        </tr>
-                    </thead>
-                    <tbody id="categoryStatsBody">
-                    </tbody>
-                </table>
+                <button id="firstPage" onclick="goToPage(1)" disabled>首页</button>
+                <button id="prevPage" onclick="goToPage(currentPage - 1)" disabled>上一页</button>
+                <div id="pageNumbers" style="display: flex; gap: 5px;"></div>
+                <button id="nextPage" onclick="goToPage(currentPage + 1)" disabled>下一页</button>
+                <button id="lastPage" onclick="goToPage(totalPages)" disabled>末页</button>
             </div>
         </div>
     </div>
@@ -809,52 +623,92 @@
     <div class="modal" id="editModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>编辑商品</h2>
+                <h2>编辑产品</h2>
                 <button class="close-btn" onclick="closeModal()">&times;</button>
             </div>
             <div class="form-group">
-                <label>商品名称</label>
-                <input type="text" id="editProductName">
-            </div>
-            <div class="form-group">
-                <label>商品编码</label>
+                <label>物料编码</label>
                 <input type="text" id="editProductCode">
             </div>
-            <div class="form-group">
-                <label>商品分类</label>
-                <select id="editProductCategory">
-                    <option value="电子产品">电子产品</option>
-                    <option value="服装鞋帽">服装鞋帽</option>
-                    <option value="食品饮料">食品饮料</option>
-                    <option value="家居用品">家居用品</option>
-                    <option value="其他">其他</option>
-                </select>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>规格</label>
+                    <select id="editProductSpec">
+                        <option value="">请选择规格</option>
+                        <option value="ZC-BV(3C)">ZC-BV(3C)</option>
+                        <option value="BV(3C)">BV(3C)</option>
+                        <option value="ZC-BVR(3C)">ZC-BVR(3C)</option>
+                        <option value="BVR">BVR</option>
+                        <option value="DDZ-BV">DDZ-BV</option>
+                        <option value="N-BV">N-BV</option>
+                        <option value="NH-BV">NH-BV</option>
+                        <option value="WDZA-BYJ">WDZA-BYJ</option>
+                        <option value="WDZAN-BYJ">WDZAN-BYJ</option>
+                        <option value="WDZB1N-BYJ">WDZB1N-BYJ</option>
+                        <option value="WDZB-BYJ">WDZB-BYJ</option>
+                        <option value="WDZB-BYJ(F)">WDZB-BYJ(F)</option>
+                        <option value="WDZB-BYJSS">WDZB-BYJSS</option>
+                        <option value="WDZBN-BYJ">WDZBN-BYJ</option>
+                        <option value="WDZ-BYJ">WDZ-BYJ</option>
+                        <option value="WDZ-BYJR">WDZ-BYJR</option>
+                        <option value="WDZ-BYJSS">WDZ-BYJSS</option>
+                        <option value="WDZC-BYJ">WDZC-BYJ</option>
+                        <option value="WDZN-BYJ">WDZN-BYJ</option>
+                        <option value="WDZN-BYJSS">WDZN-BYJSS</option>
+                        <option value="ZC-BV">ZC-BV</option>
+                        <option value="ZC-BVR">ZC-BVR</option>
+                        <option value="ZC-BVSS">ZC-BVSS</option>
+                        <option value="ZCN-BV">ZCN-BV</option>
+                        <option value="ZC-NBV">ZC-NBV</option>
+                        <option value="ZN-BV">ZN-BV</option>
+                        <option value="ZR-BV">ZR-BV</option>
+                        <option value="WDZCN-BYJ">WDZCN-BYJ</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>型号</label>
+                    <select id="editProductModel">
+                        <option value="">请选择型号</option>
+                        <option value="0.75">0.75</option>
+                        <option value="1">1</option>
+                        <option value="1.5">1.5</option>
+                        <option value="2.5">2.5</option>
+                        <option value="4">4</option>
+                        <option value="6">6</option>
+                        <option value="10">10</option>
+                        <option value="16">16</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>颜色</label>
+                    <select id="editProductColor">
+                        <option value="">请选择颜色</option>
+                        <option value="红">红</option>
+                        <option value="蓝">蓝</option>
+                        <option value="黄">黄</option>
+                        <option value="绿">绿</option>
+                        <option value="双">双</option>
+                        <option value="黑">黑</option>
+                        <option value="白">白</option>
+                        <option value="棕">棕</option>
+                    </select>
+                </div>
             </div>
             <div class="form-group">
-                <label>所属仓库</label>
-                <select id="editProductWarehouse">
-                    <option value="">请选择仓库</option>
-                </select>
+                <label>规格型号颜色</label>
+                <input type="text" id="editProductSpecModelColor" readonly>
             </div>
-            <div class="form-group">
-                <label>单位</label>
-                <select id="editProductUnit">
-                    <option value="件">件</option>
-                    <option value="箱">箱</option>
-                    <option value="个">个</option>
-                    <option value="kg">kg</option>
-                    <option value="g">g</option>
-                    <option value="L">L</option>
-                    <option value="ml">ml</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>单价 (元)</label>
-                <input type="number" id="editProductPrice" step="0.01">
-            </div>
-            <div class="form-group">
-                <label>最小库存预警</label>
-                <input type="number" id="editProductMinStock" min="0">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>版本</label>
+                    <input type="text" id="editProductVersion">
+                </div>
+                <div class="form-group">
+                    <label>备注</label>
+                    <input type="text" id="editProductRemark">
+                </div>
             </div>
             <div class="modal-footer">
                 <button class="btn btn-warning" onclick="closeModal()">取消</button>
@@ -863,47 +717,13 @@
         </div>
     </div>
 
-    <div class="modal" id="editWarehouseModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>编辑仓库</h2>
-                <button class="close-btn" onclick="closeWarehouseModal()">&times;</button>
-            </div>
-            <div class="form-group">
-                <label>仓库名称</label>
-                <input type="text" id="editWarehouseName">
-            </div>
-            <div class="form-group">
-                <label>仓库编码</label>
-                <input type="text" id="editWarehouseCode">
-            </div>
-            <div class="form-group">
-                <label>仓库地址</label>
-                <input type="text" id="editWarehouseAddress">
-            </div>
-            <div class="form-group">
-                <label>负责人</label>
-                <input type="text" id="editWarehouseManager">
-            </div>
-            <div class="form-group">
-                <label>联系电话</label>
-                <input type="text" id="editWarehousePhone">
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-warning" onclick="closeWarehouseModal()">取消</button>
-                <button class="btn btn-primary" onclick="saveWarehouse()">保存</button>
-            </div>
-        </div>
-    </div>
-
     <script>
-        let warehouses = [];
         let products = [];
-        let inboundRecords = [];
-        let outboundRecords = [];
-        let currentWarehouseId = '';
         let editingProductId = null;
-        let editingWarehouseId = null;
+        let currentPage = 1;
+        let pageSize = 10;
+        let totalPages = 1;
+        let filteredProducts = [];
 
         const STORAGE_KEY = 'warehouseData';
 
@@ -911,19 +731,13 @@
             const data = localStorage.getItem(STORAGE_KEY);
             if (data) {
                 const parsed = JSON.parse(data);
-                warehouses = parsed.warehouses || [];
                 products = parsed.products || [];
-                inboundRecords = parsed.inboundRecords || [];
-                outboundRecords = parsed.outboundRecords || [];
             }
         }
 
         function saveData() {
             const data = {
-                warehouses,
-                products,
-                inboundRecords,
-                outboundRecords
+                products
             };
             localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
         }
@@ -936,278 +750,75 @@
             return new Date(date).toLocaleString('zh-CN');
         }
 
-        function formatPrice(price) {
-            return '¥' + parseFloat(price).toFixed(2);
+        function generateSpecModelColor(spec, model, color) {
+            const parts = [];
+            if (spec) parts.push(spec);
+            if (model) parts.push(model);
+            if (color) parts.push(color);
+            return parts.join('');
         }
 
-        function getStockStatus(product) {
-            if (product.stock === 0) {
-                return '<span class="badge badge-danger">缺货</span>';
-            } else if (product.stock <= product.minStock) {
-                return '<span class="badge badge-warning">低库存</span>';
-            } else {
-                return '<span class="badge badge-success">正常</span>';
-            }
+        function updateSpecModelColor() {
+            const spec = document.getElementById('productSpec').value;
+            const model = document.getElementById('productModel').value;
+            const color = document.getElementById('productColor').value;
+            document.getElementById('productSpecModelColor').value = generateSpecModelColor(spec, model, color);
         }
 
-        function getWarehouseById(id) {
-            return warehouses.find(w => w.id === id);
-        }
-
-        function getWarehouseName(id) {
-            const warehouse = getWarehouseById(id);
-            return warehouse ? warehouse.name : '未知';
-        }
-
-        function switchWarehouse() {
-            currentWarehouseId = document.getElementById('currentWarehouse').value;
-            renderProducts();
-            renderInventory();
-            renderInbound();
-            renderOutbound();
-            updateStatistics();
-        }
-
-        function addWarehouse() {
-            const name = document.getElementById('warehouseName').value.trim();
-            const code = document.getElementById('warehouseCode').value.trim();
-            const address = document.getElementById('warehouseAddress').value.trim();
-            const manager = document.getElementById('warehouseManager').value.trim();
-            const phone = document.getElementById('warehousePhone').value.trim();
-
-            if (!name || !code) {
-                alert('请填写仓库名称和编码！');
-                return;
-            }
-
-            if (warehouses.find(w => w.code === code)) {
-                alert('仓库编码已存在！');
-                return;
-            }
-
-            const warehouse = {
-                id: generateId(),
-                name,
-                code,
-                address,
-                manager,
-                phone,
-                createdAt: new Date().toISOString()
-            };
-
-            warehouses.push(warehouse);
-            saveData();
-            renderWarehouses();
-            updateWarehouseSelects();
-            clearWarehouseForm();
-        }
-
-        function clearWarehouseForm() {
-            document.getElementById('warehouseName').value = '';
-            document.getElementById('warehouseCode').value = '';
-            document.getElementById('warehouseAddress').value = '';
-            document.getElementById('warehouseManager').value = '';
-            document.getElementById('warehousePhone').value = '';
-        }
-
-        function editWarehouse(id) {
-            const warehouse = warehouses.find(w => w.id === id);
-            if (!warehouse) return;
-
-            editingWarehouseId = id;
-            document.getElementById('editWarehouseName').value = warehouse.name;
-            document.getElementById('editWarehouseCode').value = warehouse.code;
-            document.getElementById('editWarehouseAddress').value = warehouse.address || '';
-            document.getElementById('editWarehouseManager').value = warehouse.manager || '';
-            document.getElementById('editWarehousePhone').value = warehouse.phone || '';
-
-            document.getElementById('editWarehouseModal').classList.add('active');
-        }
-
-        function saveWarehouse() {
-            const warehouse = warehouses.find(w => w.id === editingWarehouseId);
-            if (!warehouse) return;
-
-            const name = document.getElementById('editWarehouseName').value.trim();
-            const code = document.getElementById('editWarehouseCode').value.trim();
-            const address = document.getElementById('editWarehouseAddress').value.trim();
-            const manager = document.getElementById('editWarehouseManager').value.trim();
-            const phone = document.getElementById('editWarehousePhone').value.trim();
-
-            if (!name || !code) {
-                alert('请填写仓库名称和编码！');
-                return;
-            }
-
-            const existingWarehouse = warehouses.find(w => w.code === code && w.id !== editingWarehouseId);
-            if (existingWarehouse) {
-                alert('仓库编码已存在！');
-                return;
-            }
-
-            warehouse.name = name;
-            warehouse.code = code;
-            warehouse.address = address;
-            warehouse.manager = manager;
-            warehouse.phone = phone;
-
-            saveData();
-            renderWarehouses();
-            updateWarehouseSelects();
-            closeWarehouseModal();
-        }
-
-        function closeWarehouseModal() {
-            document.getElementById('editWarehouseModal').classList.remove('active');
-            editingWarehouseId = null;
-        }
-
-        function deleteWarehouse(id) {
-            const warehouseProducts = products.filter(p => p.warehouseId === id);
-            if (warehouseProducts.length > 0) {
-                alert('该仓库下还有商品，无法删除！');
-                return;
-            }
-
-            if (!confirm('确定要删除这个仓库吗？')) return;
-
-            warehouses = warehouses.filter(w => w.id !== id);
-            if (currentWarehouseId === id) {
-                currentWarehouseId = '';
-                document.getElementById('currentWarehouse').value = '';
-            }
-            saveData();
-            renderWarehouses();
-            updateWarehouseSelects();
-        }
-
-        function renderWarehouses() {
-            const container = document.getElementById('warehousesList');
-            
-            if (warehouses.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <i>🏭</i>
-                        <p>暂无仓库数据</p>
-                    </div>
-                `;
-                return;
-            }
-
-            container.innerHTML = warehouses.map(warehouse => {
-                const warehouseProducts = products.filter(p => p.warehouseId === warehouse.id);
-                const totalStock = warehouseProducts.reduce((sum, p) => sum + p.stock, 0);
-                const totalValue = warehouseProducts.reduce((sum, p) => sum + p.stock * p.price, 0);
-                const isActive = warehouse.id === currentWarehouseId;
-
-                return `
-                    <div class="warehouse-card ${isActive ? 'active' : ''}">
-                        <div class="warehouse-card-header">
-                            <h4>🏭 ${warehouse.name}</h4>
-                            <div class="action-buttons">
-                                <button class="btn btn-sm btn-info" onclick="editWarehouse('${warehouse.id}')">编辑</button>
-                                <button class="btn btn-sm btn-danger" onclick="deleteWarehouse('${warehouse.id}')">删除</button>
-                            </div>
-                        </div>
-                        <div class="warehouse-info">
-                            <div class="warehouse-info-item">
-                                <span>编码</span>
-                                <span>${warehouse.code}</span>
-                            </div>
-                            <div class="warehouse-info-item">
-                                <span>地址</span>
-                                <span>${warehouse.address || '-'}</span>
-                            </div>
-                            <div class="warehouse-info-item">
-                                <span>负责人</span>
-                                <span>${warehouse.manager || '-'}</span>
-                            </div>
-                            <div class="warehouse-info-item">
-                                <span>联系电话</span>
-                                <span>${warehouse.phone || '-'}</span>
-                            </div>
-                            <div class="warehouse-info-item">
-                                <span>商品数量</span>
-                                <span>${warehouseProducts.length}</span>
-                            </div>
-                            <div class="warehouse-info-item">
-                                <span>库存总量</span>
-                                <span>${totalStock}</span>
-                            </div>
-                            <div class="warehouse-info-item">
-                                <span>库存价值</span>
-                                <span>${formatPrice(totalValue)}</span>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function updateWarehouseSelects() {
-            const currentSelect = document.getElementById('currentWarehouse');
-            const productSelect = document.getElementById('productWarehouse');
-            const editProductSelect = document.getElementById('editProductWarehouse');
-
-            const options = '<option value="">全部仓库</option>' + 
-                warehouses.map(w => `<option value="${w.id}">${w.code} - ${w.name}</option>`).join('');
-
-            const productOptions = '<option value="">请选择仓库</option>' + 
-                warehouses.map(w => `<option value="${w.id}">${w.code} - ${w.name}</option>`).join('');
-
-            const currentSelection = currentSelect.value;
-            currentSelect.innerHTML = options;
-            currentSelect.value = currentSelection;
-
-            productSelect.innerHTML = productOptions;
-            editProductSelect.innerHTML = productOptions;
+        function updateEditSpecModelColor() {
+            const spec = document.getElementById('editProductSpec').value;
+            const model = document.getElementById('editProductModel').value;
+            const color = document.getElementById('editProductColor').value;
+            document.getElementById('editProductSpecModelColor').value = generateSpecModelColor(spec, model, color);
         }
 
         function addProduct() {
-            const name = document.getElementById('productName').value.trim();
             const code = document.getElementById('productCode').value.trim();
-            const category = document.getElementById('productCategory').value;
-            const warehouseId = document.getElementById('productWarehouse').value;
-            const unit = document.getElementById('productUnit').value;
-            const price = parseFloat(document.getElementById('productPrice').value);
-            const stock = parseInt(document.getElementById('productStock').value) || 0;
-            const minStock = parseInt(document.getElementById('productMinStock').value) || 0;
+            const spec = document.getElementById('productSpec').value;
+            const model = document.getElementById('productModel').value;
+            const color = document.getElementById('productColor').value;
+            const version = document.getElementById('productVersion').value.trim();
+            const remark = document.getElementById('productRemark').value.trim();
 
-            if (!name || !code || !category || !warehouseId || !price) {
-                alert('请填写完整信息！');
+            if (!code) {
+                alert('请填写物料编码！');
                 return;
             }
 
+            if (products.find(p => p.code === code)) {
+                alert('物料编码已存在！');
+                return;
+            }
+
+            const specModelColor = generateSpecModelColor(spec, model, color);
+
             const product = {
                 id: generateId(),
-                name,
                 code,
-                category,
-                warehouseId,
-                unit,
-                price,
-                stock,
-                minStock,
+                spec,
+                model,
+                color,
+                specModelColor,
+                version,
+                remark,
                 createdAt: new Date().toISOString()
             };
 
             products.push(product);
             saveData();
-            renderProducts();
-            renderInventory();
-            renderWarehouses();
-            updateStatistics();
+            filteredProducts = products;
+            renderProductsTable(filteredProducts);
             clearProductForm();
         }
 
         function clearProductForm() {
-            document.getElementById('productName').value = '';
             document.getElementById('productCode').value = '';
-            document.getElementById('productCategory').value = '';
-            document.getElementById('productWarehouse').value = '';
-            document.getElementById('productPrice').value = '';
-            document.getElementById('productStock').value = '';
-            document.getElementById('productMinStock').value = '';
+            document.getElementById('productSpec').value = '';
+            document.getElementById('productModel').value = '';
+            document.getElementById('productColor').value = '';
+            document.getElementById('productSpecModelColor').value = '';
+            document.getElementById('productVersion').value = '';
+            document.getElementById('productRemark').value = '';
         }
 
         function editProduct(id) {
@@ -1215,13 +826,13 @@
             if (!product) return;
 
             editingProductId = id;
-            document.getElementById('editProductName').value = product.name;
             document.getElementById('editProductCode').value = product.code;
-            document.getElementById('editProductCategory').value = product.category;
-            document.getElementById('editProductWarehouse').value = product.warehouseId;
-            document.getElementById('editProductUnit').value = product.unit;
-            document.getElementById('editProductPrice').value = product.price;
-            document.getElementById('editProductMinStock').value = product.minStock;
+            document.getElementById('editProductSpec').value = product.spec || '';
+            document.getElementById('editProductModel').value = product.model || '';
+            document.getElementById('editProductColor').value = product.color || '';
+            document.getElementById('editProductSpecModelColor').value = product.specModelColor || '';
+            document.getElementById('editProductVersion').value = product.version || '';
+            document.getElementById('editProductRemark').value = product.remark || '';
 
             document.getElementById('editModal').classList.add('active');
         }
@@ -1230,38 +841,36 @@
             const product = products.find(p => p.id === editingProductId);
             if (!product) return;
 
-            const name = document.getElementById('editProductName').value.trim();
             const code = document.getElementById('editProductCode').value.trim();
-            const category = document.getElementById('editProductCategory').value;
-            const warehouseId = document.getElementById('editProductWarehouse').value;
-            const unit = document.getElementById('editProductUnit').value;
-            const price = parseFloat(document.getElementById('editProductPrice').value);
-            const minStock = parseInt(document.getElementById('editProductMinStock').value) || 0;
+            const spec = document.getElementById('editProductSpec').value;
+            const model = document.getElementById('editProductModel').value;
+            const color = document.getElementById('editProductColor').value;
+            const version = document.getElementById('editProductVersion').value.trim();
+            const remark = document.getElementById('editProductRemark').value.trim();
 
-            if (!name || !code || !category || !warehouseId || !price) {
-                alert('请填写完整信息！');
+            if (!code) {
+                alert('请填写物料编码！');
                 return;
             }
 
             const existingProduct = products.find(p => p.code === code && p.id !== editingProductId);
             if (existingProduct) {
-                alert('商品编码已存在！');
+                alert('物料编码已存在！');
                 return;
             }
 
-            product.name = name;
+            const specModelColor = generateSpecModelColor(spec, model, color);
+
             product.code = code;
-            product.category = category;
-            product.warehouseId = warehouseId;
-            product.unit = unit;
-            product.price = price;
-            product.minStock = minStock;
+            product.spec = spec;
+            product.model = model;
+            product.color = color;
+            product.specModelColor = specModelColor;
+            product.version = version;
+            product.remark = remark;
 
             saveData();
             renderProducts();
-            renderInventory();
-            renderWarehouses();
-            updateStatistics();
             closeModal();
         }
 
@@ -1271,42 +880,27 @@
         }
 
         function deleteProduct(id) {
-            if (!confirm('确定要删除这个商品吗？')) return;
+            if (!confirm('确定要删除这个产品吗？')) return;
 
             products = products.filter(p => p.id !== id);
-            inboundRecords = inboundRecords.filter(r => r.productId !== id);
-            outboundRecords = outboundRecords.filter(r => r.productId !== id);
             saveData();
             renderProducts();
-            renderInventory();
-            renderInbound();
-            renderOutbound();
-            renderWarehouses();
-            updateStatistics();
         }
 
         function filterProducts() {
             const search = document.getElementById('productSearch').value.toLowerCase();
-            let filtered = products;
-            
-            if (currentWarehouseId) {
-                filtered = filtered.filter(p => p.warehouseId === currentWarehouseId);
-            }
-            
-            filtered = filtered.filter(p => 
-                p.name.toLowerCase().includes(search) || 
-                p.code.toLowerCase().includes(search)
+            filteredProducts = products.filter(p => 
+                p.code.toLowerCase().includes(search) || 
+                p.specModelColor.toLowerCase().includes(search)
             );
-            renderProductsTable(filtered);
+            currentPage = 1;
+            renderProductsTable(filteredProducts);
         }
 
         function renderProducts() {
-            let filtered = products;
-            if (currentWarehouseId) {
-                filtered = filtered.filter(p => p.warehouseId === currentWarehouseId);
-            }
-            renderProductsTable(filtered);
-            updateProductSelects();
+            filteredProducts = products;
+            currentPage = 1;
+            renderProductsTable(filteredProducts);
         }
 
         function renderProductsTable(productList) {
@@ -1315,25 +909,34 @@
             if (productList.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="9" class="empty-state">
+                        <td colspan="10" class="empty-state">
                             <i>📦</i>
-                            <p>暂无商品数据</p>
+                            <p>暂无产品数据</p>
                         </td>
                     </tr>
                 `;
+                updatePagination(0);
                 return;
             }
 
-            tbody.innerHTML = productList.map(product => `
+            totalPages = Math.ceil(productList.length / pageSize);
+            const startIndex = (currentPage - 1) * pageSize;
+            const endIndex = startIndex + pageSize;
+            const pageData = productList.slice(startIndex, endIndex);
+
+            tbody.innerHTML = pageData.map(product => `
                 <tr>
+                    <td>
+                        <input type="checkbox" class="product-checkbox" value="${product.id}">
+                    </td>
                     <td>${product.code}</td>
-                    <td>${product.name}</td>
-                    <td>${product.category}</td>
-                    <td>${getWarehouseName(product.warehouseId)}</td>
-                    <td>${formatPrice(product.price)}</td>
-                    <td>${product.stock}</td>
-                    <td>${product.unit}</td>
-                    <td>${getStockStatus(product)}</td>
+                    <td>${product.specModelColor || '-'}</td>
+                    <td>${product.spec || '-'}</td>
+                    <td>${product.model || '-'}</td>
+                    <td>${product.color || '-'}</td>
+                    <td>${product.version || '-'}</td>
+                    <td>${product.remark || '-'}</td>
+                    <td>${formatDate(product.createdAt)}</td>
                     <td>
                         <div class="action-buttons">
                             <button class="btn btn-sm btn-warning" onclick="editProduct('${product.id}')">编辑</button>
@@ -1342,394 +945,195 @@
                     </td>
                 </tr>
             `).join('');
+
+            updatePagination(productList.length);
         }
 
-        function filterInventory() {
-            const search = document.getElementById('inventorySearch').value.toLowerCase();
-            let filtered = products;
-            
-            if (currentWarehouseId) {
-                filtered = filtered.filter(p => p.warehouseId === currentWarehouseId);
-            }
-            
-            filtered = filtered.filter(p => 
-                p.name.toLowerCase().includes(search) || 
-                p.code.toLowerCase().includes(search)
-            );
-            renderInventoryTable(filtered);
+        function updatePagination(totalCount) {
+            document.getElementById('totalCount').textContent = totalCount;
+            document.getElementById('currentPage').textContent = currentPage;
+            document.getElementById('totalPages').textContent = totalPages || 1;
+
+            document.getElementById('firstPage').disabled = currentPage <= 1;
+            document.getElementById('prevPage').disabled = currentPage <= 1;
+            document.getElementById('nextPage').disabled = currentPage >= totalPages;
+            document.getElementById('lastPage').disabled = currentPage >= totalPages;
+
+            renderPageNumbers();
         }
 
-        function renderInventory() {
-            let filtered = products;
-            if (currentWarehouseId) {
-                filtered = filtered.filter(p => p.warehouseId === currentWarehouseId);
-            }
-            renderInventoryTable(filtered);
-            updateInventoryStats();
-        }
+        function renderPageNumbers() {
+            const container = document.getElementById('pageNumbers');
+            let pageNumbers = [];
 
-        function renderInventoryTable(productList) {
-            const tbody = document.getElementById('inventoryTableBody');
-            
-            if (productList.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="10" class="empty-state">
-                            <i>📊</i>
-                            <p>暂无库存数据</p>
-                        </td>
-                    </tr>
-                `;
-                return;
-            }
-
-            tbody.innerHTML = productList.map(product => `
-                <tr>
-                    <td>${product.code}</td>
-                    <td>${product.name}</td>
-                    <td>${product.category}</td>
-                    <td>${getWarehouseName(product.warehouseId)}</td>
-                    <td>${product.stock}</td>
-                    <td>${product.unit}</td>
-                    <td>${formatPrice(product.price)}</td>
-                    <td>${formatPrice(product.stock * product.price)}</td>
-                    <td>${getStockStatus(product)}</td>
-                    <td>
-                        <button class="btn btn-sm btn-primary" onclick="quickInbound('${product.id}')">入库</button>
-                        <button class="btn btn-sm btn-danger" onclick="quickOutbound('${product.id}')">出库</button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        function updateInventoryStats() {
-            let filtered = products;
-            if (currentWarehouseId) {
-                filtered = filtered.filter(p => p.warehouseId === currentWarehouseId);
-            }
-
-            const totalProducts = filtered.length;
-            const totalStock = filtered.reduce((sum, p) => sum + p.stock, 0);
-            const totalValue = filtered.reduce((sum, p) => sum + p.stock * p.price, 0);
-            const lowStockCount = filtered.filter(p => p.stock <= p.minStock).length;
-
-            document.getElementById('totalProducts').textContent = totalProducts;
-            document.getElementById('totalStock').textContent = totalStock;
-            document.getElementById('totalValue').textContent = formatPrice(totalValue);
-            document.getElementById('lowStockCount').textContent = lowStockCount;
-        }
-
-        function updateProductSelects() {
-            const inboundSelect = document.getElementById('inboundProduct');
-            const outboundSelect = document.getElementById('outboundProduct');
-
-            let filtered = products;
-            if (currentWarehouseId) {
-                filtered = filtered.filter(p => p.warehouseId === currentWarehouseId);
-            }
-
-            const options = '<option value="">请选择商品</option>' + 
-                filtered.map(p => `<option value="${p.id}">${p.code} - ${p.name} (库存: ${p.stock})</option>`).join('');
-
-            inboundSelect.innerHTML = options;
-            outboundSelect.innerHTML = options;
-        }
-
-        function addInbound() {
-            const productId = document.getElementById('inboundProduct').value;
-            const quantity = parseInt(document.getElementById('inboundQuantity').value);
-            const type = document.getElementById('inboundType').value;
-            const note = document.getElementById('inboundNote').value;
-
-            if (!productId || !quantity || quantity <= 0) {
-                alert('请选择商品并输入有效数量！');
-                return;
-            }
-
-            const product = products.find(p => p.id === productId);
-            if (!product) return;
-
-            product.stock += quantity;
-
-            const record = {
-                id: generateId(),
-                productId,
-                productName: product.name,
-                productCode: product.code,
-                warehouseId: product.warehouseId,
-                warehouseName: getWarehouseName(product.warehouseId),
-                quantity,
-                type,
-                note,
-                createdAt: new Date().toISOString()
-            };
-
-            inboundRecords.unshift(record);
-            saveData();
-            renderProducts();
-            renderInventory();
-            renderInbound();
-            renderWarehouses();
-            updateStatistics();
-            clearInboundForm();
-        }
-
-        function clearInboundForm() {
-            document.getElementById('inboundProduct').value = '';
-            document.getElementById('inboundQuantity').value = '';
-            document.getElementById('inboundNote').value = '';
-        }
-
-        function deleteInbound(id) {
-            if (!confirm('确定要删除这条入库记录吗？')) return;
-
-            const record = inboundRecords.find(r => r.id === id);
-            if (!record) return;
-
-            const product = products.find(p => p.id === record.productId);
-            if (product) {
-                product.stock = Math.max(0, product.stock - record.quantity);
-            }
-
-            inboundRecords = inboundRecords.filter(r => r.id !== id);
-            saveData();
-            renderProducts();
-            renderInventory();
-            renderInbound();
-            renderWarehouses();
-            updateStatistics();
-        }
-
-        function renderInbound() {
-            let filtered = inboundRecords;
-            if (currentWarehouseId) {
-                filtered = filtered.filter(r => r.warehouseId === currentWarehouseId);
-            }
-
-            const tbody = document.getElementById('inboundTableBody');
-            
-            if (filtered.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="7" class="empty-state">
-                            <i>📥</i>
-                            <p>暂无入库记录</p>
-                        </td>
-                    </tr>
-                `;
-                return;
-            }
-
-            tbody.innerHTML = filtered.map(record => `
-                <tr>
-                    <td>${formatDate(record.createdAt)}</td>
-                    <td>${record.productCode} - ${record.productName}</td>
-                    <td>${record.warehouseName}</td>
-                    <td class="badge badge-success">+${record.quantity}</td>
-                    <td>${record.type}</td>
-                    <td>${record.note || '-'}</td>
-                    <td>
-                        <button class="btn btn-sm btn-danger" onclick="deleteInbound('${record.id}')">删除</button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        function addOutbound() {
-            const productId = document.getElementById('outboundProduct').value;
-            const quantity = parseInt(document.getElementById('outboundQuantity').value);
-            const type = document.getElementById('outboundType').value;
-            const note = document.getElementById('outboundNote').value;
-
-            if (!productId || !quantity || quantity <= 0) {
-                alert('请选择商品并输入有效数量！');
-                return;
-            }
-
-            const product = products.find(p => p.id === productId);
-            if (!product) return;
-
-            if (product.stock < quantity) {
-                alert('库存不足！当前库存: ' + product.stock);
-                return;
-            }
-
-            product.stock -= quantity;
-
-            const record = {
-                id: generateId(),
-                productId,
-                productName: product.name,
-                productCode: product.code,
-                warehouseId: product.warehouseId,
-                warehouseName: getWarehouseName(product.warehouseId),
-                quantity,
-                type,
-                note,
-                createdAt: new Date().toISOString()
-            };
-
-            outboundRecords.unshift(record);
-            saveData();
-            renderProducts();
-            renderInventory();
-            renderOutbound();
-            renderWarehouses();
-            updateStatistics();
-            clearOutboundForm();
-        }
-
-        function clearOutboundForm() {
-            document.getElementById('outboundProduct').value = '';
-            document.getElementById('outboundQuantity').value = '';
-            document.getElementById('outboundNote').value = '';
-        }
-
-        function deleteOutbound(id) {
-            if (!confirm('确定要删除这条出库记录吗？')) return;
-
-            const record = outboundRecords.find(r => r.id === id);
-            if (!record) return;
-
-            const product = products.find(p => p.id === record.productId);
-            if (product) {
-                product.stock += record.quantity;
-            }
-
-            outboundRecords = outboundRecords.filter(r => r.id !== id);
-            saveData();
-            renderProducts();
-            renderInventory();
-            renderOutbound();
-            renderWarehouses();
-            updateStatistics();
-        }
-
-        function renderOutbound() {
-            let filtered = outboundRecords;
-            if (currentWarehouseId) {
-                filtered = filtered.filter(r => r.warehouseId === currentWarehouseId);
-            }
-
-            const tbody = document.getElementById('outboundTableBody');
-            
-            if (filtered.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="7" class="empty-state">
-                            <i>📤</i>
-                            <p>暂无出库记录</p>
-                        </td>
-                    </tr>
-                `;
-                return;
-            }
-
-            tbody.innerHTML = filtered.map(record => `
-                <tr>
-                    <td>${formatDate(record.createdAt)}</td>
-                    <td>${record.productCode} - ${record.productName}</td>
-                    <td>${record.warehouseName}</td>
-                    <td class="badge badge-danger">-${record.quantity}</td>
-                    <td>${record.type}</td>
-                    <td>${record.note || '-'}</td>
-                    <td>
-                        <button class="btn btn-sm btn-danger" onclick="deleteOutbound('${record.id}')">删除</button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        function quickInbound(productId) {
-            document.querySelector('[data-tab="inbound"]').click();
-            document.getElementById('inboundProduct').value = productId;
-            document.getElementById('inboundQuantity').focus();
-        }
-
-        function quickOutbound(productId) {
-            document.querySelector('[data-tab="outbound"]').click();
-            document.getElementById('outboundProduct').value = productId;
-            document.getElementById('outboundQuantity').focus();
-        }
-
-        function updateStatistics() {
-            let filtered = products;
-            if (currentWarehouseId) {
-                filtered = filtered.filter(p => p.warehouseId === currentWarehouseId);
-            }
-
-            let filteredInbound = inboundRecords;
-            let filteredOutbound = outboundRecords;
-            if (currentWarehouseId) {
-                filteredInbound = filteredInbound.filter(r => r.warehouseId === currentWarehouseId);
-                filteredOutbound = filteredOutbound.filter(r => r.warehouseId === currentWarehouseId);
-            }
-
-            const totalProducts = filtered.length;
-            const totalStock = filtered.reduce((sum, p) => sum + p.stock, 0);
-            const totalValue = filtered.reduce((sum, p) => sum + p.stock * p.price, 0);
-            const inboundCount = filteredInbound.length;
-            const outboundCount = filteredOutbound.length;
-            const lowStock = filtered.filter(p => p.stock <= p.minStock).length;
-
-            document.getElementById('statTotalProducts').textContent = totalProducts;
-            document.getElementById('statTotalStock').textContent = totalStock;
-            document.getElementById('statTotalValue').textContent = formatPrice(totalValue);
-            document.getElementById('statInboundCount').textContent = inboundCount;
-            document.getElementById('statOutboundCount').textContent = outboundCount;
-            document.getElementById('statLowStock').textContent = lowStock;
-
-            updateCategoryStats();
-        }
-
-        function updateCategoryStats() {
-            const categoryFilter = document.getElementById('categoryFilter').value;
-            let filtered = products;
-            
-            if (currentWarehouseId) {
-                filtered = filtered.filter(p => p.warehouseId === currentWarehouseId);
-            }
-
-            if (categoryFilter) {
-                filtered = filtered.filter(p => p.category === categoryFilter);
-            }
-
-            const categories = {};
-            filtered.forEach(product => {
-                if (!categories[product.category]) {
-                    categories[product.category] = {
-                        count: 0,
-                        stock: 0,
-                        value: 0
-                    };
+            if (totalPages <= 7) {
+                for (let i = 1; i <= totalPages; i++) {
+                    pageNumbers.push(i);
                 }
-                categories[product.category].count++;
-                categories[product.category].stock += product.stock;
-                categories[product.category].value += product.stock * product.price;
-            });
+            } else {
+                if (currentPage <= 4) {
+                    pageNumbers = [1, 2, 3, 4, 5, '...', totalPages];
+                } else if (currentPage >= totalPages - 3) {
+                    pageNumbers = [1, '...', totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages];
+                } else {
+                    pageNumbers = [1, '...', currentPage - 1, currentPage, currentPage + 1, '...', totalPages];
+                }
+            }
 
-            const tbody = document.getElementById('categoryStatsBody');
-            
-            if (Object.keys(categories).length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="4" class="empty-state">
-                            <i>📊</i>
-                            <p>暂无统计数据</p>
-                        </td>
-                    </tr>
-                `;
+            container.innerHTML = pageNumbers.map(page => {
+                if (page === '...') {
+                    return `<span style="padding: 8px 12px; color: #999;">...</span>`;
+                }
+                const activeClass = page === currentPage ? 'active' : '';
+                return `<button onclick="goToPage(${page})" class="${activeClass}">${page}</button>`;
+            }).join('');
+        }
+
+        function goToPage(page) {
+            if (page < 1 || page > totalPages || page === currentPage) return;
+            currentPage = page;
+            renderProductsTable(filteredProducts);
+        }
+
+        function changePageSize() {
+            pageSize = parseInt(document.getElementById('pageSize').value);
+            currentPage = 1;
+            renderProductsTable(filteredProducts);
+        }
+
+        function toggleSelectAll() {
+            const selectAll = document.getElementById('selectAll');
+            const checkboxes = document.querySelectorAll('.product-checkbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = selectAll.checked;
+            });
+        }
+
+        function exportProducts() {
+            if (products.length === 0) {
+                alert('暂无产品数据可导出！');
                 return;
             }
 
-            tbody.innerHTML = Object.entries(categories).map(([category, data]) => `
-                <tr>
-                    <td>${category}</td>
-                    <td>${data.count}</td>
-                    <td>${data.stock}</td>
-                    <td>${formatPrice(data.value)}</td>
-                </tr>
-            `).join('');
+            const exportData = products.map(product => ({
+                '物料编码': product.code,
+                '规格': product.spec || '',
+                '型号': product.model || '',
+                '颜色': product.color || '',
+                '规格型号颜色': product.specModelColor || '',
+                '版本': product.version || '',
+                '备注': product.remark || '',
+                '创建日期': formatDate(product.createdAt)
+            }));
+
+            const ws = XLSX.utils.json_to_sheet(exportData);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, '产品明细');
+            XLSX.writeFile(wb, '产品明细_' + new Date().toISOString().slice(0, 10) + '.xlsx');
+        }
+
+        function batchDeleteProducts() {
+            const checkboxes = document.querySelectorAll('.product-checkbox:checked');
+            if (checkboxes.length === 0) {
+                alert('请先选择要删除的产品！');
+                return;
+            }
+
+            if (!confirm(`确定要删除选中的 ${checkboxes.length} 个产品吗？`)) return;
+
+            const selectedIds = Array.from(checkboxes).map(cb => cb.value);
+            products = products.filter(p => !selectedIds.includes(p.id));
+            saveData();
+            
+            filteredProducts = products;
+            if (currentPage > Math.ceil(filteredProducts.length / pageSize)) {
+                currentPage = Math.max(1, Math.ceil(filteredProducts.length / pageSize));
+            }
+            
+            renderProductsTable(filteredProducts);
+            document.getElementById('selectAll').checked = false;
+        }
+
+        function downloadTemplate() {
+            const templateData = [
+                {
+                    '物料编码': '示例001',
+                    '规格': 'BV(3C)',
+                    '型号': '2.5',
+                    '颜色': '红',
+                    '版本': 'V1.0',
+                    '备注': '示例备注'
+                }
+            ];
+
+            const ws = XLSX.utils.json_to_sheet(templateData);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, '产品模板');
+            XLSX.writeFile(wb, '产品导入模板.xlsx');
+        }
+
+        function handleExcelUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const sheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[sheetName];
+                    const jsonData = XLSX.utils.sheet_to_json(worksheet);
+
+                    let successCount = 0;
+                    let errorCount = 0;
+
+                    jsonData.forEach(row => {
+                        const code = row['物料编码']?.trim();
+                        const spec = row['规格']?.toString();
+                        const model = row['型号']?.toString();
+                        const color = row['颜色']?.toString();
+                        const version = row['版本']?.toString().trim();
+                        const remark = row['备注']?.toString().trim();
+
+                        if (!code) {
+                            errorCount++;
+                            return;
+                        }
+
+                        if (products.find(p => p.code === code)) {
+                            errorCount++;
+                            return;
+                        }
+
+                        const specModelColor = generateSpecModelColor(spec, model, color);
+
+                        const product = {
+                            id: generateId(),
+                            code,
+                            spec,
+                            model,
+                            color,
+                            specModelColor,
+                            version,
+                            remark,
+                            createdAt: new Date().toISOString()
+                        };
+
+                        products.push(product);
+                        successCount++;
+                    });
+
+                    saveData();
+                    renderProducts();
+
+                    alert(`导入完成！\n成功：${successCount} 条\n失败：${errorCount} 条`);
+                } catch (error) {
+                    alert('导入失败：' + error.message);
+                }
+            };
+            reader.readAsArrayBuffer(file);
+            event.target.value = '';
         }
 
         document.querySelectorAll('.tab').forEach(tab => {
@@ -1742,14 +1146,16 @@
             });
         });
 
+        document.getElementById('productSpec').addEventListener('change', updateSpecModelColor);
+        document.getElementById('productModel').addEventListener('change', updateSpecModelColor);
+        document.getElementById('productColor').addEventListener('change', updateSpecModelColor);
+
+        document.getElementById('editProductSpec').addEventListener('change', updateEditSpecModelColor);
+        document.getElementById('editProductModel').addEventListener('change', updateEditSpecModelColor);
+        document.getElementById('editProductColor').addEventListener('change', updateEditSpecModelColor);
+
         loadData();
-        renderWarehouses();
-        updateWarehouseSelects();
         renderProducts();
-        renderInventory();
-        renderInbound();
-        renderOutbound();
-        updateStatistics();
     </script>
 </body>
 </html>
