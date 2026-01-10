@@ -828,18 +828,27 @@
         let filteredMonthlyRecords = [];
 
         const STORAGE_KEY = 'warehouseData';
+        const DATA_FILE = 'data.json';
 
-        function loadData() {
-            const data = localStorage.getItem(STORAGE_KEY);
-            if (data) {
-                const parsed = JSON.parse(data);
-                products = parsed.products || [];
-                monthlyRecords = parsed.monthlyRecords || [];
+        async function loadData() {
+            try {
+                const response = await fetch(DATA_FILE);
+                const data = await response.json();
+                products = data.products || [];
+                monthlyRecords = data.monthlyRecords || [];
+            } catch (error) {
+                const localData = localStorage.getItem(STORAGE_KEY);
+                if (localData) {
+                    const parsed = JSON.parse(localData);
+                    products = parsed.products || [];
+                    monthlyRecords = parsed.monthlyRecords || [];
+                }
             }
         }
 
         function saveData() {
             const data = {
+                exportTime: new Date().toISOString(),
                 products,
                 monthlyRecords
             };
@@ -1590,10 +1599,12 @@
             event.target.value = '';
         }
 
-        loadData();
-        renderProducts();
-        updateWarehouseAndProductSelects();
-        renderMonthlyTable(monthlyRecords);
+        (async function init() {
+            await loadData();
+            renderProducts();
+            updateWarehouseAndProductSelects();
+            renderMonthlyTable(monthlyRecords);
+        })();
     </script>
 </body>
 </html>
