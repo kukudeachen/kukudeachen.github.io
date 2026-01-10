@@ -613,7 +613,7 @@
                     </select>
                 </div>
                 <div class="pagination-info">
-                    共 <span id="totalCount">0</span> 条，第 <span id="currentPage">1</span> / <span id="totalPages">1</span> 页
+                    共 <span id="totalCount">0</span> 条，第 <span id="currentPage">1</span> / <span id="totalPages">1</span> 页，总数量：<span id="productsTotalCount">0</span>
                 </div>
                 <button id="firstPage" onclick="goToPage(1)" disabled>首页</button>
                 <button id="prevPage" onclick="goToPage(currentPage - 1)" disabled>上一页</button>
@@ -699,7 +699,7 @@
                     </select>
                 </div>
                 <div class="pagination-info">
-                    共 <span id="monthlyTotalCount">0</span> 条，第 <span id="monthlyCurrentPage">1</span> / <span id="monthlyTotalPages">1</span> 页
+                    共 <span id="monthlyTotalCount">0</span> 条，第 <span id="monthlyCurrentPage">1</span> / <span id="monthlyTotalPages">1</span> 页，总数量：<span id="monthlyRecordsTotalCount">0</span>
                 </div>
                 <button id="monthlyFirstPage" onclick="goToMonthlyPage(1)" disabled>首页</button>
                 <button id="monthlyPrevPage" onclick="goToMonthlyPage(monthlyCurrentPage - 1)" disabled>上一页</button>
@@ -1065,12 +1065,11 @@
             document.getElementById('totalCount').textContent = totalCount;
             document.getElementById('currentPage').textContent = currentPage;
             document.getElementById('totalPages').textContent = totalPages || 1;
-
+            document.getElementById('productsTotalCount').textContent = products.length;
             document.getElementById('firstPage').disabled = currentPage <= 1;
             document.getElementById('prevPage').disabled = currentPage <= 1;
             document.getElementById('nextPage').disabled = currentPage >= totalPages;
             document.getElementById('lastPage').disabled = currentPage >= totalPages;
-
             renderPageNumbers();
         }
 
@@ -1366,12 +1365,11 @@
             document.getElementById('monthlyTotalCount').textContent = totalCount;
             document.getElementById('monthlyCurrentPage').textContent = monthlyCurrentPage;
             document.getElementById('monthlyTotalPages').textContent = monthlyTotalPages || 1;
-
+            document.getElementById('monthlyRecordsTotalCount').textContent = monthlyRecords.length;
             document.getElementById('monthlyFirstPage').disabled = monthlyCurrentPage <= 1;
             document.getElementById('monthlyPrevPage').disabled = monthlyCurrentPage <= 1;
             document.getElementById('monthlyNextPage').disabled = monthlyCurrentPage >= monthlyTotalPages;
             document.getElementById('monthlyLastPage').disabled = monthlyCurrentPage >= monthlyTotalPages;
-
             renderMonthlyPageNumbers();
         }
 
