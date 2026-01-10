@@ -574,9 +574,6 @@
                 <div class="form-group">
                     <button class="btn btn-danger" onclick="batchDeleteProducts()">🗑️ 批量删除产品</button>
                 </div>
-                <div class="form-group">
-                    <button class="btn btn-info" onclick="exportAndUpdateDataJson()">💾 导出并更新data.json</button>
-                </div>
             </div>
 
             <div class="table-container">
@@ -613,7 +610,7 @@
                     </select>
                 </div>
                 <div class="pagination-info">
-                    共 <span id="totalCount">0</span> 条，第 <span id="currentPage">1</span> / <span id="totalPages">1</span> 页，总数量：<span id="productsTotalCount">0</span>
+                    共 <span id="totalCount">0</span> 条，第 <span id="currentPage">1</span> / <span id="totalPages">1</span> 页
                 </div>
                 <button id="firstPage" onclick="goToPage(1)" disabled>首页</button>
                 <button id="prevPage" onclick="goToPage(currentPage - 1)" disabled>上一页</button>
@@ -699,7 +696,7 @@
                     </select>
                 </div>
                 <div class="pagination-info">
-                    共 <span id="monthlyTotalCount">0</span> 条，第 <span id="monthlyCurrentPage">1</span> / <span id="monthlyTotalPages">1</span> 页，总数量：<span id="monthlyRecordsTotalCount">0</span>
+                    共 <span id="monthlyTotalCount">0</span> 条，第 <span id="monthlyCurrentPage">1</span> / <span id="monthlyTotalPages">1</span> 页
                 </div>
                 <button id="monthlyFirstPage" onclick="goToMonthlyPage(1)" disabled>首页</button>
                 <button id="monthlyPrevPage" onclick="goToMonthlyPage(monthlyCurrentPage - 1)" disabled>上一页</button>
@@ -822,34 +819,22 @@
         let filteredMonthlyRecords = [];
 
         const STORAGE_KEY = 'warehouseData';
-        const DATA_FILE = 'data.json';
 
-        async function loadData() {
-            try {
-                const response = await fetch(DATA_FILE);
-                const data = await response.json();
-                products = data.products || [];
-                monthlyRecords = data.monthlyRecords || [];
-                console.log('从 data.json 加载数据成功');
-            } catch (error) {
-                console.log('从 data.json 加载失败，降级到 localStorage:', error);
-                const localData = localStorage.getItem(STORAGE_KEY);
-                if (localData) {
-                    const parsed = JSON.parse(localData);
-                    products = parsed.products || [];
-                    monthlyRecords = parsed.monthlyRecords || [];
-                }
+        function loadData() {
+            const data = localStorage.getItem(STORAGE_KEY);
+            if (data) {
+                const parsed = JSON.parse(data);
+                products = parsed.products || [];
+                monthlyRecords = parsed.monthlyRecords || [];
             }
         }
 
         function saveData() {
             const data = {
-                exportTime: new Date().toISOString(),
                 products,
                 monthlyRecords
             };
             localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-            console.log('数据已保存到 localStorage，请使用导出功能更新 data.json');
         }
 
         function generateId() {
@@ -982,7 +967,6 @@
 
             saveData();
             renderProducts();
-            updateWarehouseAndProductSelects();
             closeModal();
         }
 
@@ -1065,11 +1049,12 @@
             document.getElementById('totalCount').textContent = totalCount;
             document.getElementById('currentPage').textContent = currentPage;
             document.getElementById('totalPages').textContent = totalPages || 1;
-            document.getElementById('productsTotalCount').textContent = products.length;
+
             document.getElementById('firstPage').disabled = currentPage <= 1;
             document.getElementById('prevPage').disabled = currentPage <= 1;
             document.getElementById('nextPage').disabled = currentPage >= totalPages;
             document.getElementById('lastPage').disabled = currentPage >= totalPages;
+
             renderPageNumbers();
         }
 
@@ -1365,11 +1350,12 @@
             document.getElementById('monthlyTotalCount').textContent = totalCount;
             document.getElementById('monthlyCurrentPage').textContent = monthlyCurrentPage;
             document.getElementById('monthlyTotalPages').textContent = monthlyTotalPages || 1;
-            document.getElementById('monthlyRecordsTotalCount').textContent = monthlyRecords.length;
+
             document.getElementById('monthlyFirstPage').disabled = monthlyCurrentPage <= 1;
             document.getElementById('monthlyPrevPage').disabled = monthlyCurrentPage <= 1;
             document.getElementById('monthlyNextPage').disabled = monthlyCurrentPage >= monthlyTotalPages;
             document.getElementById('monthlyLastPage').disabled = monthlyCurrentPage >= monthlyTotalPages;
+
             renderMonthlyPageNumbers();
         }
 
@@ -1490,33 +1476,10 @@
             productSelect.innerHTML = productOptions;
         }
 
-        function exportAndUpdateDataJson() {
-            const allData = {
-                exportTime: new Date().toISOString(),
-                products,
-                monthlyRecords
-            };
-
-            const dataStr = JSON.stringify(allData, null, 2);
-            const blob = new Blob([dataStr], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'data.json';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-
-            alert('data.json 已下载！\n\n请将下载的文件替换项目中的 data.json 文件。\n\n替换后刷新页面即可看到最新数据。');
-        }
-
-        (async function init() {
-            await loadData();
-            renderProducts();
-            updateWarehouseAndProductSelects();
-            renderMonthlyTable(monthlyRecords);
-        })();
+        loadData();
+        renderProducts();
+        updateWarehouseAndProductSelects();
+        renderMonthlyTable(monthlyRecords);
     </script>
 </body>
 </html>
