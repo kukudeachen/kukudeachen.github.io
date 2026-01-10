@@ -460,6 +460,7 @@
 
         <div class="tabs">
             <button class="tab active" data-tab="products">产品管理</button>
+            <button class="tab" data-tab="monthly">期初管理</button>
         </div>
 
         <div id="products" class="tab-content active">
@@ -573,6 +574,15 @@
                 <div class="form-group">
                     <button class="btn btn-danger" onclick="batchDeleteProducts()">🗑️ 批量删除产品</button>
                 </div>
+                <div class="form-group">
+                    <button class="btn btn-info" onclick="exportAllData()">💾 导出全部数据</button>
+                </div>
+                <div class="form-group">
+                    <label class="upload-label" for="jsonUpload" style="display: inline-block;">
+                        📥 导入数据
+                    </label>
+                    <input type="file" id="jsonUpload" accept=".json" onchange="handleJsonUpload(event)">
+                </div>
             </div>
 
             <div class="table-container">
@@ -616,6 +626,92 @@
                 <div id="pageNumbers" style="display: flex; gap: 5px;"></div>
                 <button id="nextPage" onclick="goToPage(currentPage + 1)" disabled>下一页</button>
                 <button id="lastPage" onclick="goToPage(totalPages)" disabled>末页</button>
+            </div>
+        </div>
+
+        <div id="monthly" class="tab-content">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>仓库编码</label>
+                    <select id="monthlyWarehouse">
+                        <option value="">请选择仓库</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>物料编码</label>
+                    <select id="monthlyProduct">
+                        <option value="">请选择物料</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>盘数</label>
+                    <input type="number" id="monthlyQuantity" placeholder="请输入盘数" min="0" step="1">
+                </div>
+                <div class="form-group">
+                    <label>米数</label>
+                    <input type="number" id="monthlyMeters" placeholder="请输入米数" min="0" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label>创建月份</label>
+                    <input type="month" id="monthlyMonth" placeholder="请选择月份">
+                </div>
+                <div class="form-group" style="display: flex; align-items: flex-end;">
+                    <button class="btn btn-primary" onclick="addMonthly()">➕ 添加期初</button>
+                </div>
+            </div>
+
+            <div class="search-box">
+                <input type="text" id="monthlySearch" placeholder="🔍 搜索仓库编码、物料编码..." oninput="filterMonthly()">
+            </div>
+
+            <div class="form-row" style="margin-bottom: 20px;">
+                <div class="form-group">
+                    <button class="btn btn-success" onclick="exportMonthly()">📤 导出期初明细</button>
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-danger" onclick="batchDeleteMonthly()">🗑️ 批量删除期初</button>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table id="monthlyTable">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px;">
+                                <input type="checkbox" id="selectAllMonthly" onchange="toggleSelectAllMonthly()">
+                            </th>
+                            <th>仓库编码</th>
+                            <th>物料编码</th>
+                            <th>规格型号颜色</th>
+                            <th>盘数</th>
+                            <th>米数</th>
+                            <th>创建月份</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="monthlyTableBody">
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="pagination">
+                <div class="page-size-selector">
+                    <label>每页显示：</label>
+                    <select id="monthlyPageSize" onchange="changeMonthlyPageSize()">
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                </div>
+                <div class="pagination-info">
+                    共 <span id="monthlyTotalCount">0</span> 条，第 <span id="monthlyCurrentPage">1</span> / <span id="monthlyTotalPages">1</span> 页
+                </div>
+                <button id="monthlyFirstPage" onclick="goToMonthlyPage(1)" disabled>首页</button>
+                <button id="monthlyPrevPage" onclick="goToMonthlyPage(monthlyCurrentPage - 1)" disabled>上一页</button>
+                <div id="monthlyPageNumbers" style="display: flex; gap: 5px;"></div>
+                <button id="monthlyNextPage" onclick="goToMonthlyPage(monthlyCurrentPage + 1)" disabled>下一页</button>
+                <button id="monthlyLastPage" onclick="goToMonthlyPage(monthlyTotalPages)" disabled>末页</button>
             </div>
         </div>
     </div>
@@ -725,6 +821,12 @@
         let totalPages = 1;
         let filteredProducts = [];
 
+        let monthlyRecords = [];
+        let monthlyCurrentPage = 1;
+        let monthlyPageSize = 10;
+        let monthlyTotalPages = 1;
+        let filteredMonthlyRecords = [];
+
         const STORAGE_KEY = 'warehouseData';
 
         function loadData() {
@@ -732,12 +834,14 @@
             if (data) {
                 const parsed = JSON.parse(data);
                 products = parsed.products || [];
+                monthlyRecords = parsed.monthlyRecords || [];
             }
         }
 
         function saveData() {
             const data = {
-                products
+                products,
+                monthlyRecords
             };
             localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
         }
@@ -809,6 +913,7 @@
             filteredProducts = products;
             renderProductsTable(filteredProducts);
             clearProductForm();
+            updateWarehouseAndProductSelects();
         }
 
         function clearProductForm() {
@@ -871,6 +976,7 @@
 
             saveData();
             renderProducts();
+            updateWarehouseAndProductSelects();
             closeModal();
         }
 
@@ -1154,8 +1260,340 @@
         document.getElementById('editProductModel').addEventListener('change', updateEditSpecModelColor);
         document.getElementById('editProductColor').addEventListener('change', updateEditSpecModelColor);
 
+        function addMonthly() {
+            const warehouseCode = document.getElementById('monthlyWarehouse').value.trim();
+            const productCode = document.getElementById('monthlyProduct').value.trim();
+            const quantity = parseInt(document.getElementById('monthlyQuantity').value);
+            const meters = parseFloat(document.getElementById('monthlyMeters').value);
+            const month = document.getElementById('monthlyMonth').value;
+
+            if (!warehouseCode || !productCode || !quantity || !meters || !month) {
+                alert('请填写完整信息！');
+                return;
+            }
+
+            const product = products.find(p => p.code === productCode);
+            if (!product) {
+                alert('物料编码不存在！');
+                return;
+            }
+
+            const record = {
+                id: generateId(),
+                warehouseCode,
+                productCode,
+                productName: product.name,
+                specModelColor: product.specModelColor,
+                quantity,
+                meters,
+                month,
+                createdAt: new Date().toISOString()
+            };
+
+            monthlyRecords.push(record);
+            saveData();
+            filteredMonthlyRecords = monthlyRecords;
+            renderMonthlyTable(filteredMonthlyRecords);
+            clearMonthlyForm();
+        }
+
+        function clearMonthlyForm() {
+            document.getElementById('monthlyWarehouse').value = '';
+            document.getElementById('monthlyProduct').value = '';
+            document.getElementById('monthlyQuantity').value = '';
+            document.getElementById('monthlyMeters').value = '';
+            document.getElementById('monthlyMonth').value = '';
+        }
+
+        function filterMonthly() {
+            const search = document.getElementById('monthlySearch').value.toLowerCase();
+            filteredMonthlyRecords = monthlyRecords.filter(r => 
+                r.warehouseCode.toLowerCase().includes(search) || 
+                r.productCode.toLowerCase().includes(search)
+            );
+            monthlyCurrentPage = 1;
+            renderMonthlyTable(filteredMonthlyRecords);
+        }
+
+        function renderMonthlyTable(recordList) {
+            const tbody = document.getElementById('monthlyTableBody');
+            
+            if (recordList.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" class="empty-state">
+                            <i>📊</i>
+                            <p>暂无期初数据</p>
+                        </td>
+                    </tr>
+                `;
+                updateMonthlyPagination(0);
+                return;
+            }
+
+            monthlyTotalPages = Math.ceil(recordList.length / monthlyPageSize);
+            const startIndex = (monthlyCurrentPage - 1) * monthlyPageSize;
+            const endIndex = startIndex + monthlyPageSize;
+            const pageData = recordList.slice(startIndex, endIndex);
+
+            tbody.innerHTML = pageData.map(record => `
+                <tr>
+                    <td>
+                        <input type="checkbox" class="monthly-checkbox" value="${record.id}">
+                    </td>
+                    <td>${record.warehouseCode}</td>
+                    <td>${record.productCode}</td>
+                    <td>${record.specModelColor || '-'}</td>
+                    <td>${record.quantity}</td>
+                    <td>${record.meters}</td>
+                    <td>${record.month}</td>
+                    <td>
+                        <button class="btn btn-sm btn-danger" onclick="deleteMonthly('${record.id}')">删除</button>
+                    </td>
+                </tr>
+            `).join('');
+
+            updateMonthlyPagination(recordList.length);
+        }
+
+        function updateMonthlyPagination(totalCount) {
+            document.getElementById('monthlyTotalCount').textContent = totalCount;
+            document.getElementById('monthlyCurrentPage').textContent = monthlyCurrentPage;
+            document.getElementById('monthlyTotalPages').textContent = monthlyTotalPages || 1;
+
+            document.getElementById('monthlyFirstPage').disabled = monthlyCurrentPage <= 1;
+            document.getElementById('monthlyPrevPage').disabled = monthlyCurrentPage <= 1;
+            document.getElementById('monthlyNextPage').disabled = monthlyCurrentPage >= monthlyTotalPages;
+            document.getElementById('monthlyLastPage').disabled = monthlyCurrentPage >= monthlyTotalPages;
+
+            renderMonthlyPageNumbers();
+        }
+
+        function renderMonthlyPageNumbers() {
+            const container = document.getElementById('monthlyPageNumbers');
+            let pageNumbers = [];
+
+            if (monthlyTotalPages <= 7) {
+                for (let i = 1; i <= monthlyTotalPages; i++) {
+                    pageNumbers.push(i);
+                }
+            } else {
+                if (monthlyCurrentPage <= 4) {
+                    pageNumbers = [1, 2, 3, 4, 5, '...', monthlyTotalPages];
+                } else if (monthlyCurrentPage >= monthlyTotalPages - 3) {
+                    pageNumbers = [1, '...', monthlyTotalPages - 4, monthlyTotalPages - 3, monthlyTotalPages - 2, monthlyTotalPages - 1, monthlyTotalPages];
+                } else {
+                    pageNumbers = [1, '...', monthlyCurrentPage - 1, monthlyCurrentPage, monthlyCurrentPage + 1, '...', monthlyTotalPages];
+                }
+            }
+
+            container.innerHTML = pageNumbers.map(page => {
+                if (page === '...') {
+                    return `<span style="padding: 8px 12px; color: #999;">...</span>`;
+                }
+                const activeClass = page === monthlyCurrentPage ? 'active' : '';
+                return `<button onclick="goToMonthlyPage(${page})" class="${activeClass}">${page}</button>`;
+            }).join('');
+        }
+
+        function goToMonthlyPage(page) {
+            if (page < 1 || page > monthlyTotalPages || page === monthlyCurrentPage) return;
+            monthlyCurrentPage = page;
+            renderMonthlyTable(filteredMonthlyRecords);
+        }
+
+        function changeMonthlyPageSize() {
+            monthlyPageSize = parseInt(document.getElementById('monthlyPageSize').value);
+            monthlyCurrentPage = 1;
+            renderMonthlyTable(filteredMonthlyRecords);
+        }
+
+        function toggleSelectAllMonthly() {
+            const selectAll = document.getElementById('selectAllMonthly');
+            const checkboxes = document.querySelectorAll('.monthly-checkbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = selectAll.checked;
+            });
+        }
+
+        function deleteMonthly(id) {
+            if (!confirm('确定要删除这条期初记录吗？')) return;
+
+            monthlyRecords = monthlyRecords.filter(r => r.id !== id);
+            saveData();
+            
+            filteredMonthlyRecords = monthlyRecords;
+            if (monthlyCurrentPage > Math.ceil(filteredMonthlyRecords.length / monthlyPageSize)) {
+                monthlyCurrentPage = Math.max(1, Math.ceil(filteredMonthlyRecords.length / monthlyPageSize));
+            }
+            
+            renderMonthlyTable(filteredMonthlyRecords);
+        }
+
+        function exportMonthly() {
+            if (monthlyRecords.length === 0) {
+                alert('暂无期初数据可导出！');
+                return;
+            }
+
+            const exportData = monthlyRecords.map(record => ({
+                '仓库编码': record.warehouseCode,
+                '物料编码': record.productCode,
+                '规格型号颜色': record.specModelColor || '',
+                '盘数': record.quantity,
+                '米数': record.meters,
+                '创建月份': record.month
+            }));
+
+            const ws = XLSX.utils.json_to_sheet(exportData);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, '期初明细');
+            XLSX.writeFile(wb, '期初明细_' + new Date().toISOString().slice(0, 10) + '.xlsx');
+        }
+
+        function batchDeleteMonthly() {
+            const checkboxes = document.querySelectorAll('.monthly-checkbox:checked');
+            if (checkboxes.length === 0) {
+                alert('请先选择要删除的期初记录！');
+                return;
+            }
+
+            if (!confirm(`确定要删除选中的 ${checkboxes.length} 条期初记录吗？`)) return;
+
+            const selectedIds = Array.from(checkboxes).map(cb => cb.value);
+            monthlyRecords = monthlyRecords.filter(r => !selectedIds.includes(r.id));
+            saveData();
+            
+            filteredMonthlyRecords = monthlyRecords;
+            if (monthlyCurrentPage > Math.ceil(filteredMonthlyRecords.length / monthlyPageSize)) {
+                monthlyCurrentPage = Math.max(1, Math.ceil(filteredMonthlyRecords.length / monthlyPageSize));
+            }
+            
+            renderMonthlyTable(filteredMonthlyRecords);
+            document.getElementById('selectAllMonthly').checked = false;
+        }
+
+        function updateWarehouseAndProductSelects() {
+            const warehouseSelect = document.getElementById('monthlyWarehouse');
+            const productSelect = document.getElementById('monthlyProduct');
+
+            const warehouseOptions = '<option value="">请选择仓库</option>' + 
+                products.map(p => `<option value="${p.code}">${p.code} - ${p.name}</option>`).join('');
+            warehouseSelect.innerHTML = warehouseOptions;
+
+            const productOptions = '<option value="">请选择物料</option>' + 
+                products.map(p => `<option value="${p.code}">${p.code} - ${p.specModelColor || '-'}</option>`).join('');
+            productSelect.innerHTML = productOptions;
+        }
+
+        function exportAllData() {
+            const allData = {
+                exportTime: new Date().toISOString(),
+                products: products,
+                monthlyRecords: monthlyRecords
+            };
+
+            const dataStr = JSON.stringify(allData, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = '仓储管理系统数据_' + new Date().toISOString().slice(0, 10) + '.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function handleJsonUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    
+                    let importCount = 0;
+                    let errorCount = 0;
+
+                    if (data.products && Array.isArray(data.products)) {
+                        data.products.forEach(importedProduct => {
+                            if (!importedProduct.code) {
+                                errorCount++;
+                                return;
+                            }
+
+                            if (products.find(p => p.code === importedProduct.code)) {
+                                errorCount++;
+                                return;
+                            }
+
+                            const product = {
+                                id: generateId(),
+                                code: importedProduct.code,
+                                spec: importedProduct.spec || '',
+                                model: importedProduct.model || '',
+                                color: importedProduct.color || '',
+                                specModelColor: importedProduct.specModelColor || '',
+                                version: importedProduct.version || '',
+                                remark: importedProduct.remark || '',
+                                createdAt: importedProduct.createdAt || new Date().toISOString()
+                            };
+
+                            products.push(product);
+                            importCount++;
+                        });
+                    }
+
+                    if (data.monthlyRecords && Array.isArray(data.monthlyRecords)) {
+                        data.monthlyRecords.forEach(importedRecord => {
+                            if (!importedRecord.productCode) {
+                                errorCount++;
+                                return;
+                            }
+
+                            const product = products.find(p => p.code === importedRecord.productCode);
+                            if (!product) {
+                                errorCount++;
+                                return;
+                            }
+
+                            const record = {
+                                id: generateId(),
+                                warehouseCode: importedRecord.warehouseCode || '',
+                                productCode: importedRecord.productCode,
+                                productName: importedRecord.productName || '',
+                                specModelColor: importedRecord.specModelColor || '',
+                                quantity: importedRecord.quantity || 0,
+                                meters: importedRecord.meters || 0,
+                                month: importedRecord.month || '',
+                                createdAt: importedRecord.createdAt || new Date().toISOString()
+                            };
+
+                            monthlyRecords.push(record);
+                            importCount++;
+                        });
+                    }
+
+                    saveData();
+                    renderProducts();
+                    updateWarehouseAndProductSelects();
+                    renderMonthlyTable(monthlyRecords);
+
+                    alert(`导入完成！\n成功：${importCount} 条\n失败：${errorCount} 条`);
+                } catch (error) {
+                    alert('导入失败：' + error.message);
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+
         loadData();
         renderProducts();
+        updateWarehouseAndProductSelects();
+        renderMonthlyTable(monthlyRecords);
     </script>
 </body>
 </html>
