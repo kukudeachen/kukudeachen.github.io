@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>仓储管理系统</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <title>个人主页</title>
     <style>
         * {
             margin: 0;
@@ -13,1473 +12,431 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            padding: 20px;
         }
 
         .container {
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            overflow: hidden;
+            padding: 0 20px;
         }
 
-        header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 30px;
-            text-align: center;
-        }
-
-        header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-        }
-
-        header p {
-            opacity: 0.9;
-        }
-
-        .tabs {
-            display: flex;
-            background: #f8f9fa;
-            border-bottom: 2px solid #e9ecef;
-        }
-
-        .tab {
-            flex: 1;
-            padding: 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-weight: 500;
-            color: #666;
-            border: none;
-            background: none;
-            font-size: 1rem;
-        }
-
-        .tab:hover {
-            background: #e9ecef;
-            color: #667eea;
-        }
-
-        .tab.active {
-            background: white;
-            color: #667eea;
-            border-bottom: 3px solid #667eea;
-        }
-
-        .tab-content {
-            display: none;
-            padding: 30px;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: #333;
-        }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e9ecef;
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: border-color 0.3s;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-        }
-
-        .btn {
-            padding: 12px 30px;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn-success {
-            background: #28a745;
-            color: white;
-        }
-
-        .btn-success:hover {
-            background: #218838;
-            transform: translateY(-2px);
-        }
-
-        .btn-danger {
-            background: #dc3545;
-            color: white;
-        }
-
-        .btn-danger:hover {
-            background: #c82333;
-            transform: translateY(-2px);
-        }
-
-        .btn-warning {
-            background: #ffc107;
-            color: #333;
-        }
-
-        .btn-warning:hover {
-            background: #e0a800;
-            transform: translateY(-2px);
-        }
-
-        .btn-info {
-            background: #17a2b8;
-            color: white;
-        }
-
-        .btn-info:hover {
-            background: #138496;
-            transform: translateY(-2px);
-        }
-
-        .btn-sm {
-            padding: 6px 15px;
-            font-size: 0.875rem;
-        }
-
-        .table-container {
-            overflow-x: auto;
-            margin-top: 20px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-        }
-
-        thead {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-
-        th, td {
-            padding: 15px;
-            text-align: left;
-            border-bottom: 1px solid #e9ecef;
-        }
-
-        th {
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.875rem;
-        }
-
-        tbody tr:hover {
-            background: #f8f9fa;
-        }
-
-        .badge {
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 0.875rem;
-            font-weight: 500;
-        }
-
-        .badge-success {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .badge-warning {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-        .badge-danger {
-            background: #f8d7da;
-            color: #721c24;
-        }
-
-        .badge-info {
-            background: #d1ecf1;
-            color: #0c5460;
-        }
-
-        .search-box {
-            margin-bottom: 20px;
-        }
-
-        .search-box input {
-            width: 100%;
-            padding: 12px 20px;
-            border: 2px solid #e9ecef;
-            border-radius: 25px;
-            font-size: 1rem;
-            transition: border-color 0.3s;
-        }
-
-        .search-box input:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        .modal {
-            display: none;
+        nav {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1rem 0;
             position: fixed;
-            top: 0;
-            left: 0;
             width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
+            top: 0;
             z-index: 1000;
-            justify-content: center;
-            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
-        .modal.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            width: 90%;
-            max-width: 600px;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        .modal-header {
+        nav .container {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
         }
 
-        .modal-header h2 {
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
             color: #667eea;
         }
 
-        .close-btn {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: #999;
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
         }
 
-        .close-btn:hover {
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #667eea;
+        }
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            padding-top: 80px;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            animation: fadeInUp 1s ease;
+        }
+
+        .hero p {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            animation: fadeInUp 1s ease 0.2s backwards;
+        }
+
+        .hero .btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: white;
+            color: #667eea;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            transition: transform 0.3s, box-shadow 0.3s;
+            animation: fadeInUp 1s ease 0.4s backwards;
+        }
+
+        .hero .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        section {
+            padding: 5rem 0;
+            background: white;
+        }
+
+        section:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
             color: #333;
         }
 
-        .modal-footer {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            margin-top: 20px;
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
         }
 
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: #999;
-        }
-
-        .empty-state i {
-            font-size: 4rem;
-            margin-bottom: 20px;
-            display: block;
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 5px;
-        }
-
-        .upload-section {
-            background: #f8f9fa;
-            border: 2px dashed #667eea;
-            border-radius: 10px;
-            padding: 30px;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .upload-section:hover {
-            background: #f0f4ff;
-        }
-
-        .upload-section input[type="file"] {
-            display: none;
-        }
-
-        .upload-label {
-            display: inline-block;
-            padding: 15px 30px;
+        .about-image {
+            width: 100%;
+            max-width: 400px;
+            height: 400px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8rem;
             color: white;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.3s;
         }
 
-        .upload-label:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        .about-text p {
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
         }
 
-        .upload-hint {
-            margin-top: 10px;
+        .skills {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .skill-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+
+        .skill-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .skill-card h3 {
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        .skill-card ul {
+            list-style: none;
+        }
+
+        .skill-card li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .projects {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .project-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .project-image {
+            height: 200px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: white;
+        }
+
+        .project-content {
+            padding: 1.5rem;
+        }
+
+        .project-content h3 {
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .project-content p {
             color: #666;
-            font-size: 0.9rem;
+            margin-bottom: 1rem;
         }
 
-        .pagination {
+        .project-content a {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .project-content a:hover {
+            background: #764ba2;
+        }
+
+        .contact {
+            text-align: center;
+        }
+
+        .contact-info {
             display: flex;
             justify-content: center;
-            align-items: center;
-            gap: 10px;
-            margin-top: 20px;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 10px;
+            gap: 3rem;
+            flex-wrap: wrap;
+            margin-top: 2rem;
         }
 
-        .pagination button {
-            padding: 8px 16px;
-            border: 1px solid #e9ecef;
-            background: white;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-size: 0.9rem;
-        }
-
-        .pagination button:hover:not(:disabled) {
-            background: #667eea;
-            color: white;
-            border-color: #667eea;
-        }
-
-        .pagination button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .pagination button.active {
-            background: #667eea;
-            color: white;
-            border-color: #667eea;
-        }
-
-        .pagination-info {
-            color: #666;
-            font-size: 0.9rem;
-        }
-
-        .page-size-selector {
+        .contact-item {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 0.5rem;
+            font-size: 1.1rem;
         }
 
-        .page-size-selector select {
-            padding: 8px 12px;
-            border: 1px solid #e9ecef;
-            border-radius: 5px;
-            font-size: 0.9rem;
+        .contact-item span {
+            font-size: 1.5rem;
+        }
+
+        footer {
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         @media (max-width: 768px) {
-            .form-row {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1.2rem;
+            }
+
+            .about-content {
                 grid-template-columns: 1fr;
             }
 
-            .tabs {
-                flex-direction: column;
+            .about-image {
+                margin: 0 auto;
             }
 
-            .action-buttons {
-                flex-direction: column;
+            .nav-links {
+                display: none;
             }
 
-            .pagination {
-                flex-wrap: wrap;
+            .section-title {
+                font-size: 2rem;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>📦 仓储管理系统</h1>
-            <p>纯前端仓储管理解决方案 | 数据本地存储</p>
-        </header>
-
-        <div class="tabs">
-            <button class="tab active" data-tab="products">产品管理</button>
-            <button class="tab" data-tab="monthly">期初管理</button>
+    <nav>
+        <div class="container">
+            <div class="logo">我的主页</div>
+            <ul class="nav-links">
+                <li><a href="#home">首页</a></li>
+                <li><a href="#about">关于我</a></li>
+                <li><a href="#skills">技能</a></li>
+                <li><a href="#projects">项目</a></li>
+                <li><a href="#contact">联系</a></li>
+            </ul>
         </div>
+    </nav>
 
-        <div id="products" class="tab-content active">
-            <div class="upload-section">
-                <label class="upload-label" for="excelUpload">
-                    📤 上传Excel文件
-                </label>
-                <input type="file" id="excelUpload" accept=".xlsx,.xls" onchange="handleExcelUpload(event)">
-                <p class="upload-hint">支持 .xlsx 和 .xls 格式</p>
-                <div style="margin-top: 15px;">
-                    <button class="btn btn-info btn-sm" onclick="downloadTemplate()">📥 下载Excel模板</button>
-                </div>
-            </div>
+    <section id="home" class="hero">
+        <div class="container">
+            <h1>你好，我是开发者</h1>
+            <p>全栈开发工程师 | 创意设计师 | 问题解决者</p>
+            <a href="#contact" class="btn">联系我</a>
+        </div>
+    </section>
 
-            <div class="form-row">
-                <div class="form-group">
-                    <label>物料编码</label>
-                    <input type="text" id="productCode" placeholder="请输入物料编码">
+    <section id="about">
+        <div class="container">
+            <h2 class="section-title">关于我</h2>
+            <div class="about-content">
+                <div class="about-image">👨‍💻</div>
+                <div class="about-text">
+                    <p>我是一名充满热情的全栈开发工程师，专注于创建优雅且高效的Web应用程序。我有丰富的开发经验，擅长使用现代技术栈构建用户友好的解决方案。</p>
+                    <p>我相信优秀的代码不仅要功能完善，还要易于维护和扩展。我注重代码质量和最佳实践，始终追求技术卓越。</p>
+                    <p>在工作之余，我喜欢探索新技术、参与开源项目，并与技术社区分享知识和经验。</p>
                 </div>
-                <div class="form-group">
-                    <label>规格</label>
-                    <select id="productSpec">
-                        <option value="">请选择规格</option>
-                        <option value="ZC-BV(3C)">ZC-BV(3C)</option>
-                        <option value="BV(3C)">BV(3C)</option>
-                        <option value="ZC-BVR(3C)">ZC-BVR(3C)</option>
-                        <option value="BVR">BVR</option>
-                        <option value="DDZ-BV">DDZ-BV</option>
-                        <option value="N-BV">N-BV</option>
-                        <option value="NH-BV">NH-BV</option>
-                        <option value="WDZA-BYJ">WDZA-BYJ</option>
-                        <option value="WDZAN-BYJ">WDZAN-BYJ</option>
-                        <option value="WDZB1N-BYJ">WDZB1N-BYJ</option>
-                        <option value="WDZB-BYJ">WDZB-BYJ</option>
-                        <option value="WDZB-BYJ(F)">WDZB-BYJ(F)</option>
-                        <option value="WDZB-BYJSS">WDZB-BYJSS</option>
-                        <option value="WDZBN-BYJ">WDZBN-BYJ</option>
-                        <option value="WDZ-BYJ">WDZ-BYJ</option>
-                        <option value="WDZ-BYJR">WDZ-BYJR</option>
-                        <option value="WDZ-BYJSS">WDZ-BYJSS</option>
-                        <option value="WDZC-BYJ">WDZC-BYJ</option>
-                        <option value="WDZN-BYJ">WDZN-BYJ</option>
-                        <option value="WDZN-BYJSS">WDZN-BYJSS</option>
-                        <option value="ZC-BV">ZC-BV</option>
-                        <option value="ZC-BVR">ZC-BVR</option>
-                        <option value="ZC-BVSS">ZC-BVSS</option>
-                        <option value="ZCN-BV">ZCN-BV</option>
-                        <option value="ZC-NBV">ZC-NBV</option>
-                        <option value="ZN-BV">ZN-BV</option>
-                        <option value="ZR-BV">ZR-BV</option>
-                        <option value="WDZCN-BYJ">WDZCN-BYJ</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>型号</label>
-                    <select id="productModel">
-                        <option value="">请选择型号</option>
-                        <option value="0.75">0.75</option>
-                        <option value="1">1</option>
-                        <option value="1.5">1.5</option>
-                        <option value="2.5">2.5</option>
-                        <option value="4">4</option>
-                        <option value="6">6</option>
-                        <option value="10">10</option>
-                        <option value="16">16</option>
-                        <option value="25">25</option>
-                        <option value="50">50</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>颜色</label>
-                    <select id="productColor">
-                        <option value="">请选择颜色</option>
-                        <option value="红">红</option>
-                        <option value="蓝">蓝</option>
-                        <option value="黄">黄</option>
-                        <option value="绿">绿</option>
-                        <option value="双">双</option>
-                        <option value="黑">黑</option>
-                        <option value="白">白</option>
-                        <option value="棕">棕</option>
-                    </select>
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label>规格型号颜色</label>
-                    <input type="text" id="productSpecModelColor" placeholder="自动生成：规格型号颜色" readonly>
-                </div>
-                <div class="form-group">
-                    <label>版本</label>
-                    <input type="text" id="productVersion" placeholder="请输入版本">
-                </div>
-                <div class="form-group">
-                    <label>备注</label>
-                    <input type="text" id="productRemark" placeholder="请输入备注">
-                </div>
-                <div class="form-group" style="display: flex; align-items: flex-end;">
-                    <button class="btn btn-primary" onclick="addProduct()">➕ 添加产品</button>
-                </div>
-            </div>
-
-            <div class="search-box">
-                <input type="text" id="productSearch" placeholder="🔍 搜索物料编码、规格型号颜色..." oninput="filterProducts()">
-            </div>
-
-            <div class="form-row" style="margin-bottom: 20px;">
-                <div class="form-group">
-                    <button class="btn btn-success" onclick="exportProducts()">📤 导出产品明细</button>
-                </div>
-                <div class="form-group">
-                    <button class="btn btn-danger" onclick="batchDeleteProducts()">🗑️ 批量删除产品</button>
-                </div>
-            </div>
-
-            <div class="table-container">
-                <table id="productsTable">
-                    <thead>
-                        <tr>
-                            <th style="width: 50px;">
-                                <input type="checkbox" id="selectAll" onchange="toggleSelectAll()">
-                            </th>
-                            <th>物料编码</th>
-                            <th>规格型号颜色</th>
-                            <th>规格</th>
-                            <th>型号</th>
-                            <th>颜色</th>
-                            <th>版本</th>
-                            <th>备注</th>
-                            <th>创建日期</th>
-                            <th>操作</th>
-                        </tr>
-                    </thead>
-                    <tbody id="productsTableBody">
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="pagination">
-                <div class="page-size-selector">
-                    <label>每页显示：</label>
-                    <select id="pageSize" onchange="changePageSize()">
-                        <option value="10">10</option>
-                        <option value="20">20</option>
-                        <option value="50">50</option>
-                        <option value="100">100</option>
-                    </select>
-                </div>
-                <div class="pagination-info">
-                    共 <span id="totalCount">0</span> 条，第 <span id="currentPage">1</span> / <span id="totalPages">1</span> 页
-                </div>
-                <button id="firstPage" onclick="goToPage(1)" disabled>首页</button>
-                <button id="prevPage" onclick="goToPage(currentPage - 1)" disabled>上一页</button>
-                <div id="pageNumbers" style="display: flex; gap: 5px;"></div>
-                <button id="nextPage" onclick="goToPage(currentPage + 1)" disabled>下一页</button>
-                <button id="lastPage" onclick="goToPage(totalPages)" disabled>末页</button>
             </div>
         </div>
+    </section>
 
-        <div id="monthly" class="tab-content">
-            <div class="form-row">
-                <div class="form-group">
-                    <label>仓库编码</label>
-                    <select id="monthlyWarehouse">
-                        <option value="">请选择仓库</option>
-                    </select>
+    <section id="skills">
+        <div class="container">
+            <h2 class="section-title">专业技能</h2>
+            <div class="skills">
+                <div class="skill-card">
+                    <h3>前端开发</h3>
+                    <ul>
+                        <li>HTML5 / CSS3</li>
+                        <li>JavaScript / TypeScript</li>
+                        <li>React / Vue.js</li>
+                        <li>响应式设计</li>
+                    </ul>
                 </div>
-                <div class="form-group">
-                    <label>物料编码</label>
-                    <select id="monthlyProduct">
-                        <option value="">请选择物料</option>
-                    </select>
+                <div class="skill-card">
+                    <h3>后端开发</h3>
+                    <ul>
+                        <li>Node.js / Express</li>
+                        <li>Python / Django</li>
+                        <li>RESTful API</li>
+                        <li>数据库设计</li>
+                    </ul>
                 </div>
-                <div class="form-group">
-                    <label>盘数</label>
-                    <input type="number" id="monthlyQuantity" placeholder="请输入盘数" min="0" step="1">
+                <div class="skill-card">
+                    <h3>工具与框架</h3>
+                    <ul>
+                        <li>Git / GitHub</li>
+                        <li>Docker / Kubernetes</li>
+                        <li>CI/CD</li>
+                        <li>云服务 (AWS/Azure)</li>
+                    </ul>
                 </div>
-                <div class="form-group">
-                    <label>米数</label>
-                    <input type="number" id="monthlyMeters" placeholder="请输入米数" min="0" step="0.01">
+                <div class="skill-card">
+                    <h3>设计能力</h3>
+                    <ul>
+                        <li>UI/UX 设计</li>
+                        <li>Figma / Sketch</li>
+                        <li>原型设计</li>
+                        <li>用户体验优化</li>
+                    </ul>
                 </div>
-                <div class="form-group">
-                    <label>创建月份</label>
-                    <input type="month" id="monthlyMonth" placeholder="请选择月份">
-                </div>
-                <div class="form-group" style="display: flex; align-items: flex-end;">
-                    <button class="btn btn-primary" onclick="addMonthly()">➕ 添加期初</button>
-                </div>
-            </div>
-
-            <div class="search-box">
-                <input type="text" id="monthlySearch" placeholder="🔍 搜索仓库编码、物料编码..." oninput="filterMonthly()">
-            </div>
-
-            <div class="form-row" style="margin-bottom: 20px;">
-                <div class="form-group">
-                    <button class="btn btn-success" onclick="exportMonthly()">📤 导出期初明细</button>
-                </div>
-                <div class="form-group">
-                    <button class="btn btn-danger" onclick="batchDeleteMonthly()">🗑️ 批量删除期初</button>
-                </div>
-            </div>
-
-            <div class="table-container">
-                <table id="monthlyTable">
-                    <thead>
-                        <tr>
-                            <th style="width: 50px;">
-                                <input type="checkbox" id="selectAllMonthly" onchange="toggleSelectAllMonthly()">
-                            </th>
-                            <th>仓库编码</th>
-                            <th>物料编码</th>
-                            <th>规格型号颜色</th>
-                            <th>盘数</th>
-                            <th>米数</th>
-                            <th>创建月份</th>
-                            <th>操作</th>
-                        </tr>
-                    </thead>
-                    <tbody id="monthlyTableBody">
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="pagination">
-                <div class="page-size-selector">
-                    <label>每页显示：</label>
-                    <select id="monthlyPageSize" onchange="changeMonthlyPageSize()">
-                        <option value="10">10</option>
-                        <option value="20">20</option>
-                        <option value="50">50</option>
-                        <option value="100">100</option>
-                    </select>
-                </div>
-                <div class="pagination-info">
-                    共 <span id="monthlyTotalCount">0</span> 条，第 <span id="monthlyCurrentPage">1</span> / <span id="monthlyTotalPages">1</span> 页
-                </div>
-                <button id="monthlyFirstPage" onclick="goToMonthlyPage(1)" disabled>首页</button>
-                <button id="monthlyPrevPage" onclick="goToMonthlyPage(monthlyCurrentPage - 1)" disabled>上一页</button>
-                <div id="monthlyPageNumbers" style="display: flex; gap: 5px;"></div>
-                <button id="monthlyNextPage" onclick="goToMonthlyPage(monthlyCurrentPage + 1)" disabled>下一页</button>
-                <button id="monthlyLastPage" onclick="goToMonthlyPage(monthlyTotalPages)" disabled>末页</button>
             </div>
         </div>
-    </div>
+    </section>
 
-    <div class="modal" id="editModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>编辑产品</h2>
-                <button class="close-btn" onclick="closeModal()">&times;</button>
-            </div>
-            <div class="form-group">
-                <label>物料编码</label>
-                <input type="text" id="editProductCode">
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label>规格</label>
-                    <select id="editProductSpec">
-                        <option value="">请选择规格</option>
-                        <option value="ZC-BV(3C)">ZC-BV(3C)</option>
-                        <option value="BV(3C)">BV(3C)</option>
-                        <option value="ZC-BVR(3C)">ZC-BVR(3C)</option>
-                        <option value="BVR">BVR</option>
-                        <option value="DDZ-BV">DDZ-BV</option>
-                        <option value="N-BV">N-BV</option>
-                        <option value="NH-BV">NH-BV</option>
-                        <option value="WDZA-BYJ">WDZA-BYJ</option>
-                        <option value="WDZAN-BYJ">WDZAN-BYJ</option>
-                        <option value="WDZB1N-BYJ">WDZB1N-BYJ</option>
-                        <option value="WDZB-BYJ">WDZB-BYJ</option>
-                        <option value="WDZB-BYJ(F)">WDZB-BYJ(F)</option>
-                        <option value="WDZB-BYJSS">WDZB-BYJSS</option>
-                        <option value="WDZBN-BYJ">WDZBN-BYJ</option>
-                        <option value="WDZ-BYJ">WDZ-BYJ</option>
-                        <option value="WDZ-BYJR">WDZ-BYJR</option>
-                        <option value="WDZ-BYJSS">WDZ-BYJSS</option>
-                        <option value="WDZC-BYJ">WDZC-BYJ</option>
-                        <option value="WDZN-BYJ">WDZN-BYJ</option>
-                        <option value="WDZN-BYJSS">WDZN-BYJSS</option>
-                        <option value="ZC-BV">ZC-BV</option>
-                        <option value="ZC-BVR">ZC-BVR</option>
-                        <option value="ZC-BVSS">ZC-BVSS</option>
-                        <option value="ZCN-BV">ZCN-BV</option>
-                        <option value="ZC-NBV">ZC-NBV</option>
-                        <option value="ZN-BV">ZN-BV</option>
-                        <option value="ZR-BV">ZR-BV</option>
-                        <option value="WDZCN-BYJ">WDZCN-BYJ</option>
-                    </select>
+    <section id="projects">
+        <div class="container">
+            <h2 class="section-title">项目展示</h2>
+            <div class="projects">
+                <div class="project-card">
+                    <div class="project-image">🚀</div>
+                    <div class="project-content">
+                        <h3>电商平台</h3>
+                        <p>一个功能完整的电商平台，支持商品浏览、购物车、订单管理和支付功能。</p>
+                        <a href="#">查看项目</a>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label>型号</label>
-                    <select id="editProductModel">
-                        <option value="">请选择型号</option>
-                        <option value="0.75">0.75</option>
-                        <option value="1">1</option>
-                        <option value="1.5">1.5</option>
-                        <option value="2.5">2.5</option>
-                        <option value="4">4</option>
-                        <option value="6">6</option>
-                        <option value="10">10</option>
-                        <option value="16">16</option>
-                        <option value="25">25</option>
-                        <option value="50">50</option>
-                    </select>
+                <div class="project-card">
+                    <div class="project-image">📱</div>
+                    <div class="project-content">
+                        <h3>移动应用</h3>
+                        <p>跨平台移动应用，提供流畅的用户体验和丰富的功能模块。</p>
+                        <a href="#">查看项目</a>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label>颜色</label>
-                    <select id="editProductColor">
-                        <option value="">请选择颜色</option>
-                        <option value="红">红</option>
-                        <option value="蓝">蓝</option>
-                        <option value="黄">黄</option>
-                        <option value="绿">绿</option>
-                        <option value="双">双</option>
-                        <option value="黑">黑</option>
-                        <option value="白">白</option>
-                        <option value="棕">棕</option>
-                    </select>
+                <div class="project-card">
+                    <div class="project-image">🎨</div>
+                    <div class="project-content">
+                        <h3>设计系统</h3>
+                        <p>一套完整的设计系统，包含组件库、设计规范和最佳实践指南。</p>
+                        <a href="#">查看项目</a>
+                    </div>
                 </div>
-            </div>
-            <div class="form-group">
-                <label>规格型号颜色</label>
-                <input type="text" id="editProductSpecModelColor" readonly>
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label>版本</label>
-                    <input type="text" id="editProductVersion">
-                </div>
-                <div class="form-group">
-                    <label>备注</label>
-                    <input type="text" id="editProductRemark">
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-warning" onclick="closeModal()">取消</button>
-                <button class="btn btn-primary" onclick="saveProduct()">保存</button>
             </div>
         </div>
-    </div>
-
-    <script>
-        let products = [];
-        let editingProductId = null;
-        let currentPage = 1;
-        let pageSize = 10;
-        let totalPages = 1;
-        let filteredProducts = [];
-
-        let monthlyRecords = [];
-        let monthlyCurrentPage = 1;
-        let monthlyPageSize = 10;
-        let monthlyTotalPages = 1;
-        let filteredMonthlyRecords = [];
-
-        const STORAGE_KEY = 'warehouseData';
-
-        function loadData() {
-            const data = localStorage.getItem(STORAGE_KEY);
-            if (data) {
-                const parsed = JSON.parse(data);
-                products = parsed.products || [];
-                monthlyRecords = parsed.monthlyRecords || [];
-            }
-        }
-
-        function saveData() {
-            const data = {
-                products,
-                monthlyRecords
-            };
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-        }
-
-        function generateId() {
-            return Date.now().toString(36) + Math.random().toString(36).substr(2);
-        }
-
-        function formatDate(date) {
-            return new Date(date).toLocaleString('zh-CN');
-        }
-
-        function generateSpecModelColor(spec, model, color) {
-            const parts = [];
-            if (spec) parts.push(spec);
-            if (model) parts.push(model);
-            if (color) parts.push(color);
-            return parts.join('');
-        }
-
-        function updateSpecModelColor() {
-            const spec = document.getElementById('productSpec').value;
-            const model = document.getElementById('productModel').value;
-            const color = document.getElementById('productColor').value;
-            document.getElementById('productSpecModelColor').value = generateSpecModelColor(spec, model, color);
-        }
-
-        function updateEditSpecModelColor() {
-            const spec = document.getElementById('editProductSpec').value;
-            const model = document.getElementById('editProductModel').value;
-            const color = document.getElementById('editProductColor').value;
-            document.getElementById('editProductSpecModelColor').value = generateSpecModelColor(spec, model, color);
-        }
-
-        function addProduct() {
-            const code = document.getElementById('productCode').value.trim();
-            const spec = document.getElementById('productSpec').value;
-            const model = document.getElementById('productModel').value;
-            const color = document.getElementById('productColor').value;
-            const version = document.getElementById('productVersion').value.trim();
-            const remark = document.getElementById('productRemark').value.trim();
-
-            if (!code) {
-                alert('请填写物料编码！');
-                return;
-            }
-
-            if (products.find(p => p.code === code)) {
-                alert('物料编码已存在！');
-                return;
-            }
-
-            const specModelColor = generateSpecModelColor(spec, model, color);
-
-            const product = {
-                id: generateId(),
-                code,
-                spec,
-                model,
-                color,
-                specModelColor,
-                version,
-                remark,
-                createdAt: new Date().toISOString()
-            };
-
-            products.push(product);
-            saveData();
-            filteredProducts = products;
-            renderProductsTable(filteredProducts);
-            clearProductForm();
-            updateWarehouseAndProductSelects();
-        }
-
-        function clearProductForm() {
-            document.getElementById('productCode').value = '';
-            document.getElementById('productSpec').value = '';
-            document.getElementById('productModel').value = '';
-            document.getElementById('productColor').value = '';
-            document.getElementById('productSpecModelColor').value = '';
-            document.getElementById('productVersion').value = '';
-            document.getElementById('productRemark').value = '';
-        }
-
-        function editProduct(id) {
-            const product = products.find(p => p.id === id);
-            if (!product) return;
-
-            editingProductId = id;
-            document.getElementById('editProductCode').value = product.code;
-            document.getElementById('editProductSpec').value = product.spec || '';
-            document.getElementById('editProductModel').value = product.model || '';
-            document.getElementById('editProductColor').value = product.color || '';
-            document.getElementById('editProductSpecModelColor').value = product.specModelColor || '';
-            document.getElementById('editProductVersion').value = product.version || '';
-            document.getElementById('editProductRemark').value = product.remark || '';
-
-            document.getElementById('editModal').classList.add('active');
-        }
-
-        function saveProduct() {
-            const product = products.find(p => p.id === editingProductId);
-            if (!product) return;
-
-            const code = document.getElementById('editProductCode').value.trim();
-            const spec = document.getElementById('editProductSpec').value;
-            const model = document.getElementById('editProductModel').value;
-            const color = document.getElementById('editProductColor').value;
-            const version = document.getElementById('editProductVersion').value.trim();
-            const remark = document.getElementById('editProductRemark').value.trim();
-
-            if (!code) {
-                alert('请填写物料编码！');
-                return;
-            }
-
-            const existingProduct = products.find(p => p.code === code && p.id !== editingProductId);
-            if (existingProduct) {
-                alert('物料编码已存在！');
-                return;
-            }
-
-            const specModelColor = generateSpecModelColor(spec, model, color);
-
-            product.code = code;
-            product.spec = spec;
-            product.model = model;
-            product.color = color;
-            product.specModelColor = specModelColor;
-            product.version = version;
-            product.remark = remark;
-
-            saveData();
-            renderProducts();
-            closeModal();
-        }
-
-        function closeModal() {
-            document.getElementById('editModal').classList.remove('active');
-            editingProductId = null;
-        }
-
-        function deleteProduct(id) {
-            if (!confirm('确定要删除这个产品吗？')) return;
-
-            products = products.filter(p => p.id !== id);
-            saveData();
-            renderProducts();
-        }
-
-        function filterProducts() {
-            const search = document.getElementById('productSearch').value.toLowerCase();
-            filteredProducts = products.filter(p => 
-                p.code.toLowerCase().includes(search) || 
-                p.specModelColor.toLowerCase().includes(search)
-            );
-            currentPage = 1;
-            renderProductsTable(filteredProducts);
-        }
-
-        function renderProducts() {
-            filteredProducts = products;
-            currentPage = 1;
-            renderProductsTable(filteredProducts);
-        }
-
-        function renderProductsTable(productList) {
-            const tbody = document.getElementById('productsTableBody');
-            
-            if (productList.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="10" class="empty-state">
-                            <i>📦</i>
-                            <p>暂无产品数据</p>
-                        </td>
-                    </tr>
-                `;
-                updatePagination(0);
-                return;
-            }
-
-            totalPages = Math.ceil(productList.length / pageSize);
-            const startIndex = (currentPage - 1) * pageSize;
-            const endIndex = startIndex + pageSize;
-            const pageData = productList.slice(startIndex, endIndex);
-
-            tbody.innerHTML = pageData.map(product => `
-                <tr>
-                    <td>
-                        <input type="checkbox" class="product-checkbox" value="${product.id}">
-                    </td>
-                    <td>${product.code}</td>
-                    <td>${product.specModelColor || '-'}</td>
-                    <td>${product.spec || '-'}</td>
-                    <td>${product.model || '-'}</td>
-                    <td>${product.color || '-'}</td>
-                    <td>${product.version || '-'}</td>
-                    <td>${product.remark || '-'}</td>
-                    <td>${formatDate(product.createdAt)}</td>
-                    <td>
-                        <div class="action-buttons">
-                            <button class="btn btn-sm btn-warning" onclick="editProduct('${product.id}')">编辑</button>
-                            <button class="btn btn-sm btn-danger" onclick="deleteProduct('${product.id}')">删除</button>
-                        </div>
-                    </td>
-                </tr>
-            `).join('');
-
-            updatePagination(productList.length);
-        }
-
-        function updatePagination(totalCount) {
-            document.getElementById('totalCount').textContent = totalCount;
-            document.getElementById('currentPage').textContent = currentPage;
-            document.getElementById('totalPages').textContent = totalPages || 1;
-
-            document.getElementById('firstPage').disabled = currentPage <= 1;
-            document.getElementById('prevPage').disabled = currentPage <= 1;
-            document.getElementById('nextPage').disabled = currentPage >= totalPages;
-            document.getElementById('lastPage').disabled = currentPage >= totalPages;
-
-            renderPageNumbers();
-        }
-
-        function renderPageNumbers() {
-            const container = document.getElementById('pageNumbers');
-            let pageNumbers = [];
-
-            if (totalPages <= 7) {
-                for (let i = 1; i <= totalPages; i++) {
-                    pageNumbers.push(i);
-                }
-            } else {
-                if (currentPage <= 4) {
-                    pageNumbers = [1, 2, 3, 4, 5, '...', totalPages];
-                } else if (currentPage >= totalPages - 3) {
-                    pageNumbers = [1, '...', totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages];
-                } else {
-                    pageNumbers = [1, '...', currentPage - 1, currentPage, currentPage + 1, '...', totalPages];
-                }
-            }
-
-            container.innerHTML = pageNumbers.map(page => {
-                if (page === '...') {
-                    return `<span style="padding: 8px 12px; color: #999;">...</span>`;
-                }
-                const activeClass = page === currentPage ? 'active' : '';
-                return `<button onclick="goToPage(${page})" class="${activeClass}">${page}</button>`;
-            }).join('');
-        }
-
-        function goToPage(page) {
-            if (page < 1 || page > totalPages || page === currentPage) return;
-            currentPage = page;
-            renderProductsTable(filteredProducts);
-        }
-
-        function changePageSize() {
-            pageSize = parseInt(document.getElementById('pageSize').value);
-            currentPage = 1;
-            renderProductsTable(filteredProducts);
-        }
-
-        function toggleSelectAll() {
-            const selectAll = document.getElementById('selectAll');
-            const checkboxes = document.querySelectorAll('.product-checkbox');
-            checkboxes.forEach(checkbox => {
-                checkbox.checked = selectAll.checked;
-            });
-        }
-
-        function exportProducts() {
-            if (products.length === 0) {
-                alert('暂无产品数据可导出！');
-                return;
-            }
-
-            const exportData = products.map(product => ({
-                '物料编码': product.code,
-                '规格': product.spec || '',
-                '型号': product.model || '',
-                '颜色': product.color || '',
-                '规格型号颜色': product.specModelColor || '',
-                '版本': product.version || '',
-                '备注': product.remark || '',
-                '创建日期': formatDate(product.createdAt)
-            }));
-
-            const ws = XLSX.utils.json_to_sheet(exportData);
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, '产品明细');
-            XLSX.writeFile(wb, '产品明细_' + new Date().toISOString().slice(0, 10) + '.xlsx');
-        }
-
-        function batchDeleteProducts() {
-            const checkboxes = document.querySelectorAll('.product-checkbox:checked');
-            if (checkboxes.length === 0) {
-                alert('请先选择要删除的产品！');
-                return;
-            }
-
-            if (!confirm(`确定要删除选中的 ${checkboxes.length} 个产品吗？`)) return;
-
-            const selectedIds = Array.from(checkboxes).map(cb => cb.value);
-            products = products.filter(p => !selectedIds.includes(p.id));
-            saveData();
-            
-            filteredProducts = products;
-            if (currentPage > Math.ceil(filteredProducts.length / pageSize)) {
-                currentPage = Math.max(1, Math.ceil(filteredProducts.length / pageSize));
-            }
-            
-            renderProductsTable(filteredProducts);
-            document.getElementById('selectAll').checked = false;
-        }
-
-        function downloadTemplate() {
-            const templateData = [
-                {
-                    '物料编码': '示例001',
-                    '规格': 'BV(3C)',
-                    '型号': '2.5',
-                    '颜色': '红',
-                    '版本': 'V1.0',
-                    '备注': '示例备注'
-                }
-            ];
-
-            const ws = XLSX.utils.json_to_sheet(templateData);
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, '产品模板');
-            XLSX.writeFile(wb, '产品导入模板.xlsx');
-        }
-
-        function handleExcelUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const data = new Uint8Array(e.target.result);
-                    const workbook = XLSX.read(data, { type: 'array' });
-                    const sheetName = workbook.SheetNames[0];
-                    const worksheet = workbook.Sheets[sheetName];
-                    const jsonData = XLSX.utils.sheet_to_json(worksheet);
-
-                    let successCount = 0;
-                    let errorCount = 0;
-
-                    jsonData.forEach(row => {
-                        const code = row['物料编码']?.trim();
-                        const spec = row['规格']?.toString();
-                        const model = row['型号']?.toString();
-                        const color = row['颜色']?.toString();
-                        const version = row['版本']?.toString().trim();
-                        const remark = row['备注']?.toString().trim();
-
-                        if (!code) {
-                            errorCount++;
-                            return;
-                        }
-
-                        if (products.find(p => p.code === code)) {
-                            errorCount++;
-                            return;
-                        }
-
-                        const specModelColor = generateSpecModelColor(spec, model, color);
-
-                        const product = {
-                            id: generateId(),
-                            code,
-                            spec,
-                            model,
-                            color,
-                            specModelColor,
-                            version,
-                            remark,
-                            createdAt: new Date().toISOString()
-                        };
-
-                        products.push(product);
-                        successCount++;
-                    });
-
-                    saveData();
-                    renderProducts();
-
-                    alert(`导入完成！\n成功：${successCount} 条\n失败：${errorCount} 条`);
-                } catch (error) {
-                    alert('导入失败：' + error.message);
-                }
-            };
-            reader.readAsArrayBuffer(file);
-            event.target.value = '';
-        }
-
-        document.querySelectorAll('.tab').forEach(tab => {
-            tab.addEventListener('click', function() {
-                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-                
-                this.classList.add('active');
-                document.getElementById(this.dataset.tab).classList.add('active');
-            });
-        });
-
-        document.getElementById('productSpec').addEventListener('change', updateSpecModelColor);
-        document.getElementById('productModel').addEventListener('change', updateSpecModelColor);
-        document.getElementById('productColor').addEventListener('change', updateSpecModelColor);
-
-        document.getElementById('editProductSpec').addEventListener('change', updateEditSpecModelColor);
-        document.getElementById('editProductModel').addEventListener('change', updateEditSpecModelColor);
-        document.getElementById('editProductColor').addEventListener('change', updateEditSpecModelColor);
-
-        function addMonthly() {
-            const warehouseCode = document.getElementById('monthlyWarehouse').value.trim();
-            const productCode = document.getElementById('monthlyProduct').value.trim();
-            const quantity = parseInt(document.getElementById('monthlyQuantity').value);
-            const meters = parseFloat(document.getElementById('monthlyMeters').value);
-            const month = document.getElementById('monthlyMonth').value;
-
-            if (!warehouseCode || !productCode || !quantity || !meters || !month) {
-                alert('请填写完整信息！');
-                return;
-            }
-
-            const product = products.find(p => p.code === productCode);
-            if (!product) {
-                alert('物料编码不存在！');
-                return;
-            }
-
-            const record = {
-                id: generateId(),
-                warehouseCode,
-                productCode,
-                productName: product.name,
-                specModelColor: product.specModelColor,
-                quantity,
-                meters,
-                month,
-                createdAt: new Date().toISOString()
-            };
-
-            monthlyRecords.push(record);
-            saveData();
-            filteredMonthlyRecords = monthlyRecords;
-            renderMonthlyTable(filteredMonthlyRecords);
-            clearMonthlyForm();
-        }
-
-        function clearMonthlyForm() {
-            document.getElementById('monthlyWarehouse').value = '';
-            document.getElementById('monthlyProduct').value = '';
-            document.getElementById('monthlyQuantity').value = '';
-            document.getElementById('monthlyMeters').value = '';
-            document.getElementById('monthlyMonth').value = '';
-        }
-
-        function filterMonthly() {
-            const search = document.getElementById('monthlySearch').value.toLowerCase();
-            filteredMonthlyRecords = monthlyRecords.filter(r => 
-                r.warehouseCode.toLowerCase().includes(search) || 
-                r.productCode.toLowerCase().includes(search)
-            );
-            monthlyCurrentPage = 1;
-            renderMonthlyTable(filteredMonthlyRecords);
-        }
-
-        function renderMonthlyTable(recordList) {
-            const tbody = document.getElementById('monthlyTableBody');
-            
-            if (recordList.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="8" class="empty-state">
-                            <i>📊</i>
-                            <p>暂无期初数据</p>
-                        </td>
-                    </tr>
-                `;
-                updateMonthlyPagination(0);
-                return;
-            }
-
-            monthlyTotalPages = Math.ceil(recordList.length / monthlyPageSize);
-            const startIndex = (monthlyCurrentPage - 1) * monthlyPageSize;
-            const endIndex = startIndex + monthlyPageSize;
-            const pageData = recordList.slice(startIndex, endIndex);
-
-            tbody.innerHTML = pageData.map(record => `
-                <tr>
-                    <td>
-                        <input type="checkbox" class="monthly-checkbox" value="${record.id}">
-                    </td>
-                    <td>${record.warehouseCode}</td>
-                    <td>${record.productCode}</td>
-                    <td>${record.specModelColor || '-'}</td>
-                    <td>${record.quantity}</td>
-                    <td>${record.meters}</td>
-                    <td>${record.month}</td>
-                    <td>
-                        <button class="btn btn-sm btn-danger" onclick="deleteMonthly('${record.id}')">删除</button>
-                    </td>
-                </tr>
-            `).join('');
-
-            updateMonthlyPagination(recordList.length);
-        }
-
-        function updateMonthlyPagination(totalCount) {
-            document.getElementById('monthlyTotalCount').textContent = totalCount;
-            document.getElementById('monthlyCurrentPage').textContent = monthlyCurrentPage;
-            document.getElementById('monthlyTotalPages').textContent = monthlyTotalPages || 1;
-
-            document.getElementById('monthlyFirstPage').disabled = monthlyCurrentPage <= 1;
-            document.getElementById('monthlyPrevPage').disabled = monthlyCurrentPage <= 1;
-            document.getElementById('monthlyNextPage').disabled = monthlyCurrentPage >= monthlyTotalPages;
-            document.getElementById('monthlyLastPage').disabled = monthlyCurrentPage >= monthlyTotalPages;
-
-            renderMonthlyPageNumbers();
-        }
-
-        function renderMonthlyPageNumbers() {
-            const container = document.getElementById('monthlyPageNumbers');
-            let pageNumbers = [];
-
-            if (monthlyTotalPages <= 7) {
-                for (let i = 1; i <= monthlyTotalPages; i++) {
-                    pageNumbers.push(i);
-                }
-            } else {
-                if (monthlyCurrentPage <= 4) {
-                    pageNumbers = [1, 2, 3, 4, 5, '...', monthlyTotalPages];
-                } else if (monthlyCurrentPage >= monthlyTotalPages - 3) {
-                    pageNumbers = [1, '...', monthlyTotalPages - 4, monthlyTotalPages - 3, monthlyTotalPages - 2, monthlyTotalPages - 1, monthlyTotalPages];
-                } else {
-                    pageNumbers = [1, '...', monthlyCurrentPage - 1, monthlyCurrentPage, monthlyCurrentPage + 1, '...', monthlyTotalPages];
-                }
-            }
-
-            container.innerHTML = pageNumbers.map(page => {
-                if (page === '...') {
-                    return `<span style="padding: 8px 12px; color: #999;">...</span>`;
-                }
-                const activeClass = page === monthlyCurrentPage ? 'active' : '';
-                return `<button onclick="goToMonthlyPage(${page})" class="${activeClass}">${page}</button>`;
-            }).join('');
-        }
-
-        function goToMonthlyPage(page) {
-            if (page < 1 || page > monthlyTotalPages || page === monthlyCurrentPage) return;
-            monthlyCurrentPage = page;
-            renderMonthlyTable(filteredMonthlyRecords);
-        }
-
-        function changeMonthlyPageSize() {
-            monthlyPageSize = parseInt(document.getElementById('monthlyPageSize').value);
-            monthlyCurrentPage = 1;
-            renderMonthlyTable(filteredMonthlyRecords);
-        }
-
-        function toggleSelectAllMonthly() {
-            const selectAll = document.getElementById('selectAllMonthly');
-            const checkboxes = document.querySelectorAll('.monthly-checkbox');
-            checkboxes.forEach(checkbox => {
-                checkbox.checked = selectAll.checked;
-            });
-        }
-
-        function deleteMonthly(id) {
-            if (!confirm('确定要删除这条期初记录吗？')) return;
-
-            monthlyRecords = monthlyRecords.filter(r => r.id !== id);
-            saveData();
-            
-            filteredMonthlyRecords = monthlyRecords;
-            if (monthlyCurrentPage > Math.ceil(filteredMonthlyRecords.length / monthlyPageSize)) {
-                monthlyCurrentPage = Math.max(1, Math.ceil(filteredMonthlyRecords.length / monthlyPageSize));
-            }
-            
-            renderMonthlyTable(filteredMonthlyRecords);
-        }
-
-        function exportMonthly() {
-            if (monthlyRecords.length === 0) {
-                alert('暂无期初数据可导出！');
-                return;
-            }
-
-            const exportData = monthlyRecords.map(record => ({
-                '仓库编码': record.warehouseCode,
-                '物料编码': record.productCode,
-                '规格型号颜色': record.specModelColor || '',
-                '盘数': record.quantity,
-                '米数': record.meters,
-                '创建月份': record.month
-            }));
-
-            const ws = XLSX.utils.json_to_sheet(exportData);
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, '期初明细');
-            XLSX.writeFile(wb, '期初明细_' + new Date().toISOString().slice(0, 10) + '.xlsx');
-        }
-
-        function batchDeleteMonthly() {
-            const checkboxes = document.querySelectorAll('.monthly-checkbox:checked');
-            if (checkboxes.length === 0) {
-                alert('请先选择要删除的期初记录！');
-                return;
-            }
-
-            if (!confirm(`确定要删除选中的 ${checkboxes.length} 条期初记录吗？`)) return;
-
-            const selectedIds = Array.from(checkboxes).map(cb => cb.value);
-            monthlyRecords = monthlyRecords.filter(r => !selectedIds.includes(r.id));
-            saveData();
-            
-            filteredMonthlyRecords = monthlyRecords;
-            if (monthlyCurrentPage > Math.ceil(filteredMonthlyRecords.length / monthlyPageSize)) {
-                monthlyCurrentPage = Math.max(1, Math.ceil(filteredMonthlyRecords.length / monthlyPageSize));
-            }
-            
-            renderMonthlyTable(filteredMonthlyRecords);
-            document.getElementById('selectAllMonthly').checked = false;
-        }
-
-        function updateWarehouseAndProductSelects() {
-            const warehouseSelect = document.getElementById('monthlyWarehouse');
-            const productSelect = document.getElementById('monthlyProduct');
-
-            const warehouseOptions = '<option value="">请选择仓库</option>' + 
-                products.map(p => `<option value="${p.code}">${p.code} - ${p.name}</option>`).join('');
-            warehouseSelect.innerHTML = warehouseOptions;
-
-            const productOptions = '<option value="">请选择物料</option>' + 
-                products.map(p => `<option value="${p.code}">${p.code} - ${p.specModelColor || '-'}</option>`).join('');
-            productSelect.innerHTML = productOptions;
-        }
-
-        loadData();
-        renderProducts();
-        updateWarehouseAndProductSelects();
-        renderMonthlyTable(monthlyRecords);
-    </script>
+    </section>
+
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2 class="section-title">联系我</h2>
+            <p>如果你有任何问题或合作意向，欢迎随时联系我！</p>
+            <div class="contact-info">
+                <div class="contact-item">
+                    <span>📧</span>
+                    <span>example@email.com</span>
+                </div>
+                <div class="contact-item">
+                    <span>📱</span>
+                    <span>+86 123 4567 8900</span>
+                </div>
+                <div class="contact-item">
+                    <span>📍</span>
+                    <span>中国</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 个人主页. 保留所有权利.</p>
+        </div>
+    </footer>
 </body>
 </html>
