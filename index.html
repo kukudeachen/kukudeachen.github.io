@@ -574,15 +574,6 @@
                 <div class="form-group">
                     <button class="btn btn-danger" onclick="batchDeleteProducts()">🗑️ 批量删除产品</button>
                 </div>
-                <div class="form-group">
-                    <button class="btn btn-info" onclick="exportAllData()">💾 导出全部数据</button>
-                </div>
-                <div class="form-group">
-                    <label class="upload-label" for="jsonUpload" style="display: inline-block;">
-                        📥 导入数据
-                    </label>
-                    <input type="file" id="jsonUpload" accept=".json" onchange="handleJsonUpload(event)">
-                </div>
             </div>
 
             <div class="table-container">
@@ -1493,110 +1484,6 @@
             const productOptions = '<option value="">请选择物料</option>' + 
                 products.map(p => `<option value="${p.code}">${p.code} - ${p.specModelColor || '-'}</option>`).join('');
             productSelect.innerHTML = productOptions;
-        }
-
-        function exportAllData() {
-            const allData = {
-                exportTime: new Date().toISOString(),
-                products: products,
-                monthlyRecords: monthlyRecords
-            };
-
-            const dataStr = JSON.stringify(allData, null, 2);
-            const blob = new Blob([dataStr], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = '仓储管理系统数据_' + new Date().toISOString().slice(0, 10) + '.json';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        }
-
-        function handleJsonUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const data = JSON.parse(e.target.result);
-                    
-                    let importCount = 0;
-                    let errorCount = 0;
-
-                    if (data.products && Array.isArray(data.products)) {
-                        data.products.forEach(importedProduct => {
-                            if (!importedProduct.code) {
-                                errorCount++;
-                                return;
-                            }
-
-                            if (products.find(p => p.code === importedProduct.code)) {
-                                errorCount++;
-                                return;
-                            }
-
-                            const product = {
-                                id: generateId(),
-                                code: importedProduct.code,
-                                spec: importedProduct.spec || '',
-                                model: importedProduct.model || '',
-                                color: importedProduct.color || '',
-                                specModelColor: importedProduct.specModelColor || '',
-                                version: importedProduct.version || '',
-                                remark: importedProduct.remark || '',
-                                createdAt: importedProduct.createdAt || new Date().toISOString()
-                            };
-
-                            products.push(product);
-                            importCount++;
-                        });
-                    }
-
-                    if (data.monthlyRecords && Array.isArray(data.monthlyRecords)) {
-                        data.monthlyRecords.forEach(importedRecord => {
-                            if (!importedRecord.productCode) {
-                                errorCount++;
-                                return;
-                            }
-
-                            const product = products.find(p => p.code === importedRecord.productCode);
-                            if (!product) {
-                                errorCount++;
-                                return;
-                            }
-
-                            const record = {
-                                id: generateId(),
-                                warehouseCode: importedRecord.warehouseCode || '',
-                                productCode: importedRecord.productCode,
-                                productName: importedRecord.productName || '',
-                                specModelColor: importedRecord.specModelColor || '',
-                                quantity: importedRecord.quantity || 0,
-                                meters: importedRecord.meters || 0,
-                                month: importedRecord.month || '',
-                                createdAt: importedRecord.createdAt || new Date().toISOString()
-                            };
-
-                            monthlyRecords.push(record);
-                            importCount++;
-                        });
-                    }
-
-                    saveData();
-                    renderProducts();
-                    updateWarehouseAndProductSelects();
-                    renderMonthlyTable(monthlyRecords);
-
-                    alert(`导入完成！\n成功：${importCount} 条\n失败：${errorCount} 条`);
-                } catch (error) {
-                    alert('导入失败：' + error.message);
-                }
-            };
-            reader.readAsText(file);
-            event.target.value = '';
         }
 
         (async function init() {
