@@ -1047,7 +1047,10 @@
                     <option value="price-0-10">💰 0-10W</option>
                     <option value="price-10-20">💰 10-20W</option>
                     <option value="price-20-30">💰 20-30W</option>
-                    <option value="price-30+">💰 30W+</option>
+                    <option value="price-30-40">💰 30-40W</option>
+                    <option value="price-40-50">💰 40-50W</option>
+                    <option value="price-50-60">💰 50-60W</option>
+                    <option value="price-60+">💰 60W+</option>
                 </select>
             </div>
             <div class="filter-tab" data-filter="突击步枪">
@@ -1429,21 +1432,8 @@ K416突击步枪-烽火地带-6JCVEOG08BOK35ETI3KG8-45-正常-顶级-近战"></t
                 if (parts.length >= 3) {
                     // New format: name-mode-code-price-status-recommend-tag
                     // Support variable format lengths
-                    const lastPart = parts[parts.length - 1];
-                    const secondLast = parts[parts.length - 2];
-                    const thirdLast = parts[parts.length - 3];
-                    const fourthLast = parts[parts.length - 4];
-                    
-                    // Check if has tag (标签) - 最后一个字段如果不是推荐值，则是标签
                     const recommendValues = ['夯', '顶级', '人上人', 'NPC', '拉完了'];
-                    const hasRecommend = recommendValues.includes(lastPart);
-                    
-                    // Check if has status (状态)
                     const statusValues = ['正常', '失效'];
-                    const hasStatus = statusValues.includes(secondLast);
-                    
-                    // Check if has price (数字)
-                    const hasPrice = /^\d+$/.test(thirdLast);
                     
                     let tag = '';
                     let recommend = '';
@@ -1451,32 +1441,55 @@ K416突击步枪-烽火地带-6JCVEOG08BOK35ETI3KG8-45-正常-顶级-近战"></t
                     let price = 0;
                     let codeIndex = parts.length - 1;
                     
-                    // 如果最后一个是标签（不是推荐值）
-                    if (!hasRecommend && parts.length >= 7) {
-                        tag = lastPart;
-                        recommend = secondLast;
-                        status = thirdLast;
-                        price = parseInt(fourthLast);
-                        codeIndex = parts.length - 5;
-                    } else if (hasRecommend) {
-                        recommend = lastPart;
-                        codeIndex = parts.length - 4;
-                        if (hasStatus) {
-                            status = secondLast;
+                    // 从后往前查找推荐值
+                    let recommendIndex = -1;
+                    for (let i = parts.length - 1; i >= 0; i--) {
+                        if (recommendValues.includes(parts[i])) {
+                            recommendIndex = i;
+                            recommend = parts[i];
+                            break;
                         }
-                        if (hasPrice) {
-                            price = parseInt(thirdLast);
+                    }
+                    
+                    // 从推荐值位置往前查找状态值
+                    let statusIndex = -1;
+                    if (recommendIndex > 0) {
+                        for (let i = recommendIndex - 1; i >= 0; i--) {
+                            if (statusValues.includes(parts[i])) {
+                                statusIndex = i;
+                                status = parts[i];
+                                break;
+                            }
                         }
-                    } else {
-                        // 没有推荐值，尝试其他组合
-                        if (hasStatus) {
-                            status = secondLast;
-                            codeIndex = parts.length - 3;
+                    }
+                    
+                    // 从状态值位置往前查找价格值（数字）
+                    let priceIndex = -1;
+                    if (statusIndex > 0) {
+                        for (let i = statusIndex - 1; i >= 0; i--) {
+                            if (/^\d+$/.test(parts[i])) {
+                                priceIndex = i;
+                                price = parseInt(parts[i]);
+                                break;
+                            }
                         }
-                        if (hasPrice) {
-                            price = parseInt(thirdLast);
-                            if (!hasStatus) codeIndex = parts.length - 2;
-                        }
+                    }
+                    
+                    // 确定改枪码和游戏模式的位置
+                    if (priceIndex > 0) {
+                        codeIndex = priceIndex - 1;
+                    } else if (statusIndex > 0) {
+                        codeIndex = statusIndex - 1;
+                    } else if (recommendIndex > 0) {
+                        codeIndex = recommendIndex - 1;
+                    }
+                    
+                    // 确保codeIndex至少为1（游戏模式和改枪码）
+                    codeIndex = Math.max(1, codeIndex);
+                    
+                    // 提取标签（如果有）
+                    if (recommendIndex > 0 && recommendIndex < parts.length - 1) {
+                        tag = parts.slice(recommendIndex + 1).join('-');
                     }
                     
                     const modeIndex = codeIndex - 1;
@@ -1623,8 +1636,17 @@ QJB201轻机枪-烽火地带-6HL222S07ODLT6ETQT3GS-30-正常-夯-无敌性价比
                 if (currentFilter === 'price-20-30') {
                     return gun.price > 20 && gun.price <= 30;
                 }
-                if (currentFilter === 'price-30+') {
-                    return gun.price > 30;
+                if (currentFilter === 'price-30-40') {
+                    return gun.price > 30 && gun.price <= 40;
+                }
+                if (currentFilter === 'price-40-50') {
+                    return gun.price > 40 && gun.price <= 50;
+                }   
+                if (currentFilter === 'price-50-60') {
+                    return gun.price > 50 && gun.price <= 60;
+                }
+                if (currentFilter === 'price-60+') {
+                    return gun.price > 60;
                 }
                 
                 return gun.category === currentFilter;
