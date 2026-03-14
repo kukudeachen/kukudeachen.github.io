@@ -1430,94 +1430,80 @@ K416突击步枪-烽火地带-6JCVEOG08BOK35ETI3KG8-45-正常-顶级-近战"></t
 
                 const parts = trimmed.split('-');
                 if (parts.length >= 3) {
-                    // New format: name-mode-code-price-status-recommend-tag
-                    // Support variable format lengths
-                    const recommendValues = ['夯', '顶级', '人上人', 'NPC', '拉完了'];
-                    const statusValues = ['正常', '失效'];
-                    
-                    let tag = '';
-                    let recommend = '';
-                    let status = '';
+                    // 确保至少有武器名称、游戏模式和改枪码
+                    let name = '';
+                    let mode = '';
+                    let code = '';
                     let price = 0;
-                    let codeIndex = parts.length - 1;
+                    let status = '';
+                    let recommend = '';
+                    let tag = '';
                     
-                    // 从后往前查找推荐值
-                    let recommendIndex = -1;
-                    for (let i = parts.length - 1; i >= 0; i--) {
-                        if (recommendValues.includes(parts[i])) {
-                            recommendIndex = i;
-                            recommend = parts[i];
-                            break;
-                        }
+                    // 尝试从后往前解析
+                    let i = parts.length - 1;
+                    
+                    // 提取标签（如果最后一个不是推荐值）
+                    const recommendValues = ['夯', '顶级', '人上人', 'NPC', '拉完了'];
+                    if (!recommendValues.includes(parts[i])) {
+                        tag = parts[i];
+                        i--;
                     }
                     
-                    // 从推荐值位置往前查找状态值
-                    let statusIndex = -1;
-                    if (recommendIndex > 0) {
-                        for (let i = recommendIndex - 1; i >= 0; i--) {
-                            if (statusValues.includes(parts[i])) {
-                                statusIndex = i;
-                                status = parts[i];
-                                break;
+                    // 提取推荐值
+                    if (i >= 0 && recommendValues.includes(parts[i])) {
+                        recommend = parts[i];
+                        i--;
+                    }
+                    
+                    // 提取状态值
+                    const statusValues = ['正常', '失效'];
+                    if (i >= 0 && statusValues.includes(parts[i])) {
+                        status = parts[i];
+                        i--;
+                    }
+                    
+                    // 提取价格值
+                    if (i >= 0 && /^\d+$/.test(parts[i])) {
+                        price = parseInt(parts[i]);
+                        i--;
+                    }
+                    
+                    // 提取改枪码和游戏模式
+                    if (i >= 1) {
+                        code = parts[i];
+                        mode = parts[i - 1];
+                        name = parts.slice(0, i - 1).join('-');
+                    } else if (i >= 0) {
+                        // 最少需要游戏模式和改枪码
+                        code = parts[i];
+                        mode = parts[0];
+                        name = '';
+                    }
+                    
+                    // 确保有基本信息
+                    if (code && mode) {
+                        // Auto-detect category if not set - 使用 weaponKeywords
+                        let category = currentCategory;
+                        if (!category) {
+                            for (const [cat, keywords] of Object.entries(weaponKeywords)) {
+                                if (keywords.some(kw => name.toUpperCase().includes(kw.toUpperCase()))) {
+                                    category = cat;
+                                    break;
+                                }
                             }
                         }
+                        
+                        guns.push({
+                            name,
+                            mode,
+                            code,
+                            price,
+                            status,
+                            recommend,
+                            tag,
+                            category: category || '其他'
+                        });
                     }
-                    
-                    // 从状态值位置往前查找价格值（数字）
-                    let priceIndex = -1;
-                    if (statusIndex > 0) {
-                        for (let i = statusIndex - 1; i >= 0; i--) {
-                            if (/^\d+$/.test(parts[i])) {
-                                priceIndex = i;
-                                price = parseInt(parts[i]);
-                                break;
-                            }
-                        }
-                    }
-                    
-                    // 确定改枪码和游戏模式的位置
-                    if (priceIndex > 0) {
-                        codeIndex = priceIndex - 1;
-                    } else if (statusIndex > 0) {
-                        codeIndex = statusIndex - 1;
-                    } else if (recommendIndex > 0) {
-                        codeIndex = recommendIndex - 1;
-                    }
-                    
-                    // 确保codeIndex至少为1（游戏模式和改枪码）
-                    codeIndex = Math.max(1, codeIndex);
-                    
-                    // 提取标签（如果有）
-                    if (recommendIndex > 0 && recommendIndex < parts.length - 1) {
-                        tag = parts.slice(recommendIndex + 1).join('-');
-                    }
-                    
-                    const modeIndex = codeIndex - 1;
-                    const code = parts[codeIndex];
-                    const mode = parts[modeIndex];
-                    const name = parts.slice(0, modeIndex).join('-');
-                    
-                    // Auto-detect category if not set - 使用 weaponKeywords
-                    let category = currentCategory;
-                    if (!category) {
-                        for (const [cat, keywords] of Object.entries(weaponKeywords)) {
-                            if (keywords.some(kw => name.toUpperCase().includes(kw.toUpperCase()))) {
-                                category = cat;
-                                break;
-                            }
-                        }
-                    }
-                    
-                    guns.push({
-                        name,
-                        mode,
-                        code,
-                        price,
-                        status,
-                        recommend,
-                        tag,
-                        category: category || '其他'
-                    });
                 }
             }
 
