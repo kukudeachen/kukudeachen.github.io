@@ -380,6 +380,19 @@
             color: #ef4444;
         }
 
+        .favorite-btn {
+            transition: all 0.3s ease;
+        }
+
+        .favorite-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .favorite-btn.favorited {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: rgba(239, 68, 68, 0.5);
+        }
+
         .tag-badge {
             padding: 3px 10px;
             background: rgba(0, 212, 255, 0.15);
@@ -1080,6 +1093,10 @@
             <div class="filter-tab" data-filter="特殊武器">
                 <span>⚡ 特殊武器</span>
                 <span class="count" id="specialCount">0</span>
+            </div>
+            <div class="filter-tab" data-filter="favorites">
+                <span>❤️ 收藏</span>
+                <span class="count" id="favoritesCount">0</span>
             </div>
         </div>
     </section>
@@ -2792,6 +2809,7 @@ QJB201轻机枪-烽火地带-6HL222S07ODLT6ETQT3GS-30-正常-夯-无敌性价比
             setTextContent('dmrCount', gunData.filter(g => g.category === '精确射手步枪').length);
             setTextContent('pistolCount', gunData.filter(g => g.category === '手枪').length);
             setTextContent('specialCount', gunData.filter(g => g.category === '特殊武器').length);
+            setTextContent('favoritesCount', getFavorites().length);
             
             // Update price range counts (如果元素存在)
             setTextContent('price0-10Count', gunData.filter(g => g.price >= 0 && g.price <= 10).length);
@@ -2848,9 +2866,71 @@ QJB201轻机枪-烽火地带-6HL222S07ODLT6ETQT3GS-30-正常-夯-无敌性价比
                     return gun.category === currentFilter;
                 }
                 
+                // 收藏过滤
+                if (currentFilter === 'favorites') {
+                    return isFavorite(gun.code);
+                }
+                
                 // 如果没有匹配的过滤条件，返回所有武器
                 return true;
             });
+        }
+
+        // 收藏功能 - 使用localStorage存储
+        const FAVORITES_KEY = 'gun_favorites';
+        
+        // 获取收藏列表
+        function getFavorites() {
+            const favorites = localStorage.getItem(FAVORITES_KEY);
+            return favorites ? JSON.parse(favorites) : [];
+        }
+        
+        // 保存收藏列表
+        function saveFavorites(favorites) {
+            localStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites));
+        }
+        
+        // 检查是否已收藏
+        function isFavorite(gunCode) {
+            const favorites = getFavorites();
+            return favorites.includes(gunCode);
+        }
+        
+        // 切换收藏状态
+        function toggleFavorite(gunCode) {
+            const favorites = getFavorites();
+            const index = favorites.indexOf(gunCode);
+            
+            if (index === -1) {
+                // 添加收藏
+                favorites.push(gunCode);
+                showNotification('已添加到收藏', 'success');
+            } else {
+                // 取消收藏
+                favorites.splice(index, 1);
+                showNotification('已取消收藏', 'info');
+            }
+            
+            saveFavorites(favorites);
+            
+            // 重新渲染以更新收藏按钮状态
+            if (currentFilter === 'favorites') {
+                renderGuns();
+            } else {
+                // 只更新当前卡片的收藏按钮
+                updateFavoriteButton(gunCode);
+            }
+        }
+        
+        // 更新收藏按钮状态
+        function updateFavoriteButton(gunCode) {
+            const btn = document.querySelector(`.favorite-btn[data-code="${gunCode}"]`);
+            if (btn) {
+                const isFav = isFavorite(gunCode);
+                btn.innerHTML = isFav ? '❤️' : '🤍';
+                btn.title = isFav ? '取消收藏' : '添加收藏';
+                btn.classList.toggle('favorited', isFav);
+            }
         }
 
         // Group guns by category and sort by recommend level
@@ -2930,6 +3010,9 @@ QJB201轻机枪-烽火地带-6HL222S07ODLT6ETQT3GS-30-正常-夯-无敌性价比
             const priceDisplay = gun.price > 0 ? formatPrice(gun.price) : '未知';
             const statusClass = gun.status === '失效' ? 'status-invalid' : 'status-valid';
             const recommendClass = getRecommendClass(gun.recommend);
+            const isFav = isFavorite(gun.code);
+            const favIcon = isFav ? '❤️' : '🤍';
+            const favTitle = isFav ? '取消收藏' : '添加收藏';
 
             return `
                 <div class="gun-card ${gun.status === '失效' ? 'card-invalid' : ''}" data-index="${index}">
@@ -2961,6 +3044,7 @@ QJB201轻机枪-烽火地带-6HL222S07ODLT6ETQT3GS-30-正常-夯-无敌性价比
                             <span>复制完整</span>
                         </button>
                         <div class="card-actions" style="margin: 0;">
+                            <button class="card-btn favorite-btn ${isFav ? 'favorited' : ''}" data-code="${gun.code}" onclick="toggleFavorite('${gun.code}')" title="${favTitle}">${favIcon}</button>
                             <button class="card-btn" onclick="openEditModal(${index})" title="编辑">✏️</button>
                             <button class="card-btn delete" onclick="deleteGun(${index})" title="删除">🗑️</button>
                         </div>
