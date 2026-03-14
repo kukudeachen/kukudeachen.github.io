@@ -1030,21 +1030,46 @@
             </div>
         </div>
 
-        <!-- Filter Dropdown -->
-        <div class="filter-dropdown">
-            <select class="form-select" id="filterDropdown" style="width: 200px; margin-bottom: 20px;">
-                <option value="all">全部</option>
-                <option value="烽火地带">🔥 烽火地带</option>
-                <option value="price-0-10">💰 0-10W</option>
-                <option value="price-10-20">💰 10-20W</option>
-                <option value="price-20-30">💰 20-30W</option>
-                <option value="price-30+">💰 30W+</option>
-                <option value="突击步枪">🔫 突击步枪</option>
-                <option value="冲锋枪">💨 冲锋枪</option>
-                <option value="狙击步枪">🎯 狙击步枪</option>
-                <option value="轻机枪">⚡ 轻机枪</option>
-                <option value="霰弹枪">💥 霰弹枪</option>
-            </select>
+        <!-- Filter Tabs -->
+        <div class="filter-tabs" id="filterTabs">
+            <div class="filter-tab active" data-filter="all">
+                <span>全部</span>
+                <span class="count" id="allCount">34</span>
+            </div>
+            <div class="filter-tab" data-filter="烽火地带">
+                <span>🔥 烽火地带</span>
+                <span class="count" id="fenghuoCount">34</span>
+            </div>
+            <!-- Price Range Dropdown -->
+            <div class="filter-tab">
+                <select class="form-select" id="priceFilter" style="width: 120px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary); padding: 4px 8px;">
+                    <option value="price-all">� 价格</option>
+                    <option value="price-0-10">0-10W</option>
+                    <option value="price-10-20">10-20W</option>
+                    <option value="price-20-30">20-30W</option>
+                    <option value="price-30+">30W+</option>
+                </select>
+            </div>
+            <div class="filter-tab" data-filter="突击步枪">
+                <span>🔫 突击步枪</span>
+                <span class="count" id="assaultCount">0</span>
+            </div>
+            <div class="filter-tab" data-filter="冲锋枪">
+                <span>💨 冲锋枪</span>
+                <span class="count" id="smgCount">6</span>
+            </div>
+            <div class="filter-tab" data-filter="狙击步枪">
+                <span>🎯 狙击步枪</span>
+                <span class="count" id="sniperCount">1</span>
+            </div>
+            <div class="filter-tab" data-filter="轻机枪">
+                <span>⚡ 轻机枪</span>
+                <span class="count" id="lmgCount">2</span>
+            </div>
+            <div class="filter-tab" data-filter="霰弹枪">
+                <span>💥 霰弹枪</span>
+                <span class="count" id="shotgunCount">1</span>
+            </div>
         </div>
     </section>
 
@@ -2100,8 +2125,28 @@ QJB201轻机枪-烽火地带-6HL222S07ODLT6ETQT3GS-30-正常-夯-无敌性价比
             renderGuns();
         });
 
-        document.getElementById('filterDropdown').addEventListener('change', (e) => {
-            currentFilter = e.target.value;
+        // 过滤标签点击事件
+        document.getElementById('filterTabs').addEventListener('click', (e) => {
+            const tab = e.target.closest('.filter-tab');
+            if (!tab || tab.querySelector('select')) return;
+
+            document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            currentFilter = tab.dataset.filter;
+            renderGuns();
+        });
+        
+        // 价格下拉选择事件
+        document.getElementById('priceFilter').addEventListener('change', (e) => {
+            const value = e.target.value;
+            if (value === 'price-all') {
+                currentFilter = 'all';
+                document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+                document.querySelector('.filter-tab[data-filter="all"]').classList.add('active');
+            } else {
+                currentFilter = value;
+                document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+            }
             renderGuns();
         });
 
