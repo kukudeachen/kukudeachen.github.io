@@ -1484,15 +1484,6 @@ QJB201轻机枪-烽火地带-6HL222S07ODLT6ETQT3GS-30-正常-夯-无敌性价比
         // Load gun codes from embedded data
         function loadGunCodes() {
             gunData = parseGunCodes(gunDataText);
-            // 确保显示全部数据
-            currentFilter = 'all';
-            // 重置过滤标签状态
-            document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
-            const allTab = document.querySelector('.filter-tab[data-filter="all"]');
-            if (allTab) allTab.classList.add('active');
-            // 重置价格下拉选择
-            const priceFilter = document.getElementById('priceFilter');
-            if (priceFilter) priceFilter.value = 'price-all';
             updateStats();
             renderGuns();
         }
@@ -2120,9 +2111,17 @@ QJB201轻机枪-烽火地带-6HL222S07ODLT6ETQT3GS-30-正常-夯-无敌性价比
         handleModalClick('importModal', closeImportModal);
 
         // Initialize
+         // 确保显示全部数据
+        currentFilter = 'all';
+        // 重置过滤标签状态
+        document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+        const allTab = document.querySelector('.filter-tab[data-filter="all"]');
+        if (allTab) allTab.classList.add('active');
+        // 重置价格下拉选择
+        const priceFilter = document.getElementById('priceFilter');
+        if (priceFilter) priceFilter.value = 'price-all';
+        // 加载数据
         loadGunCodes();
-        // 调试：打印当前状态
-        setTimeout(debugState, 1000);
     </script>
 
 
