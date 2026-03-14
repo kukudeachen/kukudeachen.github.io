@@ -1077,88 +1077,7 @@
     </section>
 
     <!-- Main Content -->
-    <main class="main-content" id="mainContent">
-                    <div class="category-section">
-                        <div class="category-header">
-                            <div class="category-icon cat-sniper">🎯</div>
-                            <h2 class="category-title">精确射手步枪</h2>
-                            <span class="category-count">2 个改枪码</span>
-                        </div>
-                        <div class="gun-grid">
-                            
-                <div class="gun-card " data-index="16">
-                    <div class="gun-header">
-                        <div style="flex: 1;">
-                            <div class="gun-tag-title">消音（ 满改）</div>
-                            <div class="gun-tags">
-                                <span class="gun-mode">
-                                    <span>  🔫  M14射手步枪</span>
-                                </span>
-                                <span class="status-badge status-valid">正常</span>
-                            </div>
-                        </div>
-                        <div style="text-align: right; margin-left: 12px;">
-                            <div class="gun-price">💰 76W</div>
-                            <span class="recommend-badge rec-good">夯</span>
-                        </div>
-                    </div>
-                    <div class="code-box">
-                        <span class="code-text">6GPT20G07ODLT6ETQT3GS</span>
-                        <button class="copy-btn" onclick="copyCode('6GPT20G07ODLT6ETQT3GS', this)">
-                            <span>📋</span>
-                            <span>复制</span>
-                        </button>
-                    </div>
-                    <div class="gun-actions">
-                        <button class="action-btn" onclick="copyFullText('M14射手步枪', '烽火地带', '6GPT20G07ODLT6ETQT3GS', 76, '正常', '夯')">
-                            <span>📄</span>
-                            <span>复制完整</span>
-                        </button>
-                        <div class="card-actions" style="margin: 0;">
-                            <button class="card-btn" onclick="openEditModal(16)" title="编辑">✏️</button>
-                            <button class="card-btn delete" onclick="deleteGun(16)" title="删除">🗑️</button>
-                        </div>
-                    </div>
-                </div>
-            
-                <div class="gun-card " data-index="33">
-                    <div class="gun-header">
-                        <div style="flex: 1;">
-                            <div class="gun-tag-title">半改林树</div>
-                            <div class="gun-tags">
-                                <span class="gun-mode">
-                                    <span>  🔫  M14射手步枪</span>
-                                </span>
-                                <span class="status-badge status-valid">正常</span>
-                            </div>
-                        </div>
-                        <div style="text-align: right; margin-left: 12px;">
-                            <div class="gun-price">💰 57W</div>
-                            <span class="recommend-badge rec-good">夯</span>
-                        </div>
-                    </div>
-                    <div class="code-box">
-                        <span class="code-text">6JD7URG0FUCPK8HVK1GN3</span>
-                        <button class="copy-btn" onclick="copyCode('6JD7URG0FUCPK8HVK1GN3', this)">
-                            <span>📋</span>
-                            <span>复制</span>
-                        </button>
-                    </div>
-                    <div class="gun-actions">
-                        <button class="action-btn" onclick="copyFullText('M14射手步枪', '烽火地带', '6JD7URG0FUCPK8HVK1GN3', 57, '正常', '夯')">
-                            <span>📄</span>
-                            <span>复制完整</span>
-                        </button>
-                        <div class="card-actions" style="margin: 0;">
-                            <button class="card-btn" onclick="openEditModal(33)" title="编辑">✏️</button>
-                            <button class="card-btn delete" onclick="deleteGun(33)" title="删除">🗑️</button>
-                        </div>
-                    </div>
-                </div>
-            
-                        </div>
-                    </div>
-                </main>
+    <main class="main-content" id="mainContent"></main>
 
     <!-- Footer -->
     <footer class="footer">
@@ -1565,6 +1484,15 @@ QJB201轻机枪-烽火地带-6HL222S07ODLT6ETQT3GS-30-正常-夯-无敌性价比
         // Load gun codes from embedded data
         function loadGunCodes() {
             gunData = parseGunCodes(gunDataText);
+            // 确保显示全部数据
+            currentFilter = 'all';
+            // 重置过滤标签状态
+            document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+            const allTab = document.querySelector('.filter-tab[data-filter="all"]');
+            if (allTab) allTab.classList.add('active');
+            // 重置价格下拉选择
+            const priceFilter = document.getElementById('priceFilter');
+            if (priceFilter) priceFilter.value = 'price-all';
             updateStats();
             renderGuns();
         }
