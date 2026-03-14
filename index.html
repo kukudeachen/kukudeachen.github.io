@@ -1040,6 +1040,22 @@
                 <span>🔥 烽火地带</span>
                 <span class="count" id="fenghuoCount">34</span>
             </div>
+            <div class="filter-tab" data-filter="price-0-10">
+                <span>💰 0-10W</span>
+                <span class="count" id="price0-10Count">0</span>
+            </div>
+            <div class="filter-tab" data-filter="price-10-20">
+                <span>💰 10-20W</span>
+                <span class="count" id="price10-20Count">0</span>
+            </div>
+            <div class="filter-tab" data-filter="price-20-30">
+                <span>💰 20-30W</span>
+                <span class="count" id="price20-30Count">0</span>
+            </div>
+            <div class="filter-tab" data-filter="price-30+">
+                <span>💰 30W+</span>
+                <span class="count" id="price30+Count">0</span>
+            </div>
             <div class="filter-tab" data-filter="突击步枪">
                 <span>🔫 突击步枪</span>
                 <span class="count" id="assaultCount">0</span>
@@ -1577,6 +1593,12 @@ QJB201轻机枪-烽火地带-6HL222S07ODLT6ETQT3GS-30-正常-夯-无敌性价比
             document.getElementById('sniperCount').textContent = gunData.filter(g => g.category === '狙击步枪').length;
             document.getElementById('lmgCount').textContent = gunData.filter(g => g.category === '轻机枪').length;
             document.getElementById('shotgunCount').textContent = gunData.filter(g => g.category === '霰弹枪').length;
+            
+            // Update price range counts
+            document.getElementById('price0-10Count').textContent = gunData.filter(g => g.price >= 0 && g.price <= 10).length;
+            document.getElementById('price10-20Count').textContent = gunData.filter(g => g.price > 10 && g.price <= 20).length;
+            document.getElementById('price20-30Count').textContent = gunData.filter(g => g.price > 20 && g.price <= 30).length;
+            document.getElementById('price30+Count').textContent = gunData.filter(g => g.price > 30).length;
         }
 
         // Filter guns
@@ -1596,6 +1618,21 @@ QJB201轻机枪-烽火地带-6HL222S07ODLT6ETQT3GS-30-正常-夯-无敌性价比
                 if (currentFilter === '烽火地带') {
                     return gun.mode === currentFilter;
                 }
+                
+                // Price range filter
+                if (currentFilter === 'price-0-10') {
+                    return gun.price >= 0 && gun.price <= 10;
+                }
+                if (currentFilter === 'price-10-20') {
+                    return gun.price > 10 && gun.price <= 20;
+                }
+                if (currentFilter === 'price-20-30') {
+                    return gun.price > 20 && gun.price <= 30;
+                }
+                if (currentFilter === 'price-30+') {
+                    return gun.price > 30;
+                }
+                
                 return gun.category === currentFilter;
             });
         }
