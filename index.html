@@ -2914,21 +2914,21 @@ QJB201轻机枪-烽火地带-6HL222S07ODLT6ETQT3GS-30-正常-夯-无敌性价比
             // 在gunData中查找对应的武器
             const gunIndex = gunData.findIndex(g => g.code === gunCode);
             if (gunIndex === -1) return;
-            
+
             const gun = gunData[gunIndex];
             const isCollected = gun.isCollected;
-            
+
             // 找到原始数据中的对应行
             const lines = gunDataText.split('\n');
             let lineIndex = -1;
-            
+
             for (let i = 0; i < lines.length; i++) {
                 if (lines[i].includes(gunCode)) {
                     lineIndex = i;
                     break;
                 }
             }
-            
+
             if (lineIndex !== -1) {
                 if (!isCollected) {
                     // 添加收藏标记
@@ -2939,14 +2939,15 @@ QJB201轻机枪-烽火地带-6HL222S07ODLT6ETQT3GS-30-正常-夯-无敌性价比
                     lines[lineIndex] = lines[lineIndex].replace(/-已收藏$/, '');
                     showNotification('已取消收藏', 'info');
                 }
-                
+
                 // 更新原始数据
                 gunDataText = lines.join('\n');
-                
+
                 // 重新解析数据
                 gunData = parseGunCodes(gunDataText);
+
                 updateStats();
-                
+
                 // 重新渲染
                 if (currentFilter === 'favorites') {
                     renderGuns();
