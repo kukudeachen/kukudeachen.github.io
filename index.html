@@ -1358,54 +1358,55 @@ K416突击步枪-烽火地带-6JCVEOG08BOK35ETI3KG8-45-正常-顶级-近战"></t
                     let recommend = '';
                     let tag = '';
                     
-                    // 尝试从后往前解析
-                    let i = parts.length - 1;
-                    
-                    // 定义可能的值
-                    const recommendValues = ['夯', '顶级', '人上人', 'NPC', '拉完了'];
-                    const statusValues = ['正常', '失效'];
-                    
-                    // 提取标签（如果最后一个不是推荐值、状态值、价格或改枪码）
-                    // 标签通常是描述性的文字，不是固定的枚举值
+                    // 从后往前解析，但先找到改枪码的位置（作为锚点）
                     // 改枪码通常是20位左右的字母数字组合
-                    if (i >= 0 && 
-                        !recommendValues.includes(parts[i]) && 
-                        !statusValues.includes(parts[i]) && 
-                        !/^\d+$/.test(parts[i]) &&
-                        !/^[A-Za-z0-9]{15,}$/.test(parts[i])) {  // 不是改枪码（15位以上字母数字）
-                        tag = parts[i];
-                        i--;
+                    let codeIndex = -1;
+                    for (let j = parts.length - 1; j >= 0; j--) {
+                        if (/^[A-Za-z0-9]{15,}$/.test(parts[j])) {
+                            codeIndex = j;
+                            break;
+                        }
                     }
                     
-                    // 提取推荐值
-                    if (i >= 0 && recommendValues.includes(parts[i])) {
-                        recommend = parts[i];
-                        i--;
-                    }
-                    
-                    // 提取状态值
-                    if (i >= 0 && statusValues.includes(parts[i])) {
-                        status = parts[i];
-                        i--;
-                    }
-                    
-                    // 提取价格值
-                    if (i >= 0 && /^\d+$/.test(parts[i])) {
-                        price = parseInt(parts[i]);
-                        i--;
-                    }
-                    
-                    // 提取改枪码和游戏模式
-                    // 改枪码通常是20位左右的字母数字组合
-                    if (i >= 1 && /^[A-Za-z0-9]{15,}$/.test(parts[i])) {
-                        code = parts[i];
-                        mode = parts[i - 1];
-                        name = parts.slice(0, i - 1).join('-');
-                    } else if (i >= 0) {
-                        // 最少需要游戏模式和改枪码
-                        code = parts[i];
-                        mode = parts[0];
-                        name = '';
+                    if (codeIndex >= 0) {
+                        code = parts[codeIndex];
+                        
+                        // 游戏模式在改枪码前面一位
+                        if (codeIndex - 1 >= 0) {
+                            mode = parts[codeIndex - 1];
+                            // 武器名称是游戏模式之前的所有部分
+                            name = parts.slice(0, codeIndex - 1).join('-');
+                        }
+                        
+                        // 从改枪码后面开始解析其他字段
+                        let j = codeIndex + 1;
+                        
+                        // 定义可能的值
+                        const recommendValues = ['夯', '顶级', '人上人', 'NPC', '拉完了'];
+                        const statusValues = ['正常', '失效'];
+                        
+                        // 提取价格（数字）
+                        if (j < parts.length && /^\d+$/.test(parts[j])) {
+                            price = parseInt(parts[j]);
+                            j++;
+                        }
+                        
+                        // 提取状态
+                        if (j < parts.length && statusValues.includes(parts[j])) {
+                            status = parts[j];
+                            j++;
+                        }
+                        
+                        // 提取推荐值
+                        if (j < parts.length && recommendValues.includes(parts[j])) {
+                            recommend = parts[j];
+                            j++;
+                        }
+                        
+                        // 剩余的都是标签
+                        if (j < parts.length) {
+                            tag = parts.slice(j).join('-');
+                        }
                     }
                     
                     // 确保有基本信息
