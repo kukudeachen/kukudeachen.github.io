@@ -1367,11 +1367,12 @@ K416突击步枪-烽火地带-6JCVEOG08BOK35ETI3KG8-45-正常-顶级-近战"></t
                     
                     // 提取标签（如果最后一个不是推荐值、状态值、价格或改枪码）
                     // 标签通常是描述性的文字，不是固定的枚举值
+                    // 改枪码通常是20位左右的字母数字组合
                     if (i >= 0 && 
                         !recommendValues.includes(parts[i]) && 
                         !statusValues.includes(parts[i]) && 
                         !/^\d+$/.test(parts[i]) &&
-                        parts[i].length > 6) {  // 标签通常较长
+                        !/^[A-Za-z0-9]{15,}$/.test(parts[i])) {  // 不是改枪码（15位以上字母数字）
                         tag = parts[i];
                         i--;
                     }
@@ -1395,7 +1396,8 @@ K416突击步枪-烽火地带-6JCVEOG08BOK35ETI3KG8-45-正常-顶级-近战"></t
                     }
                     
                     // 提取改枪码和游戏模式
-                    if (i >= 1) {
+                    // 改枪码通常是20位左右的字母数字组合
+                    if (i >= 1 && /^[A-Za-z0-9]{15,}$/.test(parts[i])) {
                         code = parts[i];
                         mode = parts[i - 1];
                         name = parts.slice(0, i - 1).join('-');
