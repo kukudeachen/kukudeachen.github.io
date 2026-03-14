@@ -1054,16 +1054,16 @@
             <div class="logo">
                     <svg width="40" height="40" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
                     <!-- 荧光绿三角形外框 -->
-                    <path d="M256 64 L448 448 L64 448 Z" fill="none" stroke="#00FF80" stroke-width="64" stroke-linejoin="miter"/>
+                    <path d="M256 64 L448 448 L64 448 Z" fill="none" stroke="#00FF80" stroke-width="64" stroke-linejoin="miter"></path>
                     <!-- 内部闪电图形 -->
-                    <path d="M256 160 L320 240 L288 240 L352 352 L208 240 L256 240 Z" fill="#00FF80"/>
+                    <path d="M256 160 L320 240 L288 240 L352 352 L208 240 L256 240 Z" fill="#00FF80"></path>
                     </svg>
                     <div class="logo-text">DF•WCT(OP)</div>
                     <div class="logo-subtitle">改枪码管理
                     </div>
                 </div>
             </div>
-        </div>
+        
     </header>
 
     <!-- Controls Section -->
@@ -1100,7 +1100,7 @@
                 <div class="stat-icon blue">🔫</div>
                 <div class="stat-info">
                     <h4>武器总数</h4>
-                    <p id="totalCount">34</p>
+                    <p id="totalCount">41</p>
                 </div>
             </div>
             <div class="stat-item">
@@ -1123,7 +1123,7 @@
         <div class="filter-tabs" id="filterTabs">
             <div class="filter-tab active" data-filter="all">
                 <span>全部</span>
-                <span class="count" id="allCount">34</span>
+                <span class="count" id="allCount">41</span>
             </div>
             <!-- Price Range Dropdown -->
             <div class="filter-tab">
@@ -1140,11 +1140,11 @@
             </div>
             <div class="filter-tab" data-filter="步枪">
                 <span>🔫 步枪</span>
-                <span class="count" id="assaultCount">19</span>
+                <span class="count" id="assaultCount">23</span>
             </div>
             <div class="filter-tab" data-filter="冲锋枪">
                 <span>💨 冲锋枪</span>
-                <span class="count" id="smgCount">6</span>
+                <span class="count" id="smgCount">8</span>
             </div>
             <div class="filter-tab" data-filter="狙击步枪">
                 <span>🎯 狙击步枪</span>
@@ -1152,7 +1152,7 @@
             </div>
             <div class="filter-tab" data-filter="轻机枪">
                 <span>⚡ 轻机枪</span>
-                <span class="count" id="lmgCount">2</span>
+                <span class="count" id="lmgCount">3</span>
             </div>
             <div class="filter-tab" data-filter="霰弹枪">
                 <span>💥 霰弹枪</span>
@@ -1172,7 +1172,7 @@
             </div>
             <div class="filter-tab" data-filter="favorites">
                 <span>❤️ 收藏</span>
-                <span class="count" id="favoritesCount">0</span>
+                <span class="count" id="favoritesCount">18</span>
             </div>
         </div>
     </section>
@@ -1183,7 +1183,7 @@
                             <div class="category-header">
                                 <div class="category-icon cat-assault">🔫</div>
                                 <h2 class="category-title">步枪</h2>
-                                <span class="category-count">19 个改枪码</span>
+                                <span class="category-count">23 个改枪码</span>
                             </div>
                             <div class="gun-grid">
                                 
@@ -1216,7 +1216,7 @@
                             <span>复制完整</span>
                         </button>
                         <div class="card-actions" style="margin: 0;">
-                            <button class="card-btn favorite-btn " data-code="6IUPED80CCNN7V1KCQCD1" onclick="toggleFavorite('6IUPED80CCNN7V1KCQCD1')" title="添加收藏">🤍</button>
+                            <button class="card-btn favorite-btn favorited" data-code="6IUPED80CCNN7V1KCQCD1" onclick="toggleFavorite('6IUPED80CCNN7V1KCQCD1')" title="取消收藏">❤️</button>
                             <button class="card-btn" onclick="openEditModal(11)" title="编辑">✏️</button>
                             <button class="card-btn delete" onclick="deleteGun(11)" title="删除">🗑️</button>
                         </div>
@@ -1252,7 +1252,7 @@
                             <span>复制完整</span>
                         </button>
                         <div class="card-actions" style="margin: 0;">
-                            <button class="card-btn favorite-btn " data-code="6IN8FQK00HQLU2MDVQMAA" onclick="toggleFavorite('6IN8FQK00HQLU2MDVQMAA')" title="添加收藏">🤍</button>
+                            <button class="card-btn favorite-btn favorited" data-code="6IN8FQK00HQLU2MDVQMAA" onclick="toggleFavorite('6IN8FQK00HQLU2MDVQMAA')" title="取消收藏">❤️</button>
                             <button class="card-btn" onclick="openEditModal(12)" title="编辑">✏️</button>
                             <button class="card-btn delete" onclick="deleteGun(12)" title="删除">🗑️</button>
                         </div>
@@ -1288,7 +1288,7 @@
                             <span>复制完整</span>
                         </button>
                         <div class="card-actions" style="margin: 0;">
-                            <button class="card-btn favorite-btn " data-code="6IN8G200223NGCLVVEN6F" onclick="toggleFavorite('6IN8G200223NGCLVVEN6F')" title="添加收藏">🤍</button>
+                            <button class="card-btn favorite-btn favorited" data-code="6IN8G200223NGCLVVEN6F" onclick="toggleFavorite('6IN8G200223NGCLVVEN6F')" title="取消收藏">❤️</button>
                             <button class="card-btn" onclick="openEditModal(14)" title="编辑">✏️</button>
                             <button class="card-btn delete" onclick="deleteGun(14)" title="删除">🗑️</button>
                         </div>
@@ -1324,7 +1324,7 @@
                             <span>复制完整</span>
                         </button>
                         <div class="card-actions" style="margin: 0;">
-                            <button class="card-btn favorite-btn " data-code="6IIRBK80A6PIA75LU5T70" onclick="toggleFavorite('6IIRBK80A6PIA75LU5T70')" title="添加收藏">🤍</button>
+                            <button class="card-btn favorite-btn favorited" data-code="6IIRBK80A6PIA75LU5T70" onclick="toggleFavorite('6IIRBK80A6PIA75LU5T70')" title="取消收藏">❤️</button>
                             <button class="card-btn" onclick="openEditModal(17)" title="编辑">✏️</button>
                             <button class="card-btn delete" onclick="deleteGun(17)" title="删除">🗑️</button>
                         </div>
@@ -1360,9 +1360,81 @@
                             <span>复制完整</span>
                         </button>
                         <div class="card-actions" style="margin: 0;">
-                            <button class="card-btn favorite-btn " data-code="6I36BH00223NGCLVVEN6F" onclick="toggleFavorite('6I36BH00223NGCLVVEN6F')" title="添加收藏">🤍</button>
+                            <button class="card-btn favorite-btn favorited" data-code="6I36BH00223NGCLVVEN6F" onclick="toggleFavorite('6I36BH00223NGCLVVEN6F')" title="取消收藏">❤️</button>
                             <button class="card-btn" onclick="openEditModal(18)" title="编辑">✏️</button>
                             <button class="card-btn delete" onclick="deleteGun(18)" title="删除">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="gun-card " data-index="36">
+                    <div class="gun-header">
+                        <div style="flex: 1;">
+                            <div class="gun-tag-title">20W🔥无敌🔥[峰峰]</div>
+                            <div class="gun-tags">
+                                <span class="gun-mode">
+                                    <span>  🔫  PTR-32突击步枪</span>
+                                </span>
+                                <span class="status-badge status-valid">正常</span>
+                            </div>
+                        </div>
+                        <div style="text-align: right; margin-left: 12px;">
+                            <div class="gun-price">💰 19W</div>
+                            <span class="recommend-badge rec-good">夯</span>
+                        </div>
+                    </div>
+                    <div class="code-box">
+                        <span class="code-text">6JCLB380FUSS37J6Q9CUL</span>
+                        <button class="copy-btn" onclick="copyCode('6JCLB380FUSS37J6Q9CUL', this)">
+                            <span>📋</span>
+                            <span>复制</span>
+                        </button>
+                    </div>
+                    <div class="gun-actions">
+                        <button class="action-btn" onclick="copyFullText('PTR-32突击步枪', '烽火地带', '6JCLB380FUSS37J6Q9CUL', 19, '正常', '夯')">
+                            <span>📄</span>
+                            <span>复制完整</span>
+                        </button>
+                        <div class="card-actions" style="margin: 0;">
+                            <button class="card-btn favorite-btn favorited" data-code="6JCLB380FUSS37J6Q9CUL" onclick="toggleFavorite('6JCLB380FUSS37J6Q9CUL')" title="取消收藏">❤️</button>
+                            <button class="card-btn" onclick="openEditModal(36)" title="编辑">✏️</button>
+                            <button class="card-btn delete" onclick="deleteGun(36)" title="删除">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="gun-card " data-index="38">
+                    <div class="gun-header">
+                        <div style="flex: 1;">
+                            <div class="gun-tag-title">25W性价比MCX LT[闪光]</div>
+                            <div class="gun-tags">
+                                <span class="gun-mode">
+                                    <span>  🔫  MCX LT突击步枪</span>
+                                </span>
+                                <span class="status-badge status-valid">正常</span>
+                            </div>
+                        </div>
+                        <div style="text-align: right; margin-left: 12px;">
+                            <div class="gun-price">💰 25W</div>
+                            <span class="recommend-badge rec-good">夯</span>
+                        </div>
+                    </div>
+                    <div class="code-box">
+                        <span class="code-text">6JD8T7S0E5QUTQP36HK9K</span>
+                        <button class="copy-btn" onclick="copyCode('6JD8T7S0E5QUTQP36HK9K', this)">
+                            <span>📋</span>
+                            <span>复制</span>
+                        </button>
+                    </div>
+                    <div class="gun-actions">
+                        <button class="action-btn" onclick="copyFullText('MCX LT突击步枪', '烽火地带', '6JD8T7S0E5QUTQP36HK9K', 25, '正常', '夯')">
+                            <span>📄</span>
+                            <span>复制完整</span>
+                        </button>
+                        <div class="card-actions" style="margin: 0;">
+                            <button class="card-btn favorite-btn " data-code="6JD8T7S0E5QUTQP36HK9K" onclick="toggleFavorite('6JD8T7S0E5QUTQP36HK9K')" title="添加收藏">🤍</button>
+                            <button class="card-btn" onclick="openEditModal(38)" title="编辑">✏️</button>
+                            <button class="card-btn delete" onclick="deleteGun(38)" title="删除">🗑️</button>
                         </div>
                     </div>
                 </div>
@@ -1468,7 +1540,7 @@
                             <span>复制完整</span>
                         </button>
                         <div class="card-actions" style="margin: 0;">
-                            <button class="card-btn favorite-btn " data-code="6H9EAMS07ODLT6ETQT3GS" onclick="toggleFavorite('6H9EAMS07ODLT6ETQT3GS')" title="添加收藏">🤍</button>
+                            <button class="card-btn favorite-btn favorited" data-code="6H9EAMS07ODLT6ETQT3GS" onclick="toggleFavorite('6H9EAMS07ODLT6ETQT3GS')" title="取消收藏">❤️</button>
                             <button class="card-btn" onclick="openEditModal(6)" title="编辑">✏️</button>
                             <button class="card-btn delete" onclick="deleteGun(6)" title="删除">🗑️</button>
                         </div>
@@ -1504,7 +1576,7 @@
                             <span>复制完整</span>
                         </button>
                         <div class="card-actions" style="margin: 0;">
-                            <button class="card-btn favorite-btn " data-code="6H9EBEK07ODLT6ETQT3GS" onclick="toggleFavorite('6H9EBEK07ODLT6ETQT3GS')" title="添加收藏">🤍</button>
+                            <button class="card-btn favorite-btn favorited" data-code="6H9EBEK07ODLT6ETQT3GS" onclick="toggleFavorite('6H9EBEK07ODLT6ETQT3GS')" title="取消收藏">❤️</button>
                             <button class="card-btn" onclick="openEditModal(7)" title="编辑">✏️</button>
                             <button class="card-btn delete" onclick="deleteGun(7)" title="删除">🗑️</button>
                         </div>
@@ -1540,7 +1612,7 @@
                             <span>复制完整</span>
                         </button>
                         <div class="card-actions" style="margin: 0;">
-                            <button class="card-btn favorite-btn " data-code="6H9ML0405OGLI0NLKOOIA" onclick="toggleFavorite('6H9ML0405OGLI0NLKOOIA')" title="添加收藏">🤍</button>
+                            <button class="card-btn favorite-btn favorited" data-code="6H9ML0405OGLI0NLKOOIA" onclick="toggleFavorite('6H9ML0405OGLI0NLKOOIA')" title="取消收藏">❤️</button>
                             <button class="card-btn" onclick="openEditModal(8)" title="编辑">✏️</button>
                             <button class="card-btn delete" onclick="deleteGun(8)" title="删除">🗑️</button>
                         </div>
@@ -1684,9 +1756,81 @@
                             <span>复制完整</span>
                         </button>
                         <div class="card-actions" style="margin: 0;">
-                            <button class="card-btn favorite-btn " data-code="6IN8NB80A6PIA75LU5T70" onclick="toggleFavorite('6IN8NB80A6PIA75LU5T70')" title="添加收藏">🤍</button>
+                            <button class="card-btn favorite-btn favorited" data-code="6IN8NB80A6PIA75LU5T70" onclick="toggleFavorite('6IN8NB80A6PIA75LU5T70')" title="取消收藏">❤️</button>
                             <button class="card-btn" onclick="openEditModal(16)" title="编辑">✏️</button>
                             <button class="card-btn delete" onclick="deleteGun(16)" title="删除">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="gun-card " data-index="37">
+                    <div class="gun-header">
+                        <div style="flex: 1;">
+                            <div class="gun-tag-title">26W半改MCX LT</div>
+                            <div class="gun-tags">
+                                <span class="gun-mode">
+                                    <span>  🔫  MCX LT突击步枪</span>
+                                </span>
+                                <span class="status-badge status-valid">正常</span>
+                            </div>
+                        </div>
+                        <div style="text-align: right; margin-left: 12px;">
+                            <div class="gun-price">💰 26W</div>
+                            <span class="recommend-badge rec-top">顶级</span>
+                        </div>
+                    </div>
+                    <div class="code-box">
+                        <span class="code-text">6JDABGG09EDG25O19581D</span>
+                        <button class="copy-btn" onclick="copyCode('6JDABGG09EDG25O19581D', this)">
+                            <span>📋</span>
+                            <span>复制</span>
+                        </button>
+                    </div>
+                    <div class="gun-actions">
+                        <button class="action-btn" onclick="copyFullText('MCX LT突击步枪', '烽火地带', '6JDABGG09EDG25O19581D', 26, '正常', '顶级')">
+                            <span>📄</span>
+                            <span>复制完整</span>
+                        </button>
+                        <div class="card-actions" style="margin: 0;">
+                            <button class="card-btn favorite-btn " data-code="6JDABGG09EDG25O19581D" onclick="toggleFavorite('6JDABGG09EDG25O19581D')" title="添加收藏">🤍</button>
+                            <button class="card-btn" onclick="openEditModal(37)" title="编辑">✏️</button>
+                            <button class="card-btn delete" onclick="deleteGun(37)" title="删除">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="gun-card " data-index="39">
+                    <div class="gun-header">
+                        <div style="flex: 1;">
+                            <div class="gun-tag-title">14W丐版QBZ95-1[师兄]</div>
+                            <div class="gun-tags">
+                                <span class="gun-mode">
+                                    <span>  🔫  QBZ95-1突击步枪</span>
+                                </span>
+                                <span class="status-badge status-valid">正常</span>
+                            </div>
+                        </div>
+                        <div style="text-align: right; margin-left: 12px;">
+                            <div class="gun-price">💰 14W</div>
+                            <span class="recommend-badge rec-top">顶级</span>
+                        </div>
+                    </div>
+                    <div class="code-box">
+                        <span class="code-text">6JDDSH80FUCPK8HVK1GN3</span>
+                        <button class="copy-btn" onclick="copyCode('6JDDSH80FUCPK8HVK1GN3', this)">
+                            <span>📋</span>
+                            <span>复制</span>
+                        </button>
+                    </div>
+                    <div class="gun-actions">
+                        <button class="action-btn" onclick="copyFullText('QBZ95-1突击步枪', '烽火地带', '6JDDSH80FUCPK8HVK1GN3', 14, '正常', '顶级')">
+                            <span>📄</span>
+                            <span>复制完整</span>
+                        </button>
+                        <div class="card-actions" style="margin: 0;">
+                            <button class="card-btn favorite-btn " data-code="6JDDSH80FUCPK8HVK1GN3" onclick="toggleFavorite('6JDDSH80FUCPK8HVK1GN3')" title="添加收藏">🤍</button>
+                            <button class="card-btn" onclick="openEditModal(39)" title="编辑">✏️</button>
+                            <button class="card-btn delete" onclick="deleteGun(39)" title="删除">🗑️</button>
                         </div>
                     </div>
                 </div>
@@ -1828,7 +1972,7 @@
                             <span>复制完整</span>
                         </button>
                         <div class="card-actions" style="margin: 0;">
-                            <button class="card-btn favorite-btn " data-code="6H9ML0405OGLI0NLKOOIA" onclick="toggleFavorite('6H9ML0405OGLI0NLKOOIA')" title="添加收藏">🤍</button>
+                            <button class="card-btn favorite-btn favorited" data-code="6H9ML0405OGLI0NLKOOIA" onclick="toggleFavorite('6H9ML0405OGLI0NLKOOIA')" title="取消收藏">❤️</button>
                             <button class="card-btn" onclick="openEditModal(10)" title="编辑">✏️</button>
                             <button class="card-btn delete" onclick="deleteGun(10)" title="删除">🗑️</button>
                         </div>
@@ -1878,7 +2022,7 @@
                             <div class="category-header">
                                 <div class="category-icon cat-smg">💨</div>
                                 <h2 class="category-title">冲锋枪</h2>
-                                <span class="category-count">6 个改枪码</span>
+                                <span class="category-count">8 个改枪码</span>
                             </div>
                             <div class="gun-grid">
                                 
@@ -1947,7 +2091,7 @@
                             <span>复制完整</span>
                         </button>
                         <div class="card-actions" style="margin: 0;">
-                            <button class="card-btn favorite-btn " data-code="6F6Q83O07ODLT6ETQT3GS" onclick="toggleFavorite('6F6Q83O07ODLT6ETQT3GS')" title="添加收藏">🤍</button>
+                            <button class="card-btn favorite-btn favorited" data-code="6F6Q83O07ODLT6ETQT3GS" onclick="toggleFavorite('6F6Q83O07ODLT6ETQT3GS')" title="取消收藏">❤️</button>
                             <button class="card-btn" onclick="openEditModal(20)" title="编辑">✏️</button>
                             <button class="card-btn delete" onclick="deleteGun(20)" title="删除">🗑️</button>
                         </div>
@@ -1983,9 +2127,45 @@
                             <span>复制完整</span>
                         </button>
                         <div class="card-actions" style="margin: 0;">
-                            <button class="card-btn favorite-btn " data-code="6H1HI140B9I04M2JUJ0H8" onclick="toggleFavorite('6H1HI140B9I04M2JUJ0H8')" title="添加收藏">🤍</button>
+                            <button class="card-btn favorite-btn favorited" data-code="6H1HI140B9I04M2JUJ0H8" onclick="toggleFavorite('6H1HI140B9I04M2JUJ0H8')" title="取消收藏">❤️</button>
                             <button class="card-btn" onclick="openEditModal(23)" title="编辑">✏️</button>
                             <button class="card-btn delete" onclick="deleteGun(23)" title="删除">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="gun-card " data-index="40">
+                    <div class="gun-header">
+                        <div style="flex: 1;">
+                            <div class="gun-tag-title">射速慢巨稳SMG-45[约翰]</div>
+                            <div class="gun-tags">
+                                <span class="gun-mode">
+                                    <span>  🔫  SMG-45冲锋枪</span>
+                                </span>
+                                <span class="status-badge status-valid">正常</span>
+                            </div>
+                        </div>
+                        <div style="text-align: right; margin-left: 12px;">
+                            <div class="gun-price">💰 25W</div>
+                            <span class="recommend-badge rec-good">夯</span>
+                        </div>
+                    </div>
+                    <div class="code-box">
+                        <span class="code-text">6JCLT1K09M55NRPU8R5DP</span>
+                        <button class="copy-btn" onclick="copyCode('6JCLT1K09M55NRPU8R5DP', this)">
+                            <span>📋</span>
+                            <span>复制</span>
+                        </button>
+                    </div>
+                    <div class="gun-actions">
+                        <button class="action-btn" onclick="copyFullText('SMG-45冲锋枪', '烽火地带', '6JCLT1K09M55NRPU8R5DP', 25, '正常', '夯')">
+                            <span>📄</span>
+                            <span>复制完整</span>
+                        </button>
+                        <div class="card-actions" style="margin: 0;">
+                            <button class="card-btn favorite-btn " data-code="6JCLT1K09M55NRPU8R5DP" onclick="toggleFavorite('6JCLT1K09M55NRPU8R5DP')" title="添加收藏">🤍</button>
+                            <button class="card-btn" onclick="openEditModal(40)" title="编辑">✏️</button>
+                            <button class="card-btn delete" onclick="deleteGun(40)" title="删除">🗑️</button>
                         </div>
                     </div>
                 </div>
@@ -2019,9 +2199,45 @@
                             <span>复制完整</span>
                         </button>
                         <div class="card-actions" style="margin: 0;">
-                            <button class="card-btn favorite-btn " data-code="6FVLU2G07ODLT6ETQT3GS" onclick="toggleFavorite('6FVLU2G07ODLT6ETQT3GS')" title="添加收藏">🤍</button>
+                            <button class="card-btn favorite-btn favorited" data-code="6FVLU2G07ODLT6ETQT3GS" onclick="toggleFavorite('6FVLU2G07ODLT6ETQT3GS')" title="取消收藏">❤️</button>
                             <button class="card-btn" onclick="openEditModal(22)" title="编辑">✏️</button>
                             <button class="card-btn delete" onclick="deleteGun(22)" title="删除">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="gun-card " data-index="35">
+                    <div class="gun-header">
+                        <div style="flex: 1;">
+                            <div class="gun-tag-title">20W中近无镜[峰峰]</div>
+                            <div class="gun-tags">
+                                <span class="gun-mode">
+                                    <span>  🔫  P90冲锋枪</span>
+                                </span>
+                                <span class="status-badge status-valid">正常</span>
+                            </div>
+                        </div>
+                        <div style="text-align: right; margin-left: 12px;">
+                            <div class="gun-price">💰 20W</div>
+                            <span class="recommend-badge rec-top">顶级</span>
+                        </div>
+                    </div>
+                    <div class="code-box">
+                        <span class="code-text">6JCL9N00FUSS37J6Q9CUL</span>
+                        <button class="copy-btn" onclick="copyCode('6JCL9N00FUSS37J6Q9CUL', this)">
+                            <span>📋</span>
+                            <span>复制</span>
+                        </button>
+                    </div>
+                    <div class="gun-actions">
+                        <button class="action-btn" onclick="copyFullText('P90冲锋枪', '烽火地带', '6JCL9N00FUSS37J6Q9CUL', 20, '正常', '顶级')">
+                            <span>📄</span>
+                            <span>复制完整</span>
+                        </button>
+                        <div class="card-actions" style="margin: 0;">
+                            <button class="card-btn favorite-btn favorited" data-code="6JCL9N00FUSS37J6Q9CUL" onclick="toggleFavorite('6JCL9N00FUSS37J6Q9CUL')" title="取消收藏">❤️</button>
+                            <button class="card-btn" onclick="openEditModal(35)" title="编辑">✏️</button>
+                            <button class="card-btn delete" onclick="deleteGun(35)" title="删除">🗑️</button>
                         </div>
                     </div>
                 </div>
@@ -2055,7 +2271,7 @@
                             <span>复制完整</span>
                         </button>
                         <div class="card-actions" style="margin: 0;">
-                            <button class="card-btn favorite-btn " data-code="6IIQUA40A6PIA75LU5T70" onclick="toggleFavorite('6IIQUA40A6PIA75LU5T70')" title="添加收藏">🤍</button>
+                            <button class="card-btn favorite-btn favorited" data-code="6IIQUA40A6PIA75LU5T70" onclick="toggleFavorite('6IIQUA40A6PIA75LU5T70')" title="取消收藏">❤️</button>
                             <button class="card-btn" onclick="openEditModal(24)" title="编辑">✏️</button>
                             <button class="card-btn delete" onclick="deleteGun(24)" title="删除">🗑️</button>
                         </div>
@@ -2221,7 +2437,7 @@
                             <span>复制完整</span>
                         </button>
                         <div class="card-actions" style="margin: 0;">
-                            <button class="card-btn favorite-btn " data-code="6HCM8UK0285EKE7L5LPSH" onclick="toggleFavorite('6HCM8UK0285EKE7L5LPSH')" title="添加收藏">🤍</button>
+                            <button class="card-btn favorite-btn favorited" data-code="6HCM8UK0285EKE7L5LPSH" onclick="toggleFavorite('6HCM8UK0285EKE7L5LPSH')" title="取消收藏">❤️</button>
                             <button class="card-btn" onclick="openEditModal(27)" title="编辑">✏️</button>
                             <button class="card-btn delete" onclick="deleteGun(27)" title="删除">🗑️</button>
                         </div>
@@ -2329,7 +2545,7 @@
                             <span>复制完整</span>
                         </button>
                         <div class="card-actions" style="margin: 0;">
-                            <button class="card-btn favorite-btn " data-code="6JD7URG0FUCPK8HVK1GN3" onclick="toggleFavorite('6JD7URG0FUCPK8HVK1GN3')" title="添加收藏">🤍</button>
+                            <button class="card-btn favorite-btn favorited" data-code="6JD7URG0FUCPK8HVK1GN3" onclick="toggleFavorite('6JD7URG0FUCPK8HVK1GN3')" title="取消收藏">❤️</button>
                             <button class="card-btn" onclick="openEditModal(30)" title="编辑">✏️</button>
                             <button class="card-btn delete" onclick="deleteGun(30)" title="删除">🗑️</button>
                         </div>
@@ -2390,7 +2606,7 @@
                             <div class="category-header">
                                 <div class="category-icon cat-lmg">⚡</div>
                                 <h2 class="category-title">轻机枪</h2>
-                                <span class="category-count">2 个改枪码</span>
+                                <span class="category-count">3 个改枪码</span>
                             </div>
                             <div class="gun-grid">
                                 
@@ -2423,9 +2639,45 @@
                             <span>复制完整</span>
                         </button>
                         <div class="card-actions" style="margin: 0;">
-                            <button class="card-btn favorite-btn " data-code="6HL222S07ODLT6ETQT3GS" onclick="toggleFavorite('6HL222S07ODLT6ETQT3GS')" title="添加收藏">🤍</button>
+                            <button class="card-btn favorite-btn favorited" data-code="6HL222S07ODLT6ETQT3GS" onclick="toggleFavorite('6HL222S07ODLT6ETQT3GS')" title="取消收藏">❤️</button>
                             <button class="card-btn" onclick="openEditModal(33)" title="编辑">✏️</button>
                             <button class="card-btn delete" onclick="deleteGun(33)" title="删除">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="gun-card " data-index="34">
+                    <div class="gun-header">
+                        <div style="flex: 1;">
+                            <div class="gun-tag-title">18W丐版QJB201[峰峰]</div>
+                            <div class="gun-tags">
+                                <span class="gun-mode">
+                                    <span>  🔫  QJB201轻机枪</span>
+                                </span>
+                                <span class="status-badge status-valid">正常</span>
+                            </div>
+                        </div>
+                        <div style="text-align: right; margin-left: 12px;">
+                            <div class="gun-price">💰 18W</div>
+                            <span class="recommend-badge rec-vip">人上人</span>
+                        </div>
+                    </div>
+                    <div class="code-box">
+                        <span class="code-text">6JCL9TC0FUSS37J6Q9CUL</span>
+                        <button class="copy-btn" onclick="copyCode('6JCL9TC0FUSS37J6Q9CUL', this)">
+                            <span>📋</span>
+                            <span>复制</span>
+                        </button>
+                    </div>
+                    <div class="gun-actions">
+                        <button class="action-btn" onclick="copyFullText('QJB201轻机枪', '烽火地带', '6JCL9TC0FUSS37J6Q9CUL', 18, '正常', '人上人')">
+                            <span>📄</span>
+                            <span>复制完整</span>
+                        </button>
+                        <div class="card-actions" style="margin: 0;">
+                            <button class="card-btn favorite-btn " data-code="6JCL9TC0FUSS37J6Q9CUL" onclick="toggleFavorite('6JCL9TC0FUSS37J6Q9CUL')" title="添加收藏">🤍</button>
+                            <button class="card-btn" onclick="openEditModal(34)" title="编辑">✏️</button>
+                            <button class="card-btn delete" onclick="deleteGun(34)" title="删除">🗑️</button>
                         </div>
                     </div>
                 </div>
@@ -2480,7 +2732,7 @@
         <div class="toast-icon">✓</div>
         <div>
             <div style="font-weight: 600;">复制成功</div>
-            <div style="font-size: 13px; color: var(--text-secondary);">文件已下载！请用下载的 index.html 替换原文件</div>
+            <div style="font-size: 13px; color: var(--text-secondary);">武器添加成功！</div>
         </div>
     </div>
 
@@ -2488,11 +2740,11 @@
     <div class="modal-overlay" id="gunModal">
         <div class="modal">
             <div class="modal-header">
-                <h3 class="modal-title" id="modalTitle">编辑武器</h3>
+                <h3 class="modal-title" id="modalTitle">添加武器</h3>
                 <button class="modal-close" onclick="closeModal()">×</button>
             </div>
             <form id="gunForm" onsubmit="saveGun(event)">
-                <input type="hidden" id="editIndex" value="29">
+                <input type="hidden" id="editIndex" value="-1">
 
                 <!-- 快速粘贴区域 -->
                 <div class="form-group" id="quickPasteArea">
@@ -2861,6 +3113,10 @@ MK47突击步枪-烽火地带-6IN8FD80223NGCLVVEN6F-30-正常-顶级-30W新手MK
 KC17突击步枪-烽火地带-6IN8NB80A6PIA75LU5T70-27-正常-顶级-30W稳定版KC17 [陈小刀]-已收藏
 AUG突击步枪-烽火地带-6IIRBK80A6PIA75LU5T70-30-正常-夯-30W性价比PTR [陈小刀]-已收藏
 AK-12突击步枪-烽火地带-6I36BH00223NGCLVVEN6F-18-正常-夯-20W省钱AK-12 [饼干小警长]-已收藏
+PTR-32突击步枪-烽火地带-6JCLB380FUSS37J6Q9CUL-19-正常-夯-20W🔥无敌🔥[峰峰]-已收藏
+MCX LT突击步枪-烽火地带-6JDABGG09EDG25O19581D-26-正常-顶级-26W半改MCX LT
+MCX LT突击步枪-烽火地带-6JD8T7S0E5QUTQP36HK9K-25-正常-夯-25W性价比MCX LT[闪光]
+QBZ95-1突击步枪-烽火地带-6JDDSH80FUCPK8HVK1GN3-14-正常-顶级-14W丐版QBZ95-1[师兄]
 
 # === 冲锋枪 ===
 Vector冲锋枪-烽火地带-6F4P1BG07ODLT6ETQT3GS-38-正常-夯-满腰射
@@ -2869,6 +3125,8 @@ SMG-45冲锋枪-烽火地带-6FQ93AC02J1BTCMSP82T7-33-正常-NPC-满腰射射速
 MP7冲锋枪-烽火地带-6FVLU2G07ODLT6ETQT3GS-38-正常-顶级-爆闪满腰射-已收藏
 P90冲锋枪-烽火地带-6H1HI140B9I04M2JUJ0H8-42-正常-夯-100m-已收藏
 勇士冲锋枪-烽火地带-6IIQUA40A6PIA75LU5T70-18-正常-人上人-15W腰射版勇士 [陈小刀]-已收藏
+P90冲锋枪-烽火地带-6JCL9N00FUSS37J6Q9CUL-20-正常-顶级-20W中近无镜[峰峰]-已收藏
+SMG-45冲锋枪-烽火地带-6JCLT1K09M55NRPU8R5DP-25-正常-夯-射速慢巨稳SMG-45[约翰]
 
 # === 霰弹枪 ===
 FS-12霰弹枪-烽火地带-6J05MAK05626H7V45IC7J-7-正常-人上人-7W新手FS-12 [Key725]
@@ -2886,6 +3144,7 @@ AWM狙击步枪-烽火地带-6GCOMIO03HDN3EE1QTI4I-92-正常-夯-秒开镜
 # === 轻机枪 ===
 PKM通用机枪-烽火地带-6H7R3S00BI66M9G2OV3QF-26-正常-拉完了-只能架点用
 QJB201轻机枪-烽火地带-6HL222S07ODLT6ETQT3GS-30-正常-夯-无敌性价比好用-已收藏
+QJB201轻机枪-烽火地带-6JCL9TC0FUSS37J6Q9CUL-18-正常-人上人-18W丐版QJB201[峰峰]
 `;
 
         // Load gun codes from embedded data
@@ -3723,4 +3982,5 @@ QJB201轻机枪-烽火地带-6HL222S07ODLT6ETQT3GS-30-正常-夯-无敌性价比
 				   
 		</script><tfjnlp tfdata="" id="TFjnlpID"></tfjnlp><doubao-ai-csui id="546d6e4b0ae64a5e8a81244b831596ad" data-host-id="11b29624-1a7e-4fe0-b8af-6090f8e29172"></doubao-ai-csui><div id="doubao-ai-translate-image-assistant11b29624-1a7e-4fe0-b8af-6090f8e29172" data-collection-img-host-id="11b29624-1a7e-4fe0-b8af-6090f8e29172"></div><div style="width: 0px; height: 0px; position: absolute; z-index: 200000;"></div><div id="doubao-ai-assistant" aria-label="flow-ai-assistant" aria-description="" style="width: 0px; height: 0px; position: absolute; top: 0px; left: 0px; overflow: hidden;"></div>
 
-<div style="position: fixed; top: 20px; right: 20px; padding: 12px 24px; border-radius: 8px; color: white; font-weight: 500; z-index: 10000; animation: 0.3 ease 0 1 normal none running slideIn; box-shadow: rgba(0, 0, 0, 0.3) 0px 4px 12px; background: linear-gradient(135deg, rgb(59, 130, 246) 0%, rgb(37, 99, 235) 100%);">已取消收藏</div><div style="position: fixed; top: 20px; right: 20px; padding: 12px 24px; border-radius: 8px; color: white; font-weight: 500; z-index: 10000; animation: 0.3 ease 0 1 normal none running slideIn; box-shadow: rgba(0, 0, 0, 0.3) 0px 4px 12px; background: linear-gradient(135deg, rgb(59, 130, 246) 0%, rgb(37, 99, 235) 100%);">已取消收藏</div><div style="position: fixed; top: 20px; right: 20px; padding: 12px 24px; border-radius: 8px; color: white; font-weight: 500; z-index: 10000; animation: 0.3 ease 0 1 normal none running slideOut; box-shadow: rgba(0, 0, 0, 0.3) 0px 4px 12px; background: linear-gradient(135deg, rgb(16, 185, 129) 0%, rgb(5, 150, 105) 100%);">已添加到收藏</div></body></html>
+<div style="position: fixed; top: 20px; right: 20px; padding: 12px 24px; border-radius: 8px; color: white; font-weight: 500; z-index: 10000; animation: 0.3 ease 0 1 normal none running slideIn; box-shadow: rgba(0, 0, 0, 0.3) 0px 4px 12px; background: linear-gradient(135deg, rgb(59, 130, 246) 0%, rgb(37, 99, 235) 100%);">已取消收藏</div><div style="position: fixed; top: 20px; right: 20px; padding: 12px 24px; border-radius: 8px; color: white; font-weight: 500; z-index: 10000; animation: 0.3 ease 0 1 normal none running slideIn; box-shadow: rgba(0, 0, 0, 0.3) 0px 4px 12px; background: linear-gradient(135deg, rgb(59, 130, 246) 0%, rgb(37, 99, 235) 100%);">已取消收藏</div><div style="position: fixed; top: 20px; right: 20px; padding: 12px 24px; border-radius: 8px; color: white; font-weight: 500; z-index: 10000; animation: 0.3 ease 0 1 normal none running slideOut; box-shadow: rgba(0, 0, 0, 0.3) 0px 4px 12px; background: linear-gradient(135deg, rgb(16, 185, 129) 0%, rgb(5, 150, 105) 100%);">已添加到收藏</div>
+</body></html>
