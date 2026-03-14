@@ -1069,6 +1069,18 @@
                 <span>💥 霰弹枪</span>
                 <span class="count" id="shotgunCount">1</span>
             </div>
+            <div class="filter-tab" data-filter="精确射手步枪">
+                <span>🎯 精确射手步枪</span>
+                <span class="count" id="dmrCount">0</span>
+            </div>
+            <div class="filter-tab" data-filter="手枪">
+                <span>🔫 手枪</span>
+                <span class="count" id="pistolCount">0</span>
+            </div>
+            <div class="filter-tab" data-filter="特殊武器">
+                <span>⚡ 特殊武器</span>
+                <span class="count" id="specialCount">0</span>
+            </div>
         </div>
     </section>
 
@@ -2777,6 +2789,9 @@ QJB201轻机枪-烽火地带-6HL222S07ODLT6ETQT3GS-30-正常-夯-无敌性价比
             setTextContent('sniperCount', gunData.filter(g => g.category === '狙击步枪').length);
             setTextContent('lmgCount', gunData.filter(g => g.category === '轻机枪').length);
             setTextContent('shotgunCount', gunData.filter(g => g.category === '霰弹枪').length);
+            setTextContent('dmrCount', gunData.filter(g => g.category === '精确射手步枪').length);
+            setTextContent('pistolCount', gunData.filter(g => g.category === '手枪').length);
+            setTextContent('specialCount', gunData.filter(g => g.category === '特殊武器').length);
             
             // Update price range counts (如果元素存在)
             setTextContent('price0-10Count', gunData.filter(g => g.price >= 0 && g.price <= 10).length);
