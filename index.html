@@ -1596,6 +1596,7 @@ QJB201轻机枪-烽火地带-6HL222S07ODLT6ETQT3GS-30-正常-夯-无敌性价比
 
         // Filter guns
         function filterGuns() {
+            console.log('Current filter:', currentFilter);
             return gunData.filter(gun => {
                 // Search filter
                 if (searchQuery) {
@@ -1635,7 +1636,14 @@ QJB201轻机枪-烽火地带-6HL222S07ODLT6ETQT3GS-30-正常-夯-无敌性价比
                     return gun.price > 60;
                 }
                 
-                return gun.category === currentFilter;
+                // 检查是否是分类过滤
+                const categories = ['步枪', '冲锋枪', '霰弹枪', '精确射手步枪', '狙击步枪', '轻机枪', '手枪', '特殊武器'];
+                if (categories.includes(currentFilter)) {
+                    return gun.category === currentFilter;
+                }
+                
+                // 如果没有匹配的过滤条件，返回所有武器
+                return true;
             });
         }
 
@@ -1661,6 +1669,14 @@ QJB201轻机枪-烽火地带-6HL222S07ODLT6ETQT3GS-30-正常-夯-无敌性价比
             }
 
             return groups;
+        }
+        
+        // 调试函数：打印当前状态
+        function debugState() {
+            console.log('Current filter:', currentFilter);
+            console.log('Gun data length:', gunData.length);
+            console.log('Filtered data length:', filterGuns().length);
+            console.log('Grouped data:', groupByCategory(filterGuns()));
         }
 
         // Render guns
@@ -2177,6 +2193,8 @@ QJB201轻机枪-烽火地带-6HL222S07ODLT6ETQT3GS-30-正常-夯-无敌性价比
 
         // Initialize
         loadGunCodes();
+        // 调试：打印当前状态
+        setTimeout(debugState, 1000);
     </script>
 
 
