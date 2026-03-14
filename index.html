@@ -2709,6 +2709,8 @@ K416突击步枪-烽火地带-6JCVEOG08BOK35ETI3KG8-45-正常-顶级-近战"></t
                         // 剩余的都是标签
                         if (j < parts.length) {
                             tag = parts.slice(j).join('-');
+                            // 去除标签中的"-已收藏"标记
+                            tag = tag.replace('-已收藏', '');
                         }
                     }
                     
