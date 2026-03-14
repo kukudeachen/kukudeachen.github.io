@@ -2706,23 +2706,9 @@ K416突击步枪-烽火地带-6JCVEOG08BOK35ETI3KG8-45-正常-顶级-近战"></t
                             j++;
                         }
                         
-                        // 检查是否有收藏状态（在标签之后）
-                        // 收藏状态只能是 "收藏" 或 "未收藏"
-                        let favorite = false;
-                        const favoriteValues = ['收藏', '未收藏'];
-                        
-                        // 检查最后一部分是否是收藏状态
-                        if (parts.length > j && favoriteValues.includes(parts[parts.length - 1])) {
-                            favorite = parts[parts.length - 1] === '收藏';
-                            // 标签是中间的部分
-                            if (j < parts.length - 1) {
-                                tag = parts.slice(j, parts.length - 1).join('-');
-                            }
-                        } else {
-                            // 剩余的都是标签
-                            if (j < parts.length) {
-                                tag = parts.slice(j).join('-');
-                            }
+                        // 剩余的都是标签
+                        if (j < parts.length) {
+                            tag = parts.slice(j).join('-');
                         }
                     }
                     
@@ -2739,6 +2725,9 @@ K416突击步枪-烽火地带-6JCVEOG08BOK35ETI3KG8-45-正常-顶级-近战"></t
                             }
                         }
                         
+                        // 检查是否已收藏（标签中包含"已收藏"）
+                        const isCollected = tag && tag.includes('已收藏');
+                        
                         guns.push({
                             name,
                             mode,
@@ -2747,8 +2736,8 @@ K416突击步枪-烽火地带-6JCVEOG08BOK35ETI3KG8-45-正常-顶级-近战"></t
                             status,
                             recommend,
                             tag,
-                            favorite,
-                            category: category || '其他'
+                            category: category || '其他',
+                            isCollected
                         });
                     }
                 }
@@ -2759,8 +2748,7 @@ K416突击步枪-烽火地带-6JCVEOG08BOK35ETI3KG8-45-正常-顶级-近战"></t
 
         // Embedded gun data - 直接嵌入数据，无需服务器
         const gunDataText = `# 三角洲行动改枪码列表
-# 格式: 武器名称-游戏模式-改枪码-价格-状态-推荐-标签-收藏状态
-# 收藏状态: 收藏 或 未收藏
+# 格式: 武器名称-游戏模式-改枪码-价格-状态-推荐-标签
 # ================================
 
 # === 步枪 ===
@@ -2847,7 +2835,7 @@ QJB201轻机枪-烽火地带-6HL222S07ODLT6ETQT3GS-30-正常-夯-无敌性价比
             setTextContent('dmrCount', gunData.filter(g => g.category === '精确射手步枪').length);
             setTextContent('pistolCount', gunData.filter(g => g.category === '手枪').length);
             setTextContent('specialCount', gunData.filter(g => g.category === '特殊武器').length);
-            setTextContent('favoritesCount', gunData.filter(g => g.favorite).length);
+            setTextContent('favoritesCount', gunData.filter(g => g.isCollected).length);
             
             // Update price range counts (如果元素存在)
             setTextContent('price0-10Count', gunData.filter(g => g.price >= 0 && g.price <= 10).length);
@@ -2906,7 +2894,7 @@ QJB201轻机枪-烽火地带-6HL222S07ODLT6ETQT3GS-30-正常-夯-无敌性价比
                 
                 // 收藏过滤
                 if (currentFilter === 'favorites') {
-                    return gun.favorite;
+                    return gun.isCollected;
                 }
                 
                 // 如果没有匹配的过滤条件，返回所有武器
@@ -2914,38 +2902,59 @@ QJB201轻机枪-烽火地带-6HL222S07ODLT6ETQT3GS-30-正常-夯-无敌性价比
             });
         }
 
-        // 收藏功能 - 使用gunData中的favorite字段
-        
         // 检查是否已收藏
         function isFavorite(gunCode) {
+            // 在gunData中查找对应的武器
             const gun = gunData.find(g => g.code === gunCode);
-            return gun ? gun.favorite : false;
+            return gun ? gun.isCollected : false;
         }
         
         // 切换收藏状态
         function toggleFavorite(gunCode) {
-            const gun = gunData.find(g => g.code === gunCode);
-            if (!gun) return;
+            // 在gunData中查找对应的武器
+            const gunIndex = gunData.findIndex(g => g.code === gunCode);
+            if (gunIndex === -1) return;
             
-            // 切换收藏状态
-            gun.favorite = !gun.favorite;
+            const gun = gunData[gunIndex];
+            const isCollected = gun.isCollected;
             
-            if (gun.favorite) {
-                showNotification('已添加到收藏', 'success');
-            } else {
-                showNotification('已取消收藏', 'info');
+            // 找到原始数据中的对应行
+            const lines = gunDataText.split('\n');
+            let lineIndex = -1;
+            
+            for (let i = 0; i < lines.length; i++) {
+                if (lines[i].includes(gunCode)) {
+                    lineIndex = i;
+                    break;
+                }
             }
             
-            // 重新渲染以更新收藏按钮状态
-            if (currentFilter === 'favorites') {
-                renderGuns();
-            } else {
-                // 只更新当前卡片的收藏按钮
-                updateFavoriteButton(gunCode);
+            if (lineIndex !== -1) {
+                if (!isCollected) {
+                    // 添加收藏标记
+                    lines[lineIndex] = lines[lineIndex] + '-已收藏';
+                    showNotification('已添加到收藏', 'success');
+                } else {
+                    // 移除收藏标记
+                    lines[lineIndex] = lines[lineIndex].replace(/-已收藏$/, '');
+                    showNotification('已取消收藏', 'info');
+                }
+                
+                // 更新原始数据
+                gunDataText = lines.join('\n');
+                
+                // 重新解析数据
+                gunData = parseGunCodes(gunDataText);
+                updateStats();
+                
+                // 重新渲染
+                if (currentFilter === 'favorites') {
+                    renderGuns();
+                } else {
+                    // 只更新当前卡片的收藏按钮
+                    updateFavoriteButton(gunCode);
+                }
             }
-            
-            // 更新收藏数量统计
-            updateStats();
         }
         
         // 更新收藏按钮状态
@@ -3076,7 +3085,7 @@ QJB201轻机枪-烽火地带-6HL222S07ODLT6ETQT3GS-30-正常-夯-无敌性价比
             const priceDisplay = gun.price > 0 ? formatPrice(gun.price) : '未知';
             const statusClass = gun.status === '失效' ? 'status-invalid' : 'status-valid';
             const recommendClass = getRecommendClass(gun.recommend);
-            const isFav = gun.favorite;
+            const isFav = isFavorite(gun.code);
             const favIcon = isFav ? '❤️' : '🤍';
             const favTitle = isFav ? '取消收藏' : '添加收藏';
 
@@ -3392,7 +3401,7 @@ QJB201轻机枪-烽火地带-6HL222S07ODLT6ETQT3GS-30-正常-夯-无敌性价比
 
         // 生成导出数据
         function generateExportData() {
-            const lines = ['# 三角洲行动改枪码列表', '# 格式: 武器名称-游戏模式-改枪码-价格-状态-推荐-标签-收藏状态', '# 收藏状态: 收藏 或 未收藏', '# ================================', ''];
+            const lines = ['# 三角洲行动改枪码列表', '# 格式: 武器名称-游戏模式-改枪码-价格-状态-推荐-标签', '# ================================', ''];
 
             // 按分类分组
             const grouped = {};
@@ -3410,8 +3419,7 @@ QJB201轻机枪-烽火地带-6HL222S07ODLT6ETQT3GS-30-正常-夯-无敌性价比
 
                     grouped[category].forEach(gun => {
                         const tagStr = gun.tag ? `-${gun.tag}` : '';
-                        const favoriteStr = gun.favorite ? '-收藏' : '-未收藏';
-                        lines.push(`${gun.name}-${gun.mode}-${gun.code}-${gun.price}-${gun.status}-${gun.recommend}${tagStr}${favoriteStr}`);
+                        lines.push(`${gun.name}-${gun.mode}-${gun.code}-${gun.price}-${gun.status}-${gun.recommend}${tagStr}`);
                     });
 
                     lines.push('');
