@@ -3056,24 +3056,42 @@ QJB201轻机枪-烽火地带-6HL222S07ODLT6ETQT3GS-30-正常-夯-无敌性价比
                 return;
             }
 
-            const grouped = groupByCategory(filtered);
             let html = '';
 
-            for (const [category, guns] of Object.entries(grouped)) {
-                const catInfo = categoryMap[category] || { icon: '🔫', class: 'cat-assault' };
-                
+            // 如果是收藏筛选，将所有收藏的武器显示在一个"收藏"分类下
+            if (currentFilter === 'favorites') {
                 html += `
                     <div class="category-section">
                         <div class="category-header">
-                            <div class="category-icon ${catInfo.class}">${catInfo.icon}</div>
-                            <h2 class="category-title">${category}</h2>
-                            <span class="category-count">${guns.length} 个改枪码</span>
+                            <div class="category-icon" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white;">❤️</div>
+                            <h2 class="category-title">我的收藏</h2>
+                            <span class="category-count">${filtered.length} 个改枪码</span>
                         </div>
                         <div class="gun-grid">
-                            ${guns.map((gun, idx) => renderGunCard(gun, gunData.indexOf(gun))).join('')}
+                            ${filtered.map((gun, idx) => renderGunCard(gun, gunData.indexOf(gun))).join('')}
                         </div>
                     </div>
                 `;
+            } else {
+                // 正常按分类分组显示
+                const grouped = groupByCategory(filtered);
+                
+                for (const [category, guns] of Object.entries(grouped)) {
+                    const catInfo = categoryMap[category] || { icon: '🔫', class: 'cat-assault' };
+                    
+                    html += `
+                        <div class="category-section">
+                            <div class="category-header">
+                                <div class="category-icon ${catInfo.class}">${catInfo.icon}</div>
+                                <h2 class="category-title">${category}</h2>
+                                <span class="category-count">${guns.length} 个改枪码</span>
+                            </div>
+                            <div class="gun-grid">
+                                ${guns.map((gun, idx) => renderGunCard(gun, gunData.indexOf(gun))).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
             }
 
             container.innerHTML = html;
