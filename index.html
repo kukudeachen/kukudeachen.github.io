@@ -1138,6 +1138,12 @@
                     <option value="price-60+">💰 60W+</option>
                 </select>
             </div>
+            <!-- Gun Name Dropdown -->
+            <div class="filter-tab">
+                <select class="form-select" id="gunNameFilter" style="background: transparent; border: none; outline: none; color: inherit; font-size: inherit; font-weight: inherit; cursor: pointer; padding: 0; margin: 0;">
+                    <option value="gunname-all">🔫 枪械名称</option>
+                </select>
+            </div>
             <div class="filter-tab" data-filter="步枪">
                 <span>🔫 步枪</span>
                 <span class="count" id="assaultCount">23</span>
@@ -3155,6 +3161,7 @@ QJB201轻机枪-烽火地带-6JCL9TC0FUSS37J6Q9CUL-18-正常-人上人-18W丐版
             console.log('Parsed gun data:', gunData);
             console.log('Gun data length:', gunData.length);
             updateStats();
+            updateGunNameFilter();
             renderGuns();
         }
 
@@ -3245,7 +3252,13 @@ QJB201轻机枪-烽火地带-6JCL9TC0FUSS37J6Q9CUL-18-正常-人上人-18W丐版
                 if (currentFilter === 'favorites') {
                     return gun.isCollected;
                 }
-                
+
+                // 枪械名称过滤
+                if (currentFilter.startsWith('gunname-')) {
+                    const gunName = currentFilter.replace('gunname-', '');
+                    return gun.name === gunName;
+                }
+
                 // 如果没有匹配的过滤条件，返回所有武器
                 return true;
             });
@@ -3740,6 +3753,7 @@ QJB201轻机枪-烽火地带-6JCL9TC0FUSS37J6Q9CUL-18-正常-人上人-18W丐版
             }
 
             updateStats();
+            updateGunNameFilter();
             renderGuns();
             closeModal();
         }
@@ -3752,6 +3766,7 @@ QJB201轻机枪-烽火地带-6JCL9TC0FUSS37J6Q9CUL-18-正常-人上人-18W丐版
             if (confirm(`确定要删除 "${gun.name}" 吗？此操作不可恢复。`)) {
                 gunData.splice(index, 1);
                 updateStats();
+                updateGunNameFilter();
                 renderGuns();
                 showToast('武器删除成功！');
             }
@@ -3841,6 +3856,7 @@ QJB201轻机枪-烽火地带-6JCL9TC0FUSS37J6Q9CUL-18-正常-人上人-18W丐版
                 if (confirm(`找到 ${newData.length} 个武器，是否覆盖现有数据？`)) {
                     gunData = newData;
                     updateStats();
+                    updateGunNameFilter();
                     renderGuns();
                     closeImportModal();
                     showToast(`成功导入 ${newData.length} 个武器！`);
@@ -3912,6 +3928,40 @@ QJB201轻机枪-烽火地带-6JCL9TC0FUSS37J6Q9CUL-18-正常-人上人-18W丐版
             }
             renderGuns();
         });
+
+        // 枪械名称下拉选择事件
+        document.getElementById('gunNameFilter').addEventListener('change', (e) => {
+            const value = e.target.value;
+            if (value === 'gunname-all') {
+                currentFilter = 'all';
+                document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+                document.querySelector('.filter-tab[data-filter="all"]').classList.add('active');
+            } else {
+                currentFilter = value;
+                document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+            }
+            renderGuns();
+        });
+
+        // 更新枪械名称筛选下拉框
+        function updateGunNameFilter() {
+            const select = document.getElementById('gunNameFilter');
+            // 保留第一个选项
+            const firstOption = select.options[0];
+            select.innerHTML = '';
+            select.appendChild(firstOption);
+
+            // 获取所有唯一的枪械名称
+            const gunNames = [...new Set(gunData.map(gun => gun.name))].sort();
+
+            // 添加选项
+            gunNames.forEach(name => {
+                const option = document.createElement('option');
+                option.value = 'gunname-' + name;
+                option.textContent = '🔫 ' + name;
+                select.appendChild(option);
+            });
+        }
 
         // 点击弹窗外部关闭
         function handleModalClick(modalId, closeFunction) {
