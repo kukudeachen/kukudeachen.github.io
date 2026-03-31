@@ -24,6 +24,46 @@
             --warning: #f59e0b;
         }
 
+        /* 浅色主题 */
+        body.light-theme {
+            --bg-dark: #f3f4f6;
+            --bg-card: #ffffff;
+            --bg-card-hover: #f9fafb;
+            --text-primary: #111827;
+            --text-secondary: #4b5563;
+            --border: #e5e7eb;
+        }
+
+        body.light-theme .header {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(249, 250, 251, 0.98) 100%);
+        }
+
+        body.light-theme .code-box {
+            background: var(--bg-dark);
+        }
+
+        body.light-theme .action-btn {
+            background: var(--bg-dark);
+        }
+
+        body.light-theme .filter-tab {
+            background: var(--bg-card);
+            color: var(--text-secondary);
+        }
+
+        body.light-theme .filter-tab:hover {
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+        }
+
+        body.light-theme .stat-icon {
+            background: rgba(0, 212, 255, 0.1);
+        }
+
+        body.light-theme .gun-card::before {
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+        }
+
         body {
             font-family: 'Noto Sans SC', sans-serif;
             background: var(--bg-dark);
@@ -32,6 +72,7 @@
             background-image: 
                 radial-gradient(circle at 20% 50%, rgba(0, 212, 255, 0.08) 0%, transparent 50%),
                 radial-gradient(circle at 80% 80%, rgba(255, 107, 53, 0.05) 0%, transparent 50%);
+            transition: all 0.3s ease;
         }
 
         /* Header */
@@ -50,10 +91,43 @@
             margin: 0 auto;
             padding: 0 24px;
             display: flex;
-            justify-content: pace-between;
+            justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
             gap: 20px;
+        }
+
+        /* 主题切换按钮 */
+        .theme-toggle-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            transition: all 0.3s ease;
+            color: var(--text-primary);
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .theme-toggle-btn:hover {
+            transform: scale(1.1);
+            border-color: var(--primary);
+            box-shadow: 0 4px 20px rgba(0, 212, 255, 0.4);
+        }
+
+        body.light-theme .theme-toggle-btn {
+            background: var(--bg-card);
+            border-color: var(--border);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
         .logo {
@@ -314,8 +388,8 @@
             font-size: 24px;
             font-weight: 700;
             margin-bottom: 6px;
-            color: #ffffff;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+            color: var(--text-primary);
+            text-shadow: 0 0 10px rgba(128, 128, 128, 0.3);
         }
 
         .gun-name-small {
@@ -1063,8 +1137,13 @@
                     </div>
                 </div>
             </div>
-        
+        </div>
     </header>
+    
+    <!-- 主题切换按钮 - 固定在右上角 -->
+    <button class="theme-toggle-btn" onclick="toggleTheme()" title="切换主题">
+        <span class="theme-icon">🌙</span>
+    </button>
 
     <!-- Controls Section -->
     <section class="controls-section">
@@ -1237,11 +1316,11 @@
     </footer>
 
     <!-- Toast -->
-    <div class="toast show" id="toast">
+    <div class="toast" id="toast">
         <div class="toast-icon">✓</div>
         <div>
             <div style="font-weight: 600;">复制成功</div>
-            <div style="font-size: 13px; color: var(--text-secondary);">武器删除成功！</div>
+            <div style="font-size: 13px; color: var(--text-secondary);">改枪码已复制到剪贴板</div>
         </div>
     </div>
 
@@ -1706,6 +1785,29 @@ QJB201轻机枪-烽火地带-6JCL9TC0FUSS37J6Q9CUL-18-正常-人上人-18W丐版
             setTextContent('price30+Count', gunData.filter(g => g.price > 30).length);
         }
 
+        // 模糊匹配函数 - 支持字符间隔匹配
+        function fuzzyMatch(text, query) {
+            if (!text || !query) return false;
+            text = text.toLowerCase();
+            query = query.toLowerCase();
+            
+            // 直接包含匹配
+            if (text.includes(query)) return true;
+            
+            // 模糊匹配：检查query的每个字符是否按顺序出现在text中
+            let textIndex = 0;
+            let queryIndex = 0;
+            
+            while (textIndex < text.length && queryIndex < query.length) {
+                if (text[textIndex] === query[queryIndex]) {
+                    queryIndex++;
+                }
+                textIndex++;
+            }
+            
+            return queryIndex === query.length;
+        }
+
         // Filter guns
         function filterGuns() {
             console.log('Current filter:', currentFilter);
@@ -1713,9 +1815,10 @@ QJB201轻机枪-烽火地带-6JCL9TC0FUSS37J6Q9CUL-18-正常-人上人-18W丐版
                 // Search filter
                 if (searchQuery) {
                     const query = searchQuery.toLowerCase();
-                    const matchSearch = gun.name.toLowerCase().includes(query) ||
-                                       gun.code.toLowerCase().includes(query) ||
-                                       gun.mode.toLowerCase().includes(query);
+                    const matchSearch = fuzzyMatch(gun.name, query) ||
+                                       fuzzyMatch(gun.code, query) ||
+                                       fuzzyMatch(gun.mode, query) ||
+                                       fuzzyMatch(gun.tag, query);
                     if (!matchSearch) return false;
                 }
 
@@ -2486,6 +2589,66 @@ QJB201轻机枪-烽火地带-6JCL9TC0FUSS37J6Q9CUL-18-正常-人上人-18W丐版
         handleModalClick('exportModal', closeExportModal);
         handleModalClick('importModal', closeImportModal);
 
+        // 根据系统时间自动切换主题
+        function updateThemeByTime() {
+            const now = new Date();
+            const hour = now.getHours();
+            const body = document.body;
+            
+            // 6:00-18:00 使用浅色主题，其他时间使用深色主题
+            if (hour >= 6 && hour < 18) {
+                body.classList.add('light-theme');
+            } else {
+                body.classList.remove('light-theme');
+            }
+            updateThemeIcon();
+        }
+
+        // 手动切换主题
+        function toggleTheme() {
+            const body = document.body;
+            body.classList.toggle('light-theme');
+            updateThemeIcon();
+            
+            // 保存用户偏好到本地存储
+            const isLight = body.classList.contains('light-theme');
+            localStorage.setItem('theme', isLight ? 'light' : 'dark');
+        }
+
+        // 更新主题图标
+        function updateThemeIcon() {
+            const icon = document.querySelector('.theme-icon');
+            const body = document.body;
+            if (icon) {
+                icon.textContent = body.classList.contains('light-theme') ? '☀️' : '🌙';
+            }
+        }
+
+        // 每小时检查一次时间并更新主题
+        function setupThemeTimer() {
+            // 检查本地存储的用户偏好
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                // 使用用户保存的主题偏好
+                if (savedTheme === 'light') {
+                    document.body.classList.add('light-theme');
+                } else {
+                    document.body.classList.remove('light-theme');
+                }
+            } else {
+                // 没有保存的偏好，根据时间自动切换
+                updateThemeByTime();
+            }
+            updateThemeIcon();
+            
+            // 每小时检查一次（仅在用户没有手动设置时）
+            setInterval(() => {
+                if (!localStorage.getItem('theme')) {
+                    updateThemeByTime();
+                }
+            }, 60 * 60 * 1000);
+        }
+
         // Initialize
          // 确保显示全部数据
         currentFilter = 'all';
@@ -2496,6 +2659,8 @@ QJB201轻机枪-烽火地带-6JCL9TC0FUSS37J6Q9CUL-18-正常-人上人-18W丐版
         // 重置价格下拉选择
         const priceFilter = document.getElementById('priceFilter');
         if (priceFilter) priceFilter.value = 'price-all';
+        // 设置主题
+        setupThemeTimer();
         // 加载数据
         loadGunCodes();
     </script>
@@ -2537,7 +2702,5 @@ QJB201轻机枪-烽火地带-6JCL9TC0FUSS37J6Q9CUL-18-正常-人上人-18W丐版
 			   }
 				   
 		</script><tfjnlp tfdata="" id="TFjnlpID"></tfjnlp><doubao-ai-csui id="546d6e4b0ae64a5e8a81244b831596ad" data-host-id="11b29624-1a7e-4fe0-b8af-6090f8e29172"></doubao-ai-csui><div id="doubao-ai-translate-image-assistant11b29624-1a7e-4fe0-b8af-6090f8e29172" data-collection-img-host-id="11b29624-1a7e-4fe0-b8af-6090f8e29172"></div><div style="width: 0px; height: 0px; position: absolute; z-index: 200000;"></div><div id="doubao-ai-assistant" aria-label="flow-ai-assistant" aria-description="" style="width: 0px; height: 0px; position: absolute; top: 0px; left: 0px; overflow: hidden;"></div>
-
-<div style="position: fixed; top: 20px; right: 20px; padding: 12px 24px; border-radius: 8px; color: white; font-weight: 500; z-index: 10000; animation: 0.3 ease 0 1 normal none running slideIn; box-shadow: rgba(0, 0, 0, 0.3) 0px 4px 12px; background: linear-gradient(135deg, rgb(59, 130, 246) 0%, rgb(37, 99, 235) 100%);">已取消收藏</div><div style="position: fixed; top: 20px; right: 20px; padding: 12px 24px; border-radius: 8px; color: white; font-weight: 500; z-index: 10000; animation: 0.3 ease 0 1 normal none running slideIn; box-shadow: rgba(0, 0, 0, 0.3) 0px 4px 12px; background: linear-gradient(135deg, rgb(59, 130, 246) 0%, rgb(37, 99, 235) 100%);">已取消收藏</div><div style="position: fixed; top: 20px; right: 20px; padding: 12px 24px; border-radius: 8px; color: white; font-weight: 500; z-index: 10000; animation: 0.3 ease 0 1 normal none running slideOut; box-shadow: rgba(0, 0, 0, 0.3) 0px 4px 12px; background: linear-gradient(135deg, rgb(16, 185, 129) 0%, rgb(5, 150, 105) 100%);">已添加到收藏</div>
 
 </body></html>
