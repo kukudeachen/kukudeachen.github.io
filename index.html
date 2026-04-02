@@ -1297,6 +1297,13 @@
                     <p style="font-size: 12px; color: var(--text-secondary);">点击导出</p>
                 </div>
             </div>
+            <div class="stat-item" onclick="openEditModal()" style="cursor: pointer;">
+                <div class="stat-icon" style="background: rgba(236, 72, 153, 0.15);">✏️</div>
+                <div class="stat-info">
+                    <h4>修改数据</h4>
+                    <p style="font-size: 12px; color: var(--text-secondary);">批量编辑</p>
+                </div>
+            </div>
             <div class="stat-item" onclick="openImportModal()" style="cursor: pointer;">
                 <div class="stat-icon" style="background: rgba(139, 92, 246, 0.15);">📥</div>
                 <div class="stat-info">
@@ -1600,6 +1607,25 @@ K416突击步枪-烽火地带-6JCVEOG08BOK35ETI3KG8-45-正常-顶级-近战"></t
         </div>
     </div>
 
+    <!-- Edit Modal -->
+    <div class="modal-overlay" id="editModal">
+        <div class="modal" style="max-width: 900px;">
+            <div class="modal-header">
+                <h3 class="modal-title">修改数据</h3>
+                <button class="modal-close" onclick="closeEditModal()">×</button>
+            </div>
+            <p style="color: var(--text-secondary); margin-bottom: 16px; font-size: 14px;">
+                编辑以下数据，格式：武器名称-游戏模式-改枪码-价格-状态-推荐-标签<br>
+                <span style="color: var(--primary);">修改完成后点击保存，将自动下载更新后的文件</span>
+            </p>
+            <textarea class="data-textarea" id="editData" style="min-height: 400px;"></textarea>
+            <div class="btn-group">
+                <button class="btn-primary" onclick="saveEditData()">💾 保存修改</button>
+                <button class="btn-primary btn-secondary" onclick="closeEditModal()">取消</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Gun data storage
         let gunData = [];
@@ -1741,7 +1767,7 @@ K416突击步枪-烽火地带-6JCVEOG08BOK35ETI3KG8-45-正常-顶级-近战"></t
         }
 
         // Embedded gun data - 直接嵌入数据，无需服务器
-        const gunDataText = `# 三角洲行动改枪码列表
+        let gunDataText = `# 三角洲行动改枪码列表
 # 格式: 武器名称-游戏模式-改枪码-价格-状态-推荐-标签
 # ================================
 
@@ -2384,7 +2410,13 @@ QJB201轻机枪-烽火地带-6JCL9TC0FUSS37J6Q9CUL-18-正常-人上人-18W丐版
                     lines.push(`# === ${category} ===`);
 
                     grouped[category].forEach(gun => {
-                        const tagStr = gun.tag ? `-${gun.tag}` : '';
+                        // 处理标签：可能是 tag 字符串或 tags 数组
+                        let tagStr = '';
+                        if (gun.tag) {
+                            tagStr = `-${gun.tag}`;
+                        } else if (gun.tags && gun.tags.length > 0) {
+                            tagStr = `-${gun.tags.join(',')}`;
+                        }
                         lines.push(`${gun.name}-${gun.mode}-${gun.code}-${gun.price}-${gun.status}-${gun.recommend}${tagStr}`);
                     });
 
@@ -2539,6 +2571,148 @@ QJB201轻机枪-烽火地带-6JCL9TC0FUSS37J6Q9CUL-18-正常-人上人-18W丐版
         handleModalClick('gunModal', closeModal);
         handleModalClick('exportModal', closeExportModal);
         handleModalClick('importModal', closeImportModal);
+        handleModalClick('editModal', closeEditModal);
+
+        // 打开编辑弹窗
+        function openEditModal() {
+            const exportText = generateExportData();
+            document.getElementById('editData').value = exportText;
+            document.getElementById('editModal').classList.add('show');
+        }
+
+        // 关闭编辑弹窗
+        function closeEditModal() {
+            document.getElementById('editModal').classList.remove('show');
+        }
+
+        // 保存编辑的数据
+        function saveEditData() {
+            const editedText = document.getElementById('editData').value;
+            if (!editedText.trim()) {
+                showNotification('数据不能为空', 'error');
+                return;
+            }
+
+            try {
+                // 解析编辑后的数据
+                const lines = editedText.split('\n');
+                const newGunData = [];
+
+                lines.forEach(line => {
+                    line = line.trim();
+                    // 跳过空行和注释行
+                    if (!line || line.startsWith('#')) return;
+
+                    const parts = line.split('-');
+                    if (parts.length >= 3) {
+                        // 使用与 parseGunCodes 相同的解析逻辑
+                        let name = '';
+                        let mode = '';
+                        let code = '';
+                        let price = 0;
+                        let status = '';
+                        let recommend = '';
+                        let tag = '';
+
+                        // 从后往前解析，先找到改枪码的位置（作为锚点）
+                        // 改枪码通常是20位左右的字母数字组合
+                        let codeIndex = -1;
+                        for (let j = parts.length - 1; j >= 0; j--) {
+                            if (/^[A-Za-z0-9]{15,}$/.test(parts[j])) {
+                                codeIndex = j;
+                                break;
+                            }
+                        }
+
+                        if (codeIndex >= 0) {
+                            code = parts[codeIndex];
+
+                            // 游戏模式在改枪码前面一位
+                            if (codeIndex - 1 >= 0) {
+                                mode = parts[codeIndex - 1];
+                                // 武器名称是游戏模式之前的所有部分
+                                name = parts.slice(0, codeIndex - 1).join('-');
+                            }
+
+                            // 从改枪码后面开始解析其他字段
+                            let j = codeIndex + 1;
+
+                            // 定义可能的值
+                            const recommendValues = ['夯', '顶级', '人上人', 'NPC', '拉完了'];
+                            const statusValues = ['正常', '失效'];
+
+                            // 提取价格（数字）
+                            if (j < parts.length && /^\d+$/.test(parts[j])) {
+                                price = parseInt(parts[j]);
+                                j++;
+                            }
+
+                            // 提取状态
+                            if (j < parts.length && statusValues.includes(parts[j])) {
+                                status = parts[j];
+                                j++;
+                            }
+
+                            // 提取推荐值
+                            if (j < parts.length && recommendValues.includes(parts[j])) {
+                                recommend = parts[j];
+                                j++;
+                            }
+
+                            // 剩余的都是标签
+                            if (j < parts.length) {
+                                tag = parts.slice(j).join('-');
+                            }
+                        }
+
+                        // 自动识别分类
+                        let category = '步枪';
+                        for (const [cat, keywords] of Object.entries(weaponKeywords)) {
+                            if (keywords.some(kw => name.toLowerCase().includes(kw.toLowerCase()))) {
+                                category = cat;
+                                break;
+                            }
+                        }
+
+                        newGunData.push({
+                            name,
+                            mode,
+                            code,
+                            price,
+                            status,
+                            recommend,
+                            tag,
+                            category,
+                            collected: false
+                        });
+                    }
+                });
+
+                if (newGunData.length === 0) {
+                    showNotification('未找到有效数据', 'error');
+                    return;
+                }
+
+                // 更新数据
+                gunData = newGunData;
+
+                // 生成格式化的导出数据并更新 gunDataText
+                gunDataText = generateExportData();
+
+                // 更新显示
+                updateStats();
+                updateGunNameFilter();
+                renderGuns();
+
+                // 关闭弹窗
+                closeEditModal();
+
+                showNotification(`成功保存 ${newGunData.length} 条数据`, 'success');
+            } catch (error) {
+                console.error('保存数据失败:', error);
+                showNotification('保存失败: ' + error.message, 'error');
+            }
+        }
 
         // 根据系统时间自动切换主题
         function updateThemeByTime() {
