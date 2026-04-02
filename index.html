@@ -454,68 +454,6 @@
             color: #ef4444;
         }
 
-        .favorite-btn {
-            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .favorite-btn:hover {
-            transform: scale(1.15);
-            box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
-        }
-
-        .favorite-btn:active {
-            transform: scale(0.95);
-        }
-
-        .favorite-btn.favorited {
-            background: linear-gradient(135deg, rgba(239, 68, 68, 0.3) 0%, rgba(220, 38, 38, 0.2) 100%);
-            border-color: rgba(239, 68, 68, 0.6);
-            box-shadow: 0 0 20px rgba(239, 68, 68, 0.3), inset 0 0 10px rgba(239, 68, 68, 0.1);
-            animation: heartbeat 1.5s ease-in-out infinite;
-        }
-
-        .favorite-btn.favorited:hover {
-            box-shadow: 0 0 25px rgba(239, 68, 68, 0.5), inset 0 0 15px rgba(239, 68, 68, 0.2);
-        }
-
-        @keyframes heartbeat {
-            0%, 100% {
-                transform: scale(1);
-            }
-            14% {
-                transform: scale(1.1);
-            }
-            28% {
-                transform: scale(1);
-            }
-            42% {
-                transform: scale(1.1);
-            }
-            70% {
-                transform: scale(1);
-            }
-        }
-
-        .favorite-btn::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            background: radial-gradient(circle, rgba(239, 68, 68, 0.4) 0%, transparent 70%);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            transition: width 0.4s ease, height 0.4s ease;
-        }
-
-        .favorite-btn.favorited::before {
-            width: 150%;
-            height: 150%;
-        }
-
         @keyframes slideIn {
             from {
                 transform: translateX(100%);
@@ -1221,42 +1159,7 @@
             <div class="filter-tab">
                 <select class="form-select" id="gunNameFilter" style="background: transparent; border: none; outline: none; color: inherit; font-size: inherit; font-weight: inherit; cursor: pointer; padding: 0; margin: 0;"><option value="gunname-all">🔫 枪械名称</option><option value="gunname-AK-12突击步枪">🔫 AK-12突击步枪</option><option value="gunname-AS Val突击步枪">🔫 AS Val突击步枪</option><option value="gunname-ASh-12战斗步枪">🔫 ASh-12战斗步枪</option><option value="gunname-AUG突击步枪">🔫 AUG突击步枪</option><option value="gunname-AWM狙击步枪">🔫 AWM狙击步枪</option><option value="gunname-FS-12霰弹枪">🔫 FS-12霰弹枪</option><option value="gunname-G3战斗步枪">🔫 G3战斗步枪</option><option value="gunname-K416突击步枪">🔫 K416突击步枪</option><option value="gunname-K437突击步枪">🔫 K437突击步枪</option><option value="gunname-KC17突击步枪">🔫 KC17突击步枪</option><option value="gunname-M14射手步枪">🔫 M14射手步枪</option><option value="gunname-M7战斗步枪">🔫 M7战斗步枪</option><option value="gunname-MCX LT突击步枪">🔫 MCX LT突击步枪</option><option value="gunname-MK47突击步枪">🔫 MK47突击步枪</option><option value="gunname-MP7冲锋枪">🔫 MP7冲锋枪</option><option value="gunname-P90冲锋枪">🔫 P90冲锋枪</option><option value="gunname-PKM通用机枪">🔫 PKM通用机枪</option><option value="gunname-PSG-1射手步枪">🔫 PSG-1射手步枪</option><option value="gunname-PTR-32突击步枪">🔫 PTR-32突击步枪</option><option value="gunname-QBZ95-1突击步枪">🔫 QBZ95-1突击步枪</option><option value="gunname-QJB201轻机枪">🔫 QJB201轻机枪</option><option value="gunname-SCAR-H战斗步枪">🔫 SCAR-H战斗步枪</option><option value="gunname-SG552突击步枪">🔫 SG552突击步枪</option><option value="gunname-SMG-45冲锋枪">🔫 SMG-45冲锋枪</option><option value="gunname-SR-25射手步枪">🔫 SR-25射手步枪</option><option value="gunname-SR-3M紧凑突击步枪">🔫 SR-3M紧凑突击步枪</option><option value="gunname-Vector冲锋枪">🔫 Vector冲锋枪</option><option value="gunname-勇士冲锋枪">🔫 勇士冲锋枪</option><option value="gunname-杠杆式步枪">🔫 杠杆式步枪</option><option value="gunname-腾龙突击步枪">🔫 腾龙突击步枪</option></select>
             </div>
-            <div class="filter-tab" data-filter="步枪">
-                <span>🔫 步枪</span>
-                <span class="count" id="assaultCount">27</span>
-            </div>
-            <div class="filter-tab" data-filter="冲锋枪">
-                <span>💨 冲锋枪</span>
-                <span class="count" id="smgCount">7</span>
-            </div>
-            <div class="filter-tab" data-filter="狙击步枪">
-                <span>🎯 狙击步枪</span>
-                <span class="count" id="sniperCount">1</span>
-            </div>
-            <div class="filter-tab" data-filter="轻机枪">
-                <span>⚡ 轻机枪</span>
-                <span class="count" id="lmgCount">3</span>
-            </div>
-            <div class="filter-tab" data-filter="霰弹枪">
-                <span>💥 霰弹枪</span>
-                <span class="count" id="shotgunCount">1</span>
-            </div>
-            <div class="filter-tab" data-filter="精确射手步枪">
-                <span>🎯 精确射手步枪</span>
-                <span class="count" id="dmrCount">5</span>
-            </div>
-            <div class="filter-tab" data-filter="手枪">
-                <span>🔫 手枪</span>
-                <span class="count" id="pistolCount">0</span>
-            </div>
-            <div class="filter-tab" data-filter="特殊武器">
-                <span>⚡ 特殊武器</span>
-                <span class="count" id="specialCount">0</span>
-            </div>
-            <div class="filter-tab" data-filter="favorites">
-                <span>❤️ 收藏</span>
-                <span class="count" id="favoritesCount">17</span>
-            </div>
+
         </div>
     </section>
 
@@ -1299,7 +1202,6 @@
                             <span>复制完整</span>
                         </button>
                         <div class="card-actions" style="margin: 0;">
-                            <button class="card-btn favorite-btn favorited" data-code="6H1HI140B9I04M2JUJ0H8" onclick="toggleFavorite('6H1HI140B9I04M2JUJ0H8')" title="取消收藏">❤️</button>
                             <button class="card-btn" onclick="openEditModal(31)" title="编辑">✏️</button>
                             <button class="card-btn delete" onclick="deleteGun(31)" title="删除">🗑️</button>
                         </div>
@@ -1588,8 +1490,7 @@ K416突击步枪-烽火地带-6JCVEOG08BOK35ETI3KG8-45-正常-顶级-近战"></t
                     let status = '';
                     let recommend = '';
                     let tag = '';
-                    let isCollected = false;
-                    
+
                     // 从后往前解析，但先找到改枪码的位置（作为锚点）
                     // 改枪码通常是20位左右的字母数字组合
                     let codeIndex = -1;
@@ -1599,52 +1500,48 @@ K416突击步枪-烽火地带-6JCVEOG08BOK35ETI3KG8-45-正常-顶级-近战"></t
                             break;
                         }
                     }
-                    
+
                     if (codeIndex >= 0) {
                         code = parts[codeIndex];
-                        
+
                         // 游戏模式在改枪码前面一位
                         if (codeIndex - 1 >= 0) {
                             mode = parts[codeIndex - 1];
                             // 武器名称是游戏模式之前的所有部分
                             name = parts.slice(0, codeIndex - 1).join('-');
                         }
-                        
+
                         // 从改枪码后面开始解析其他字段
                         let j = codeIndex + 1;
-                        
+
                         // 定义可能的值
                         const recommendValues = ['夯', '顶级', '人上人', 'NPC', '拉完了'];
                         const statusValues = ['正常', '失效'];
-                        
+
                         // 提取价格（数字）
                         if (j < parts.length && /^\d+$/.test(parts[j])) {
                             price = parseInt(parts[j]);
                             j++;
                         }
-                        
+
                         // 提取状态
                         if (j < parts.length && statusValues.includes(parts[j])) {
                             status = parts[j];
                             j++;
                         }
-                        
+
                         // 提取推荐值
                         if (j < parts.length && recommendValues.includes(parts[j])) {
                             recommend = parts[j];
                             j++;
                         }
-                        
-                        // 剩余的都是标签
+
+                        // 剩余的都是标签（保留-已收藏）
                         if (j < parts.length) {
-                            const remainingParts = parts.slice(j);
-                            // 检查是否已收藏（剩余部分中包含"已收藏"）
-                            isCollected = remainingParts.includes('已收藏');
-                            // 过滤掉"已收藏"标记
-                            tag = remainingParts.filter(p => p !== '已收藏').join('-');
+                            tag = parts.slice(j).join('-');
                         }
                     }
-                    
+
                     // 确保有基本信息
                     if (code && mode) {
                         // Auto-detect category if not set - 使用 weaponKeywords
@@ -1657,7 +1554,7 @@ K416突击步枪-烽火地带-6JCVEOG08BOK35ETI3KG8-45-正常-顶级-近战"></t
                                 }
                             }
                         }
-                        
+
                         guns.push({
                             name,
                             mode,
@@ -1666,8 +1563,7 @@ K416突击步枪-烽火地带-6JCVEOG08BOK35ETI3KG8-45-正常-顶级-近战"></t
                             status,
                             recommend,
                             tag,
-                            category: category || '其他',
-                            isCollected
+                            category: category || '其他'
                         });
                     }
                 }
@@ -1765,19 +1661,6 @@ QJB201轻机枪-烽火地带-6JCL9TC0FUSS37J6Q9CUL-18-正常-人上人-18W丐版
             setTextContent('modeCount', modes.size);
             setTextContent('categoryCount', categories.size);
 
-            // Update filter counts
-            setTextContent('allCount', gunData.length);
-            setTextContent('fenghuoCount', gunData.filter(g => g.mode === '烽火地带').length);
-            setTextContent('assaultCount', gunData.filter(g => g.category === '步枪').length);
-            setTextContent('smgCount', gunData.filter(g => g.category === '冲锋枪').length);
-            setTextContent('sniperCount', gunData.filter(g => g.category === '狙击步枪').length);
-            setTextContent('lmgCount', gunData.filter(g => g.category === '轻机枪').length);
-            setTextContent('shotgunCount', gunData.filter(g => g.category === '霰弹枪').length);
-            setTextContent('dmrCount', gunData.filter(g => g.category === '精确射手步枪').length);
-            setTextContent('pistolCount', gunData.filter(g => g.category === '手枪').length);
-            setTextContent('specialCount', gunData.filter(g => g.category === '特殊武器').length);
-            setTextContent('favoritesCount', gunData.filter(g => g.isCollected).length);
-            
             // Update price range counts (如果元素存在)
             setTextContent('price0-10Count', gunData.filter(g => g.price >= 0 && g.price <= 10).length);
             setTextContent('price10-20Count', gunData.filter(g => g.price > 10 && g.price <= 20).length);
@@ -1850,18 +1733,6 @@ QJB201轻机枪-烽火地带-6JCL9TC0FUSS37J6Q9CUL-18-正常-人上人-18W丐版
                 if (currentFilter === 'price-60+') {
                     return gun.price > 60;
                 }
-                
-                // 检查是否是分类过滤
-                const categories = ['步枪', '冲锋枪', '霰弹枪', '精确射手步枪', '狙击步枪', '轻机枪', '手枪', '特殊武器'];
-                if (categories.includes(currentFilter)) {
-                    return gun.category === currentFilter;
-                }
-                
-                // 收藏过滤
-                if (currentFilter === 'favorites') {
-                    return gun.isCollected;
-                }
-
                 // 枪械名称过滤
                 if (currentFilter.startsWith('gunname-')) {
                     const gunName = currentFilter.replace('gunname-', '');
@@ -1871,75 +1742,6 @@ QJB201轻机枪-烽火地带-6JCL9TC0FUSS37J6Q9CUL-18-正常-人上人-18W丐版
                 // 如果没有匹配的过滤条件，返回所有武器
                 return true;
             });
-        }
-
-        // 检查是否已收藏
-        function isFavorite(gunCode) {
-            // 在gunData中查找对应的武器
-            const gun = gunData.find(g => g.code === gunCode);
-            return gun ? gun.isCollected : false;
-        }
-        
-        // 切换收藏状态
-        function toggleFavorite(gunCode) {
-            // 在gunData中查找对应的武器
-            const gunIndex = gunData.findIndex(g => g.code === gunCode);
-            if (gunIndex === -1) return;
-
-            const gun = gunData[gunIndex];
-            const wasCollected = gun.isCollected;
-
-            // 直接更新gunData中的收藏状态
-            gun.isCollected = !wasCollected;
-
-            // 找到原始数据中的对应行
-            const lines = gunDataText.split('\n');
-            let lineIndex = -1;
-
-            for (let i = 0; i < lines.length; i++) {
-                if (lines[i].includes(gunCode)) {
-                    lineIndex = i;
-                    break;
-                }
-            }
-
-            if (lineIndex !== -1) {
-                if (!wasCollected) {
-                    // 添加收藏标记
-                    lines[lineIndex] = lines[lineIndex] + '-已收藏';
-                    showNotification('已添加到收藏', 'success');
-                } else {
-                    // 移除收藏标记
-                    lines[lineIndex] = lines[lineIndex].replace(/-已收藏$/, '');
-                    showNotification('已取消收藏', 'info');
-                }
-
-                // 更新原始数据
-                gunDataText = lines.join('\n');
-
-                // 更新统计
-                updateStats();
-
-                // 重新渲染
-                if (currentFilter === 'favorites') {
-                    renderGuns();
-                } else {
-                    // 只更新当前卡片的收藏按钮
-                    updateFavoriteButton(gunCode);
-                }
-            }
-        }
-        
-        // 更新收藏按钮状态
-        function updateFavoriteButton(gunCode) {
-            const btn = document.querySelector(`.favorite-btn[data-code="${gunCode}"]`);
-            const gun = gunData.find(g => g.code === gunCode);
-            if (btn && gun) {
-                const isFav = gun.isCollected;
-                btn.innerHTML = isFav ? '❤️' : '🤍';
-                btn.title = isFav ? '取消收藏' : '添加收藏';
-                btn.classList.toggle('favorited', isFav);
-            }
         }
 
         // 显示通知
@@ -2077,9 +1879,6 @@ QJB201轻机枪-烽火地带-6JCL9TC0FUSS37J6Q9CUL-18-正常-人上人-18W丐版
             const priceDisplay = gun.price > 0 ? formatPrice(gun.price) : '未知';
             const statusClass = gun.status === '失效' ? 'status-invalid' : 'status-valid';
             const recommendClass = getRecommendClass(gun.recommend);
-            const isFav = isFavorite(gun.code);
-            const favIcon = isFav ? '❤️' : '🤍';
-            const favTitle = isFav ? '取消收藏' : '添加收藏';
 
             return `
                 <div class="gun-card ${gun.status === '失效' ? 'card-invalid' : ''}" data-index="${index}">
@@ -2111,7 +1910,6 @@ QJB201轻机枪-烽火地带-6JCL9TC0FUSS37J6Q9CUL-18-正常-人上人-18W丐版
                             <span>复制完整</span>
                         </button>
                         <div class="card-actions" style="margin: 0;">
-                            <button class="card-btn favorite-btn ${isFav ? 'favorited' : ''}" data-code="${gun.code}" onclick="toggleFavorite('${gun.code}')" title="${favTitle}">${favIcon}</button>
                             <button class="card-btn" onclick="openEditModal(${index})" title="编辑">✏️</button>
                             <button class="card-btn delete" onclick="deleteGun(${index})" title="删除">🗑️</button>
                         </div>
@@ -2412,11 +2210,7 @@ QJB201轻机枪-烽火地带-6JCL9TC0FUSS37J6Q9CUL-18-正常-人上人-18W丐版
                     lines.push(`# === ${category} ===`);
 
                     grouped[category].forEach(gun => {
-                        let tagStr = gun.tag ? `-${gun.tag}` : '';
-                        // 添加收藏状态
-                        if (gun.isCollected) {
-                            tagStr += '-已收藏';
-                        }
+                        const tagStr = gun.tag ? `-${gun.tag}` : '';
                         lines.push(`${gun.name}-${gun.mode}-${gun.code}-${gun.price}-${gun.status}-${gun.recommend}${tagStr}`);
                     });
 
