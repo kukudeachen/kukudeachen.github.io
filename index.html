@@ -851,6 +851,10 @@
             .password-code {
                 font-size: 18px;
             }
+
+            .hide-on-mobile {
+                display: none !important;
+            }
         }
 
         /* Loading Animation */
@@ -995,6 +999,16 @@
             background: var(--bg-dark);
             color: var(--text-primary);
             padding: 10px;
+        }
+
+        /* 隐藏下拉框滚动条 */
+        .form-select::-webkit-scrollbar {
+            display: none;
+        }
+
+        .form-select {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
 
         .form-row {
@@ -1275,7 +1289,7 @@
                     <p id="totalCount">44</p>
                 </div>
             </div>
-            <div class="stat-item">
+            <div class="stat-item hide-on-mobile">
                 <div class="stat-icon green">📁</div>
                 <div class="stat-info">
                     <h4>武器分类</h4>
@@ -1321,19 +1335,19 @@
                 </div>
             </div>
             <div class="stat-item" style="cursor: pointer; padding: 0; overflow: hidden;">
-                <select class="form-select" id="priceFilter" style="background: transparent; border: none; outline: none; color: inherit; font-size: inherit; font-weight: inherit; cursor: pointer; padding: 12px 16px; margin: 0; width: 100%; height: 100%; appearance: none; -webkit-appearance: none;">
-                    <option value="price-all">💰 价格</option>
-                    <option value="price-0-10">💰 0-10W</option>
-                    <option value="price-10-20">💰 10-20W</option>
-                    <option value="price-20-30">💰 20-30W</option>
-                    <option value="price-30-40">💰 30-40W</option>
-                    <option value="price-40-50">💰 40-50W</option>
-                    <option value="price-50-60">💰 50-60W</option>
-                    <option value="price-60+">💰 60W+</option>
+                <select class="form-select" id="priceFilter" style="background: transparent; border: none; outline: none; color: inherit; font-size: inherit; font-weight: inherit; cursor: pointer; padding: 12px 16px; margin: 0; width: 100%; height: 100%; appearance: none; -webkit-appearance: none; text-align: center; text-align-last: center;">
+                    <option value="price-all">💰价格💰</option>
+                    <option value="price-0-10">0-10W</option>
+                    <option value="price-10-20">10-20W</option>
+                    <option value="price-20-30">20-30W</option>
+                    <option value="price-30-40">30-40W</option>
+                    <option value="price-40-50">40-50W</option>
+                    <option value="price-50-60">50-60W</option>
+                    <option value="price-60+">60W+</option>
                 </select>
             </div>
             <div class="stat-item" style="cursor: pointer; padding: 0; overflow: hidden;">
-                <select class="form-select" id="gunNameFilter" style="background: transparent; border: none; outline: none; color: inherit; font-size: inherit; font-weight: inherit; cursor: pointer; padding: 12px 16px; margin: 0; width: 100%; height: 100%; appearance: none; -webkit-appearance: none;"><option value="gunname-all">🔫 枪械名称</option><option value="gunname-AK-12突击步枪">🔫 AK-12突击步枪</option><option value="gunname-AS Val突击步枪">🔫 AS Val突击步枪</option><option value="gunname-ASh-12战斗步枪">🔫 ASh-12战斗步枪</option><option value="gunname-AUG突击步枪">🔫 AUG突击步枪</option><option value="gunname-AWM狙击步枪">🔫 AWM狙击步枪</option><option value="gunname-FS-12霰弹枪">🔫 FS-12霰弹枪</option><option value="gunname-G3战斗步枪">🔫 G3战斗步枪</option><option value="gunname-K416突击步枪">🔫 K416突击步枪</option><option value="gunname-K437突击步枪">🔫 K437突击步枪</option><option value="gunname-KC17突击步枪">🔫 KC17突击步枪</option><option value="gunname-M14射手步枪">🔫 M14射手步枪</option><option value="gunname-M7战斗步枪">🔫 M7战斗步枪</option><option value="gunname-MCX LT突击步枪">🔫 MCX LT突击步枪</option><option value="gunname-MK47突击步枪">🔫 MK47突击步枪</option><option value="gunname-MP7冲锋枪">🔫 MP7冲锋枪</option><option value="gunname-P90冲锋枪">🔫 P90冲锋枪</option><option value="gunname-PKM通用机枪">🔫 PKM通用机枪</option><option value="gunname-PSG-1射手步枪">🔫 PSG-1射手步枪</option><option value="gunname-PTR-32突击步枪">🔫 PTR-32突击步枪</option><option value="gunname-QBZ95-1突击步枪">🔫 QBZ95-1突击步枪</option><option value="gunname-QJB201轻机枪">🔫 QJB201轻机枪</option><option value="gunname-SCAR-H战斗步枪">🔫 SCAR-H战斗步枪</option><option value="gunname-SG552突击步枪">🔫 SG552突击步枪</option><option value="gunname-SMG-45冲锋枪">🔫 SMG-45冲锋枪</option><option value="gunname-SR-25射手步枪">🔫 SR-25射手步枪</option><option value="gunname-SR-3M紧凑突击步枪">🔫 SR-3M紧凑突击步枪</option><option value="gunname-Vector冲锋枪">🔫 Vector冲锋枪</option><option value="gunname-勇士冲锋枪">🔫 勇士冲锋枪</option><option value="gunname-杠杆式步枪">🔫 杠杆式步枪</option><option value="gunname-腾龙突击步枪">🔫 腾龙突击步枪</option></select>
+                <select class="form-select" id="gunNameFilter" style="background: transparent; border: none; outline: none; color: inherit; font-size: inherit; font-weight: inherit; cursor: pointer; padding: 12px 16px; margin: 0; width: 100%; height: 100%; appearance: none; -webkit-appearance: none; text-align: center; text-align-last: center;"><option value="gunname-all">🔫枪械名称🔫</option><option value="gunname-AK-12突击步枪">AK-12突击步枪</option><option value="gunname-AS Val突击步枪">AS Val突击步枪</option><option value="gunname-ASh-12战斗步枪">ASh-12战斗步枪</option><option value="gunname-AUG突击步枪">AUG突击步枪</option><option value="gunname-AWM狙击步枪">AWM狙击步枪</option><option value="gunname-FS-12霰弹枪">FS-12霰弹枪</option><option value="gunname-G3战斗步枪">G3战斗步枪</option><option value="gunname-K416突击步枪">K416突击步枪</option><option value="gunname-K437突击步枪">K437突击步枪</option><option value="gunname-KC17突击步枪">KC17突击步枪</option><option value="gunname-M14射手步枪">M14射手步枪</option><option value="gunname-M7战斗步枪">M7战斗步枪</option><option value="gunname-MCX LT突击步枪">MCX LT突击步枪</option><option value="gunname-MK47突击步枪">MK47突击步枪</option><option value="gunname-MP7冲锋枪">MP7冲锋枪</option><option value="gunname-P90冲锋枪">P90冲锋枪</option><option value="gunname-PKM通用机枪">PKM通用机枪</option><option value="gunname-PSG-1射手步枪">PSG-1射手步枪</option><option value="gunname-PTR-32突击步枪">PTR-32突击步枪</option><option value="gunname-QBZ95-1突击步枪">QBZ95-1突击步枪</option><option value="gunname-QJB201轻机枪">QJB201轻机枪</option><option value="gunname-SCAR-H战斗步枪">SCAR-H战斗步枪</option><option value="gunname-SG552突击步枪">SG552突击步枪</option><option value="gunname-SMG-45冲锋枪">SMG-45冲锋枪</option><option value="gunname-SR-25射手步枪">SR-25射手步枪</option><option value="gunname-SR-3M紧凑突击步枪">SR-3M紧凑突击步枪</option><option value="gunname-Vector冲锋枪">Vector冲锋枪</option><option value="gunname-勇士冲锋枪">勇士冲锋枪</option><option value="gunname-杠杆式步枪">杠杆式步枪</option><option value="gunname-腾龙突击步枪">腾龙突击步枪</option></select>
             </div>
         </div>
     </section>
@@ -1360,7 +1374,7 @@
                             </div>
                         </div>
                         <div style="text-align: right; margin-left: 12px;">
-                            <div class="gun-price">💰 42W</div>
+                            <div class="gun-price">42W</div>
                             <span class="recommend-badge rec-good">夯</span>
                         </div>
                     </div>
@@ -2550,7 +2564,7 @@ QJB201轻机枪-烽火地带-6JCL9TC0FUSS37J6Q9CUL-18-正常-人上人-18W丐版
             gunNames.forEach(name => {
                 const option = document.createElement('option');
                 option.value = 'gunname-' + name;
-                option.textContent = '🔫 ' + name;
+                option.textContent = name;
                 select.appendChild(option);
             });
         }
