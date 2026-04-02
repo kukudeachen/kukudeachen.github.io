@@ -751,12 +751,105 @@
             }
 
             .stats-bar {
-                flex-direction: column;
-                gap: 16px;
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 12px;
+                padding: 12px;
+            }
+
+            .stat-item {
+                flex: 1 1 calc(33.333% - 8px);
+                min-width: 80px;
+                justify-content: center;
+            }
+
+            .stat-info h4 {
+                font-size: 12px;
+            }
+
+            .stat-info p {
+                font-size: 14px;
+            }
+
+            .stat-icon {
+                width: 36px;
+                height: 36px;
+                font-size: 16px;
+            }
+
+            .stat-divider {
+                display: none;
             }
 
             .filter-tabs {
                 justify-content: center;
+            }
+
+            /* 密码卡片移动端适配 */
+            .password-container {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            .password-card {
+                flex: 1 1 calc(50% - 8px);
+                min-width: 70px;
+                max-width: none;
+                padding: 12px 8px;
+                border-radius: 12px;
+            }
+
+            .password-map {
+                font-size: 12px;
+                margin-bottom: 4px;
+            }
+
+            .password-code {
+                font-size: 20px;
+                margin-bottom: 4px;
+            }
+
+            .password-date {
+                font-size: 10px;
+            }
+
+            .password-divider {
+                display: none;
+            }
+
+            /* 搜索框移动端适配 */
+            .search-box {
+                margin: 0 12px 16px;
+            }
+
+            .controls-section {
+                padding: 0 12px;
+            }
+
+            /* 保存按钮位置调整 */
+            .theme-toggle-btn {
+                right: 12px;
+                top: 22px;
+                width: 36px;
+                height: 36px;
+            }
+
+            .theme-toggle-btn[title="保存到文件"] {
+                display: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stat-item {
+                flex: 1 1 calc(50% - 6px);
+            }
+
+            .password-card {
+                flex: 1 1 calc(50% - 6px);
+            }
+
+            .password-code {
+                font-size: 18px;
             }
         }
 
@@ -1180,13 +1273,6 @@
                 <div class="stat-info">
                     <h4>武器总数</h4>
                     <p id="totalCount">44</p>
-                </div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-icon orange">🎮</div>
-                <div class="stat-info">
-                    <h4>游戏模式</h4>
-                    <p id="modeCount">1</p>
                 </div>
             </div>
             <div class="stat-item">
