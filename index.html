@@ -247,12 +247,85 @@
         /* Stats Bar */
         .stats-bar {
             display: flex;
+            justify-content: center;
             gap: 24px;
             padding: 20px;
             background: var(--bg-card);
             border-radius: 16px;
             border: 1px solid var(--border);
             margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .stat-divider {
+            width: 1px;
+            background: var(--border);
+            margin: 0 8px;
+        }
+
+        .stat-item:has(#gunNameFilter) {
+            max-width: 180px;
+        }
+
+        /* 密码卡片样式 */
+        .password-container {
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
+            width: 100%;
+        }
+
+        .password-card {
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 16px 12px;
+            text-align: center;
+            min-width: 120px;
+            transition: all 0.3s ease;
+            flex: 1;
+            max-width: 180px;
+        }
+
+        .password-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .password-divider {
+            width: 1px;
+            height: 40px;
+            background: var(--border);
+            margin: 0 12px;
+        }
+
+        .password-map {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .password-code {
+            font-size: 28px;
+            font-weight: 700;
+            font-family: 'Orbitron', monospace;
+            margin-bottom: 8px;
+        }
+
+        .password-code.dam { color: #10b981; }
+        .password-code.valley { color: #06b6d4; }
+        .password-code.base { color: #f59e0b; }
+        .password-code.prison { color: #ef4444; }
+        .password-code.baksheesh { color: #8b5cf6; }
+
+        .password-date {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .password-loading {
+            color: var(--text-secondary);
+            font-size: 14px;
         }
 
         .stat-item {
@@ -548,8 +621,7 @@
             color: var(--primary);
             letter-spacing: 1px;
             flex: 1;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            word-break: break-all;
         }
 
         .copy-btn {
@@ -1079,8 +1151,13 @@
     </header>
     
     <!-- 主题切换按钮 - 固定在右上角 -->
-    <button class="theme-toggle-btn" onclick="toggleTheme()" title="切换主题">
+    <button class="theme-toggle-btn" onclick="toggleTheme()" title="切换主题" style="right: 20px;">
         <span class="theme-icon">🌙</span>
+    </button>
+    
+    <!-- 保存到文件按钮 - 固定在右上角，主题按钮左边 -->
+    <button class="theme-toggle-btn" onclick="downloadUpdatedHtml()" title="保存到文件" style="right: 74px;">
+        <span>💾</span>
     </button>
 
     <!-- Controls Section -->
@@ -1091,27 +1168,12 @@
             <input type="text" class="search-input" id="searchInput" placeholder="搜索武器名称、改枪码...">
         </div>
 
-        <!-- Admin Buttons -->
-        <div class="admin-bar">
-            <button class="admin-btn primary" onclick="openAddModal()">
-                <span>➕</span>
-                <span>添加武器</span>
-            </button>
-            <button class="admin-btn" onclick="openExportModal()">
-                <span>📤</span>
-                <span>导出数据</span>
-            </button>
-            <button class="admin-btn" onclick="openImportModal()">
-                <span>📥</span>
-                <span>导入数据</span>
-            </button>
-            <button class="admin-btn" onclick="downloadUpdatedHtml()">
-                <span>💾</span>
-                <span>保存到文件</span>
-            </button>
-        </div>
-
         <!-- Stats -->
+        <div class="stats-bar" style="padding: 20px;">
+            <div class="password-container" id="passwordContainer">
+                <div class="password-loading">🔐 正在加载每日密码...</div>
+            </div>
+        </div>
         <div class="stats-bar">
             <div class="stat-item">
                 <div class="stat-icon blue">🔫</div>
@@ -1134,17 +1196,39 @@
                     <p id="categoryCount">6</p>
                 </div>
             </div>
-        </div>
-
-        <!-- Filter Tabs -->
-        <div class="filter-tabs" id="filterTabs">
-            <div class="filter-tab" data-filter="all">
-                <span>全部</span>
-                <span class="count" id="allCount">44</span>
+            <div class="stat-divider"></div>
+            <div class="stat-item" onclick="openAddModal()" style="cursor: pointer;">
+                <div class="stat-icon" style="background: rgba(16, 185, 129, 0.15);">➕</div>
+                <div class="stat-info">
+                    <h4>添加武器</h4>
+                    <p style="font-size: 12px; color: var(--text-secondary);">点击添加</p>
+                </div>
             </div>
-            <!-- Price Range Dropdown -->
-            <div class="filter-tab">
-                <select class="form-select" id="priceFilter" style="background: transparent; border: none; outline: none; color: inherit; font-size: inherit; font-weight: inherit; cursor: pointer; padding: 0; margin: 0;">
+            <div class="stat-item" onclick="openExportModal()" style="cursor: pointer;">
+                <div class="stat-icon" style="background: rgba(245, 158, 11, 0.15);">📤</div>
+                <div class="stat-info">
+                    <h4>导出数据</h4>
+                    <p style="font-size: 12px; color: var(--text-secondary);">点击导出</p>
+                </div>
+            </div>
+            <div class="stat-item" onclick="openImportModal()" style="cursor: pointer;">
+                <div class="stat-icon" style="background: rgba(139, 92, 246, 0.15);">📥</div>
+                <div class="stat-info">
+                    <h4>导入数据</h4>
+                    <p style="font-size: 12px; color: var(--text-secondary);">点击导入</p>
+                </div>
+            </div>
+            <div class="stat-divider"></div>
+            <!-- 筛选按钮 -->
+            <div class="stat-item" onclick="setFilter('all')" style="cursor: pointer;" data-filter="all">
+                <div class="stat-icon" style="background: rgba(59, 130, 246, 0.15);">📋</div>
+                <div class="stat-info">
+                    <h4>全部</h4>
+                    <p id="allCount" style="font-size: 12px; color: var(--text-secondary);">44</p>
+                </div>
+            </div>
+            <div class="stat-item" style="cursor: pointer; padding: 0; overflow: hidden;">
+                <select class="form-select" id="priceFilter" style="background: transparent; border: none; outline: none; color: inherit; font-size: inherit; font-weight: inherit; cursor: pointer; padding: 12px 16px; margin: 0; width: 100%; height: 100%; appearance: none; -webkit-appearance: none;">
                     <option value="price-all">💰 价格</option>
                     <option value="price-0-10">💰 0-10W</option>
                     <option value="price-10-20">💰 10-20W</option>
@@ -1155,11 +1239,9 @@
                     <option value="price-60+">💰 60W+</option>
                 </select>
             </div>
-            <!-- Gun Name Dropdown -->
-            <div class="filter-tab">
-                <select class="form-select" id="gunNameFilter" style="background: transparent; border: none; outline: none; color: inherit; font-size: inherit; font-weight: inherit; cursor: pointer; padding: 0; margin: 0;"><option value="gunname-all">🔫 枪械名称</option><option value="gunname-AK-12突击步枪">🔫 AK-12突击步枪</option><option value="gunname-AS Val突击步枪">🔫 AS Val突击步枪</option><option value="gunname-ASh-12战斗步枪">🔫 ASh-12战斗步枪</option><option value="gunname-AUG突击步枪">🔫 AUG突击步枪</option><option value="gunname-AWM狙击步枪">🔫 AWM狙击步枪</option><option value="gunname-FS-12霰弹枪">🔫 FS-12霰弹枪</option><option value="gunname-G3战斗步枪">🔫 G3战斗步枪</option><option value="gunname-K416突击步枪">🔫 K416突击步枪</option><option value="gunname-K437突击步枪">🔫 K437突击步枪</option><option value="gunname-KC17突击步枪">🔫 KC17突击步枪</option><option value="gunname-M14射手步枪">🔫 M14射手步枪</option><option value="gunname-M7战斗步枪">🔫 M7战斗步枪</option><option value="gunname-MCX LT突击步枪">🔫 MCX LT突击步枪</option><option value="gunname-MK47突击步枪">🔫 MK47突击步枪</option><option value="gunname-MP7冲锋枪">🔫 MP7冲锋枪</option><option value="gunname-P90冲锋枪">🔫 P90冲锋枪</option><option value="gunname-PKM通用机枪">🔫 PKM通用机枪</option><option value="gunname-PSG-1射手步枪">🔫 PSG-1射手步枪</option><option value="gunname-PTR-32突击步枪">🔫 PTR-32突击步枪</option><option value="gunname-QBZ95-1突击步枪">🔫 QBZ95-1突击步枪</option><option value="gunname-QJB201轻机枪">🔫 QJB201轻机枪</option><option value="gunname-SCAR-H战斗步枪">🔫 SCAR-H战斗步枪</option><option value="gunname-SG552突击步枪">🔫 SG552突击步枪</option><option value="gunname-SMG-45冲锋枪">🔫 SMG-45冲锋枪</option><option value="gunname-SR-25射手步枪">🔫 SR-25射手步枪</option><option value="gunname-SR-3M紧凑突击步枪">🔫 SR-3M紧凑突击步枪</option><option value="gunname-Vector冲锋枪">🔫 Vector冲锋枪</option><option value="gunname-勇士冲锋枪">🔫 勇士冲锋枪</option><option value="gunname-杠杆式步枪">🔫 杠杆式步枪</option><option value="gunname-腾龙突击步枪">🔫 腾龙突击步枪</option></select>
+            <div class="stat-item" style="cursor: pointer; padding: 0; overflow: hidden;">
+                <select class="form-select" id="gunNameFilter" style="background: transparent; border: none; outline: none; color: inherit; font-size: inherit; font-weight: inherit; cursor: pointer; padding: 12px 16px; margin: 0; width: 100%; height: 100%; appearance: none; -webkit-appearance: none;"><option value="gunname-all">🔫 枪械名称</option><option value="gunname-AK-12突击步枪">🔫 AK-12突击步枪</option><option value="gunname-AS Val突击步枪">🔫 AS Val突击步枪</option><option value="gunname-ASh-12战斗步枪">🔫 ASh-12战斗步枪</option><option value="gunname-AUG突击步枪">🔫 AUG突击步枪</option><option value="gunname-AWM狙击步枪">🔫 AWM狙击步枪</option><option value="gunname-FS-12霰弹枪">🔫 FS-12霰弹枪</option><option value="gunname-G3战斗步枪">🔫 G3战斗步枪</option><option value="gunname-K416突击步枪">🔫 K416突击步枪</option><option value="gunname-K437突击步枪">🔫 K437突击步枪</option><option value="gunname-KC17突击步枪">🔫 KC17突击步枪</option><option value="gunname-M14射手步枪">🔫 M14射手步枪</option><option value="gunname-M7战斗步枪">🔫 M7战斗步枪</option><option value="gunname-MCX LT突击步枪">🔫 MCX LT突击步枪</option><option value="gunname-MK47突击步枪">🔫 MK47突击步枪</option><option value="gunname-MP7冲锋枪">🔫 MP7冲锋枪</option><option value="gunname-P90冲锋枪">🔫 P90冲锋枪</option><option value="gunname-PKM通用机枪">🔫 PKM通用机枪</option><option value="gunname-PSG-1射手步枪">🔫 PSG-1射手步枪</option><option value="gunname-PTR-32突击步枪">🔫 PTR-32突击步枪</option><option value="gunname-QBZ95-1突击步枪">🔫 QBZ95-1突击步枪</option><option value="gunname-QJB201轻机枪">🔫 QJB201轻机枪</option><option value="gunname-SCAR-H战斗步枪">🔫 SCAR-H战斗步枪</option><option value="gunname-SG552突击步枪">🔫 SG552突击步枪</option><option value="gunname-SMG-45冲锋枪">🔫 SMG-45冲锋枪</option><option value="gunname-SR-25射手步枪">🔫 SR-25射手步枪</option><option value="gunname-SR-3M紧凑突击步枪">🔫 SR-3M紧凑突击步枪</option><option value="gunname-Vector冲锋枪">🔫 Vector冲锋枪</option><option value="gunname-勇士冲锋枪">🔫 勇士冲锋枪</option><option value="gunname-杠杆式步枪">🔫 杠杆式步枪</option><option value="gunname-腾龙突击步枪">🔫 腾龙突击步枪</option></select>
             </div>
-
         </div>
     </section>
 
@@ -1536,7 +1618,7 @@ K416突击步枪-烽火地带-6JCVEOG08BOK35ETI3KG8-45-正常-顶级-近战"></t
                             j++;
                         }
 
-                        // 剩余的都是标签（保留-已收藏）
+                        // 剩余的都是标签（保留）
                         if (j < parts.length) {
                             tag = parts.slice(j).join('-');
                         }
@@ -1584,20 +1666,20 @@ AS Val突击步枪-烽火地带-6GCI31407ODLT6ETQT3GS-74-正常-人上人-洒洒
 腾龙突击步枪-烽火地带-6GVGL640BUSDVQP3857JE-58-正常-人上人-打前8发
 K416突击步枪-烽火地带-6FTTLTK07ODLT6ETQT3GS-55-正常-顶级-有钱可用
 ASh-12战斗步枪-烽火地带-6GH3908064HLT38PTSGJ8-59-正常-NPC-50米后全靠蒙
-K416突击步枪-烽火地带-6H9EAMS07ODLT6ETQT3GS-31-正常-顶级-50m内可(半改)-已收藏
-SR-3M紧凑突击步枪-烽火地带-6H9EBEK07ODLT6ETQT3GS-33-正常-顶级-半改可用-已收藏
-腾龙突击步枪-烽火地带-6H9ML0405OGLI0NLKOOIA-32-正常-顶级-前10发（半改）-已收藏
+K416突击步枪-烽火地带-6H9EAMS07ODLT6ETQT3GS-31-正常-顶级-50m内可(半改)
+SR-3M紧凑突击步枪-烽火地带-6H9EBEK07ODLT6ETQT3GS-33-正常-顶级-半改可用
+腾龙突击步枪-烽火地带-6H9ML0405OGLI0NLKOOIA-32-正常-顶级-前10发（半改）
 SR-3M紧凑突击步枪-烽火地带-6HGC1TK0AA7V9AM2DKIOU-30-正常-顶级-满腰射
 腾龙突击步枪-烽火地带-6H9ML0405OGLI0NLKOOIA-32-正常-人上人-50内半改
-SCAR-H战斗步枪-烽火地带-6IUPED80CCNN7V1KCQCD1-26-正常-夯-26W性价比SCAR-H[杨齐家]-已收藏
-KC17突击步枪-烽火地带-6IN8FQK00HQLU2MDVQMAA-32-正常-夯-36W均衡版KC17 [蓝狼狼]-已收藏
+SCAR-H战斗步枪-烽火地带-6IUPED80CCNN7V1KCQCD1-26-正常-夯-26W性价比SCAR-H[杨齐家]
+KC17突击步枪-烽火地带-6IN8FQK00HQLU2MDVQMAA-32-正常-夯-36W均衡版KC17 [蓝狼狼]
 MK47突击步枪-烽火地带-6IN8F8C00HQLU2MDVQMAA-33-正常-顶级-33W近战MK47 [蓝狼狼]
-G3战斗步枪-烽火地带-6IN8G200223NGCLVVEN6F-11-正常-夯-9W卡战备G3 [饼干小警长]-已收藏
+G3战斗步枪-烽火地带-6IN8G200223NGCLVVEN6F-11-正常-夯-9W卡战备G3 [饼干小警长]
 MK47突击步枪-烽火地带-6IN8FD80223NGCLVVEN6F-30-正常-顶级-30W新手MK47 [饼干警长]
-KC17突击步枪-烽火地带-6IN8NB80A6PIA75LU5T70-27-正常-顶级-30W稳定版KC17 [陈小刀]-已收藏
-AUG突击步枪-烽火地带-6IIRBK80A6PIA75LU5T70-30-正常-夯-30W性价比AUG [陈小刀]-已收藏
-AK-12突击步枪-烽火地带-6I36BH00223NGCLVVEN6F-18-正常-夯-20W省钱AK-12 [饼干小警长]-已收藏
-PTR-32突击步枪-烽火地带-6JCLB380FUSS37J6Q9CUL-19-正常-夯-20W🔥无敌🔥[峰峰]-已收藏
+KC17突击步枪-烽火地带-6IN8NB80A6PIA75LU5T70-27-正常-顶级-30W稳定版KC17 [陈小刀]
+AUG突击步枪-烽火地带-6IIRBK80A6PIA75LU5T70-30-正常-夯-30W性价比AUG [陈小刀]
+AK-12突击步枪-烽火地带-6I36BH00223NGCLVVEN6F-18-正常-夯-20W省钱AK-12 [饼干小警长]
+PTR-32突击步枪-烽火地带-6JCLB380FUSS37J6Q9CUL-19-正常-夯-20W🔥无敌🔥[峰峰]
 MCX LT突击步枪-烽火地带-6JDABGG09EDG25O19581D-26-正常-顶级-26W半改MCX LT
 MCX LT突击步枪-烽火地带-6JD8T7S0E5QUTQP36HK9K-25-正常-夯-25W性价比MCX LT[闪光]
 QBZ95-1突击步枪-烽火地带-6JDDSH80FUCPK8HVK1GN3-14-正常-顶级-14W丐版QBZ95-1[师兄]
@@ -1608,11 +1690,11 @@ KC17突击步枪-烽火地带-6JE10IG0FUCPK8HVK1GN3-18-正常-人上人-18W基�
 
 # === 冲锋枪 ===
 Vector冲锋枪-烽火地带-6F4P1BG07ODLT6ETQT3GS-38-正常-夯-满腰射
-SR-3M紧凑突击步枪-烽火地带-6F6Q83O07ODLT6ETQT3GS-54-正常-夯-100米屏息无敌-已收藏
+SR-3M紧凑突击步枪-烽火地带-6F6Q83O07ODLT6ETQT3GS-54-正常-夯-100米屏息无敌
 SMG-45冲锋枪-烽火地带-6FQ93AC02J1BTCMSP82T7-33-正常-NPC-满腰射射速太慢
-MP7冲锋枪-烽火地带-6FVLU2G07ODLT6ETQT3GS-38-正常-顶级-爆闪满腰射-已收藏
-P90冲锋枪-烽火地带-6H1HI140B9I04M2JUJ0H8-42-正常-夯-100m-已收藏
-勇士冲锋枪-烽火地带-6IIQUA40A6PIA75LU5T70-18-正常-人上人-15W腰射版勇士 [陈小刀]-已收藏
+MP7冲锋枪-烽火地带-6FVLU2G07ODLT6ETQT3GS-38-正常-顶级-爆闪满腰射
+P90冲锋枪-烽火地带-6H1HI140B9I04M2JUJ0H8-42-正常-夯-100m
+勇士冲锋枪-烽火地带-6IIQUA40A6PIA75LU5T70-18-正常-人上人-15W腰射版勇士 [陈小刀]
 SMG-45冲锋枪-烽火地带-6JCLT1K09M55NRPU8R5DP-25-正常-夯-射速慢巨稳SMG-45[约翰]
 
 # === 霰弹枪 ===
@@ -1620,17 +1702,17 @@ FS-12霰弹枪-烽火地带-6J05MAK05626H7V45IC7J-7-正常-人上人-7W新手FS-
 
 # === 精确射手步枪 ===
 M14射手步枪-烽火地带-6GPT20G07ODLT6ETQT3GS-76-正常-夯-消音（满改）
-PSG-1射手步枪-烽火地带-6HCM8UK0285EKE7L5LPSH-46-正常-夯-屏息无后座-已收藏
+PSG-1射手步枪-烽火地带-6HCM8UK0285EKE7L5LPSH-46-正常-夯-屏息无后座
 杠杆式步枪-烽火地带-6HK18PK06VV971MHFTLAI-25-正常-夯-秒开镜连射
 SR-25射手步枪-烽火地带-6I9B8MG0BCHV462S8UUDS-77-正常-夯-67W满改SR-25 [少女的梦]
-M14射手步枪-烽火地带-6JD7URG0FUCPK8HVK1GN3-57-正常-夯-半改林树-已收藏
+M14射手步枪-烽火地带-6JD7URG0FUCPK8HVK1GN3-57-正常-夯-半改林树
 
 # === 狙击步枪 ===
 AWM狙击步枪-烽火地带-6GCOMIO03HDN3EE1QTI4I-92-正常-夯-秒开镜
 
 # === 轻机枪 ===
 PKM通用机枪-烽火地带-6H7R3S00BI66M9G2OV3QF-26-正常-拉完了-只能架点用
-QJB201轻机枪-烽火地带-6HL222S07ODLT6ETQT3GS-30-正常-夯-无敌性价比好用-已收藏
+QJB201轻机枪-烽火地带-6HL222S07ODLT6ETQT3GS-30-正常-夯-无敌性价比好用
 QJB201轻机枪-烽火地带-6JCL9TC0FUSS37J6Q9CUL-18-正常-人上人-18W丐版QJB201[峰峰]
 `;
 
@@ -1807,7 +1889,13 @@ QJB201轻机枪-烽火地带-6JCL9TC0FUSS37J6Q9CUL-18-正常-人上人-18W丐版
 
             return groups;
         }
-        
+
+        // 设置筛选条件
+        function setFilter(filter) {
+            currentFilter = filter;
+            renderGuns();
+        }
+
         // 调试函数：打印当前状态
         function debugState() {
             console.log('Current filter:', currentFilter);
@@ -2307,27 +2395,13 @@ QJB201轻机枪-烽火地带-6JCL9TC0FUSS37J6Q9CUL-18-正常-人上人-18W丐版
             renderGuns();
         });
 
-        // 过滤标签点击事件
-        document.getElementById('filterTabs').addEventListener('click', (e) => {
-            const tab = e.target.closest('.filter-tab');
-            if (!tab || tab.querySelector('select')) return;
-
-            document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
-            tab.classList.add('active');
-            currentFilter = tab.dataset.filter;
-            renderGuns();
-        });
-        
         // 价格下拉选择事件
         document.getElementById('priceFilter').addEventListener('change', (e) => {
             const value = e.target.value;
             if (value === 'price-all') {
                 currentFilter = 'all';
-                document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
-                document.querySelector('.filter-tab[data-filter="all"]').classList.add('active');
             } else {
                 currentFilter = value;
-                document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
             }
             renderGuns();
         });
@@ -2337,11 +2411,8 @@ QJB201轻机枪-烽火地带-6JCL9TC0FUSS37J6Q9CUL-18-正常-人上人-18W丐版
             const value = e.target.value;
             if (value === 'gunname-all') {
                 currentFilter = 'all';
-                document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
-                document.querySelector('.filter-tab[data-filter="all"]').classList.add('active');
             } else {
                 currentFilter = value;
-                document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
             }
             renderGuns();
         });
@@ -2443,20 +2514,103 @@ QJB201轻机枪-烽火地带-6JCL9TC0FUSS37J6Q9CUL-18-正常-人上人-18W丐版
             }, 60 * 60 * 1000);
         }
 
+        // 获取每日密码
+        async function loadDailyPasswords() {
+            const container = document.getElementById('passwordContainer');
+            try {
+                const response = await fetch('https://api.icofun.cn/api/delta_mima2.php');
+                const data = await response.text();
+
+                // 解析密码数据
+                const passwords = parsePasswordData(data);
+
+                if (passwords.length > 0) {
+                    renderPasswordCards(passwords);
+                } else {
+                    container.innerHTML = '<div class="password-loading">暂无密码数据</div>';
+                }
+            } catch (error) {
+                console.error('获取密码失败:', error);
+                container.innerHTML = '<div class="password-loading">获取密码失败，请稍后重试</div>';
+            }
+        }
+
+        // 解析密码数据
+        function parsePasswordData(text) {
+            const passwords = [];
+            const lines = text.split('\n');
+
+            // 从第一行提取日期，格式：【04月03日】三角洲行动密码：
+            let dateStr = '';
+            const dateMatch = text.match(/【(\d{2}月\d{2}日)】/);
+            if (dateMatch) {
+                const monthDay = dateMatch[1];
+                const year = new Date().getFullYear();
+                dateStr = `${year}-${monthDay.replace('月', '-').replace('日', '')}`;
+            } else {
+                // 如果无法提取，使用当前日期
+                dateStr = new Date().toISOString().split('T')[0];
+            }
+
+            lines.forEach(line => {
+                if (line.includes('密码：')) {
+                    const match = line.match(/(.+?)密码：(\d+)/);
+                    if (match) {
+                        passwords.push({
+                            map: match[1].trim(),
+                            code: match[2],
+                            date: dateStr
+                        });
+                    }
+                }
+            });
+
+            return passwords;
+        }
+
+        // 渲染密码卡片
+        function renderPasswordCards(passwords) {
+            const container = document.getElementById('passwordContainer');
+            const mapColors = {
+                '零号大坝': 'dam',
+                '长弓溪谷': 'valley',
+                '航天基地': 'base',
+                '潮汐监狱': 'prison',
+                '巴克什': 'baksheesh'
+            };
+
+            const cards = passwords.map(pwd => {
+                const colorClass = mapColors[pwd.map] || 'dam';
+                return `
+                    <div class="password-card">
+                        <div class="password-map">${pwd.map}</div>
+                        <div class="password-code ${colorClass}">${pwd.code}</div>
+                        <div class="password-date">${pwd.date}</div>
+                    </div>
+                `;
+            });
+
+            // 在每个卡片之间插入分隔线
+            const html = cards.join('<div class="password-divider"></div>');
+
+            container.innerHTML = html;
+        }
+
         // Initialize
-         // 确保显示全部数据
+        // 确保显示全部数据
         currentFilter = 'all';
-        // 重置过滤标签状态
-        document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
-        const allTab = document.querySelector('.filter-tab[data-filter="all"]');
-        if (allTab) allTab.classList.add('active');
         // 重置价格下拉选择
         const priceFilter = document.getElementById('priceFilter');
         if (priceFilter) priceFilter.value = 'price-all';
+        // 重置枪械名称下拉选择
+        const gunNameFilter = document.getElementById('gunNameFilter');
+        if (gunNameFilter) gunNameFilter.value = 'gunname-all';
         // 设置主题
         setupThemeTimer();
         // 加载数据
         loadGunCodes();
+        // 加载每日密码
+        loadDailyPasswords();
     </script>
 
 
