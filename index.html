@@ -318,6 +318,72 @@
         .password-code.prison { color: #ef4444; }
         .password-code.baksheesh { color: #8b5cf6; }
 
+        /* Map Section */
+        .map-container {
+            width: 100%;
+        }
+
+        .map-header {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .map-header h3 {
+            font-size: 18px;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .map-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+
+        .map-item {
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .map-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+            border-color: var(--primary);
+        }
+
+        a.map-item {
+            text-decoration: none;
+            display: block;
+        }
+
+        .map-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .map-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .map-desc {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 768px) {
+            .map-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
         .password-date {
             font-size: 12px;
             color: var(--text-secondary);
@@ -1281,6 +1347,37 @@
                 <div class="password-loading">🔐 正在加载每日密码...</div>
             </div>
         </div>
+
+        <!-- Map Section -->
+        <div class="stats-bar" style="padding: 20px; margin-top: 12px;">
+            <div class="map-container" id="mapContainer">
+                <div class="map-header">
+                    <h3>🗺️ 烽火地带地图</h3>
+                </div>
+                <div class="map-grid">
+                    <div class="map-item" onclick="openMapModal('零号大坝')">
+                        <div class="map-icon">🏭</div>
+                        <div class="map-name">零号大坝</div>
+                        <div class="map-desc">点击查看详细地图</div>
+                    </div>
+                    <div class="map-item" onclick="openMapModal('长弓溪谷')">
+                        <div class="map-icon">🏞️</div>
+                        <div class="map-name">长弓溪谷</div>
+                        <div class="map-desc">点击查看详细地图</div>
+                    </div>
+                    <div class="map-item" onclick="openMapModal('巴克什')">
+                        <div class="map-icon">🚀</div>
+                        <div class="map-name">巴克什</div>
+                        <div class="map-desc">点击查看详细地图</div>
+                    </div>
+                    <div class="map-item" onclick="openMapModal('航天基地')">
+                        <div class="map-icon">🏛️</div>
+                        <div class="map-name">航天基地</div>
+                        <div class="map-desc">点击查看详细地图</div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="stats-bar">
             <div class="stat-item">
                 <div class="stat-icon blue">🔫</div>
@@ -1636,6 +1733,23 @@ K416突击步枪-烽火地带-6JCVEOG08BOK35ETI3KG8-45-正常-顶级-近战"></t
             <div class="btn-group">
                 <button class="btn-primary" onclick="saveEditData()">💾 保存修改</button>
                 <button class="btn-primary btn-secondary" onclick="closeEditModal()">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Map Modal -->
+    <div class="modal-overlay" id="mapModal">
+        <div class="modal" style="max-width: 95vw; width: 95vw; height: 90vh; display: flex; flex-direction: column;">
+            <div class="modal-header">
+                <h3 class="modal-title" id="mapModalTitle">🗺️ 地图详情</h3>
+                <button class="modal-close" onclick="closeMapModal()">×</button>
+            </div>
+            <div id="mapModalContent" style="text-align: center; padding: 20px; flex: 1; overflow: hidden;">
+                <iframe id="mapIframe" src="" style="width: 100%; height: 100%; border: none; border-radius: 12px;" allowfullscreen></iframe>
+            </div>
+            <div class="btn-group" style="margin-top: auto;">
+                <button class="btn-primary" onclick="window.open(document.getElementById('mapIframe').src, '_blank')">在新窗口打开</button>
+                <button class="btn-primary btn-secondary" onclick="closeMapModal()">关闭</button>
             </div>
         </div>
     </div>
@@ -2211,6 +2325,34 @@ QJB201轻机枪-烽火地带-6JCL9TC0FUSS37J6Q9CUL-18-正常-人上人-18W丐版
             }, 3000);
         }
 
+        // 显示地图详情
+        function showMapDetail(mapId) {
+            const mapInfo = {
+                'zero': { name: '零号大坝', desc: '新手入门地图，地形相对简单，适合熟悉游戏机制' },
+                'valley': { name: '长弓溪谷', desc: '中等难度地图，地形复杂，资源分布均匀' },
+                'base': { name: '巴克什', desc: '高难度地图，资源丰富，竞争激烈' },
+                'prison': { name: '航天基地', desc: '最高难度地图，仅限机密模式，高风险高回报' }
+            };
+
+            const info = mapInfo[mapId];
+            if (info) {
+                showNotification(`${info.name}: ${info.desc}`, 'info');
+            }
+        }
+
+        // 打开地图弹窗
+        function openMapModal(mapName) {
+            document.getElementById('mapModalTitle').textContent = `🗺️ ${mapName}`;
+            document.getElementById('mapIframe').src = 'https://orzice.com/sjz/map/';
+            document.getElementById('mapModal').classList.add('show');
+        }
+
+        // 关闭地图弹窗
+        function closeMapModal() {
+            document.getElementById('mapModal').classList.remove('show');
+            document.getElementById('mapIframe').src = '';
+        }
+
         // ==================== 数据管理功能 ====================
 
         // 快速粘贴解析
@@ -2586,6 +2728,7 @@ QJB201轻机枪-烽火地带-6JCL9TC0FUSS37J6Q9CUL-18-正常-人上人-18W丐版
         handleModalClick('exportModal', closeExportModal);
         handleModalClick('importModal', closeImportModal);
         handleModalClick('editModal', closeEditModal);
+        handleModalClick('mapModal', closeMapModal);
 
         // 打开编辑弹窗
         function openEditModal() {
